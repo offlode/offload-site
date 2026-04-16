@@ -543,7 +543,7 @@ const CHAT_RESPONSES = {
   },
   tracking: {
     patterns: [/track/i, /where/i, /status/i, /driver/i, /gps/i, /location/i, /eta/i],
-    response: "You can track your order in real-time! Once a driver is assigned, you'll see their live location on a GPS map. You get notifications at every step — driver en route, laundry picked up, washing started, out for delivery, and delivered. We also take GPS-stamped photos at pickup and delivery."
+    response: "You can follow your order status on our website! You get email updates at every step — driver en route, laundry picked up, washing started, out for delivery, and delivered. We also take photos at pickup and delivery as proof of handling."
   },
   damage: {
     patterns: [/damage/i, /lost/i, /missing/i, /broken/i, /ruin/i, /stain/i, /claim/i, /protect/i, /guarantee/i, /insurance/i],
@@ -559,15 +559,15 @@ const CHAT_RESPONSES = {
   },
   cancel: {
     patterns: [/cancel/i, /refund/i, /reschedule/i, /change/i, /modify/i],
-    response: "You can cancel or reschedule for free any time before the driver starts heading to your location. After pickup begins, cancellation fees may apply. You can manage everything through the app, website, or chat with me right here!"
+    response: "You can cancel or reschedule for free any time before the driver starts heading to your location. After pickup begins, cancellation fees may apply. You can manage everything through the website or by contacting support."
   },
   account: {
     patterns: [/account/i, /sign.?up/i, /register/i, /login/i, /need.?account/i],
-    response: "No account needed to get a price or schedule a pickup! You'll only need to provide your email, phone, and payment info when you're ready to confirm. If you want to save your preferences, track past orders, or use loyalty points, you can create a free account at any time."
+    response: "No account needed to get a price or schedule a pickup! You'll only need to provide your email, phone, and payment info when you're ready to confirm. If you want to save your preferences or view past orders, you can create a free account at any time."
   },
   hello: {
     patterns: [/^hi$/i, /^hello$/i, /^hey$/i, /good morning/i, /good evening/i, /^sup/i, /^yo$/i],
-    response: "Hey there! Welcome to Offload. I can help you with:\n\n• Pricing and bag sizes\n• Delivery speeds\n• Order tracking\n• Service types\n• Loyalty rewards\n• Filing a claim\n\nWhat would you like to know?"
+    response: "Hey there! Welcome to Offload. I can help you with:\n\n• Pricing and bag sizes\n• Delivery speeds\n• Order status\n• Service types\n• Filing a claim\n\nWhat would you like to know?"
   },
   order: {
     patterns: [/order/i, /place/i, /book/i, /schedule/i, /pickup/i, /want.*laundry/i, /start/i],
@@ -575,7 +575,7 @@ const CHAT_RESPONSES = {
   },
   partner: {
     patterns: [/partner/i, /laundromat/i, /join/i, /drive/i, /driver/i, /earn/i, /work/i],
-    response: "Want to grow with Offload?\n\n🏪 Laundromat Partners: Get a steady stream of orders with AI-optimized queuing and automated payouts. Email partners@offloadusa.com\n\n🚗 Drivers: Earn $8.50+ per trip plus tips on your own schedule. Email drivers@offloadusa.com\n\nBoth get access to our full logistics platform."
+    response: "Want to grow with Offload?\n\n🏪 Laundromat Partners: Get a steady stream of orders with automated scheduling and payouts. Email partners@offloadusa.com\n\n🚗 Drivers: Earn $8.50+ per trip plus tips on your own schedule. Email drivers@offloadusa.com\n\nBoth get access to our logistics platform."
   }
 };
 
@@ -585,7 +585,7 @@ function findResponse(message) {
       if (pattern.test(message)) return data.response;
     }
   }
-  return "I'd be happy to help! I can answer questions about pricing, delivery speeds, order tracking, our services, garment protection, loyalty rewards, and more. What would you like to know?";
+  return "I'd be happy to help! I can answer questions about pricing, delivery speeds, order status, our services, garment protection, and more. What would you like to know?";
 }
 
 function sendChat() {
