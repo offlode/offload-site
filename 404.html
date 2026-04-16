@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found — Offload USA</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#5B4BC4">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 36 36' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='18' cy='18' r='16' stroke='%235B4BC4' fill='none' stroke-width='2.5'/%3E%3Cpath d='M12 18c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6' stroke='%235B4BC4' fill='none' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='18' cy='18' r='2' fill='%235B4BC4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0a0a0a;
+      --navy-light: #1a1a1a;
+      --teal: #5B4BC4;
+      --teal-dark: #4a3ba3;
+      --white: #ffffff;
+      --gray-300: #a3a3a3;
+      --gray-400: #737373;
+      --gray-50: #f5f5f5;
+      --gray-100: #e5e5e5;
+    }
+
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      z-index: 9999;
+      background: var(--teal);
+      color: #fff;
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      border-radius: 0 0 6px 6px;
+    }
+    .skip-link:focus {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Header */
+    .header {
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 0 24px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header__logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .header__logo svg {
+      width: 36px;
+      height: 36px;
+    }
+
+    .header__logo-text {
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--white);
+      letter-spacing: -0.03em;
+    }
+
+    .header__nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .header__nav a {
+      color: var(--gray-300);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .header__nav a:hover { color: var(--white); }
+
+    .header__cta {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 24px;
+      background: var(--teal);
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      border-radius: 9999px;
+      transition: background 0.2s;
+    }
+    .header__cta:hover { background: var(--teal-dark); }
+
+    @media (max-width: 768px) {
+      .header__nav { display: none; }
+    }
+
+    /* 404 Main */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 64px 24px;
+      text-align: center;
+    }
+
+    .error-container {
+      max-width: 520px;
+    }
+
+    .error-icon {
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 32px;
+      background: rgba(91, 75, 196, 0.12);
+      border: 1px solid rgba(91, 75, 196, 0.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .error-code {
+      font-size: clamp(4rem, 12vw, 7rem);
+      font-weight: 800;
+      color: var(--teal);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      margin-bottom: 16px;
+    }
+
+    .error-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .error-text {
+      font-size: 1rem;
+      color: var(--gray-300);
+      line-height: 1.7;
+      margin-bottom: 40px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .error-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: var(--teal);
+      color: var(--navy);
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border-radius: 9999px;
+      transition: all 0.25s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: var(--teal-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(91,75,196,0.3);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border-radius: 9999px;
+      border: 2px solid rgba(255,255,255,0.2);
+      transition: all 0.25s;
+    }
+    .btn-outline:hover {
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.05);
+      color: var(--white);
+    }
+
+    /* Quick links */
+    .quick-links {
+      margin-top: 64px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .quick-links__title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+    }
+    .quick-links__list {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .quick-links__list a {
+      color: var(--gray-300);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .quick-links__list a:hover { color: var(--teal); }
+
+    /* Footer */
+    .footer {
+      padding: 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--gray-400);
+    }
+    .footer a { color: var(--gray-400); text-decoration: none; transition: color 0.2s; }
+    .footer a:hover { color: var(--white); }
+  </style>
+</head>
+<body>
+<a href="/" class="skip-link">Skip to main content</a>
+
+<header class="header">
+  <a href="/" class="header__logo" aria-label="Offload Home">
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="18" cy="18" r="16" stroke="#5B4BC4" stroke-width="2.5"/>
+      <path d="M12 18c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6" stroke="#5B4BC4" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="18" cy="18" r="2" fill="#5B4BC4"/>
+    </svg>
+    <span class="header__logo-text">offload</span>
+  </a>
+  <nav class="header__nav" aria-label="Main navigation">
+    <a href="/#how-it-works">How It Works</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/#features">Features</a>
+    <a href="/#faq">FAQ</a>
+    <a href="/#partners">Partners</a>
+  </nav>
+  <a href="/#hero-widget" class="header__cta">Order Now</a>
+</header>
+
+<main id="main-content">
+  <div class="error-container">
+    <div class="error-icon" aria-hidden="true">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#5B4BC4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 8v4M12 16h.01"/>
+      </svg>
+    </div>
+
+    <div class="error-code" aria-label="Error 404">404</div>
+    <h1 class="error-title">Page Not Found</h1>
+    <p class="error-text">The page you're looking for doesn't exist or has been moved.</p>
+
+    <div class="error-actions">
+      <a href="/" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+        Go Home
+      </a>
+      <a href="/#hero-widget" class="btn-outline">
+        Get a Price
+      </a>
+    </div>
+
+    <div class="quick-links">
+      <div class="quick-links__title">Helpful Links</div>
+      <nav class="quick-links__list" aria-label="Quick navigation">
+        <a href="/#how-it-works">How It Works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="pages/about-offload.html">About Us</a>
+        <a href="pages/laundry-pickup-delivery-nyc.html">NYC Service Area</a>
+        <a href="mailto:support@offloadusa.com">Contact Us</a>
+      </nav>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2026 Offload USA. All rights reserved. &nbsp;|&nbsp;
+    <a href="/legal/terms.html">Terms</a> &nbsp;|&nbsp;
+    <a href="/legal/privacy.html">Privacy</a> &nbsp;|&nbsp;
+    <a href="mailto:support@offloadusa.com">support@offloadusa.com</a>
+  </p>
+</footer>
+
+</body>
+</html>

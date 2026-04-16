@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Offload USA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F6F2;
+      --surface: #FFFFFF;
+      --border: #D4D1CA;
+      --text: #28251D;
+      --muted: #6B6863;
+      --faint: #BAB9B4;
+      --accent: #01696F;
+      --accent-hover: #0C4E54;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .page-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* Header */
+    .doc-header {
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 24px;
+      margin-bottom: 36px;
+    }
+
+    .brand {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .doc-meta {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Summary boxes */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .summary-card .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .summary-card .value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+
+    .toc h2 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .toc ol {
+      padding-left: 20px;
+    }
+
+    .toc li {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .toc a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .toc a:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 44px;
+    }
+
+    h2.section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 18px 0 8px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    ul, ol {
+      padding-left: 22px;
+      margin-bottom: 12px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Section number badge */
+    .section-num {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-right: 8px;
+      vertical-align: middle;
+      position: relative;
+      top: -2px;
+    }
+
+    /* Data table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+
+    .data-table th {
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--border);
+      background: var(--surface);
+    }
+
+    .data-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:nth-child(even) td {
+      background: #FAFAF8;
+    }
+
+    /* Rights callout */
+    .rights-box {
+      background: #EDF7F6;
+      border: 1.5px solid #7DC4C1;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+
+    .rights-box strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .rights-box ul {
+      margin-bottom: 0;
+    }
+
+    .rights-box li {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    /* Inline pill */
+    .pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: #F0F9F8;
+      border: 1px solid #7DC4C1;
+      color: var(--accent);
+      border-radius: 20px;
+      padding: 1px 8px;
+      margin: 0 2px;
+    }
+
+    /* Footer */
+    .doc-footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .doc-footer p {
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 22px; }
+      h2.section-title { font-size: 18px; }
+      .page-wrapper { padding: 28px 16px 60px; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .data-table { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="brand">Offload USA</div>
+    <h1>Privacy Policy</h1>
+    <div class="doc-meta">
+      Effective Date: July 1, 2025 &nbsp;·&nbsp; Version 1.0<br>
+      Questions? Contact <a href="mailto:privacy@offloadusa.com">privacy@offloadusa.com</a>
+    </div>
+  </div>
+
+  <!-- At-a-glance summary -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="label">We Never</div>
+      <div class="value">Sell your personal information to third parties</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Minimum Age</div>
+      <div class="value">13 years old (18 to transact)</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Data Retention</div>
+      <div class="value">Active account + 3 years after closure</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Your Rights</div>
+      <div class="value">Access, correct, delete, opt out (CCPA compliant)</div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#overview">Overview and Scope</a></li>
+      <li><a href="#collected">Information We Collect</a></li>
+      <li><a href="#how-used">How We Use Your Information</a></li>
+      <li><a href="#sharing">How We Share Your Information</a></li>
+      <li><a href="#security">Data Security</a></li>
+      <li><a href="#rights">Your Privacy Rights</a></li>
+      <li><a href="#cookies">Cookies and Tracking</a></li>
+      <li><a href="#children">Children's Privacy</a></li>
+      <li><a href="#retention">Data Retention</a></li>
+      <li><a href="#third-party">Third-Party Links and Services</a></li>
+      <li><a href="#state-laws">State-Specific Privacy Rights</a></li>
+      <li><a href="#changes">Changes to This Policy</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1: Overview -->
+  <div class="section" id="overview">
+    <h2 class="section-title"><span class="section-num">1</span>Overview and Scope</h2>
+    <p>Offload USA, Inc. ("Offload," "we," "our," or "us") respects your privacy and is committed to protecting the personal information you share with us. This Privacy Policy explains how we collect, use, share, and protect your information when you use the Offload website at <a href="https://offloadusa.com">offloadusa.com</a>, our mobile application, and all related services (collectively, the "Services").</p>
+    <p>This Policy applies to all users of our Services, including customers who place laundry orders, visitors who browse our website, and any other individuals who interact with us. It does not apply to our Laundry Partners (independent contractors who provide laundry and delivery services), who are subject to separate agreements.</p>
+    <p>By using the Services, you acknowledge that you have read, understood, and agree to the practices described in this Privacy Policy. If you do not agree, please do not use our Services.</p>
+  </div>
+
+  <!-- Section 2: Information Collected -->
+  <div class="section" id="collected">
+    <h2 class="section-title"><span class="section-num">2</span>Information We Collect</h2>
+
+    <h3>Information You Provide Directly</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Examples</th>
+          <th>When Collected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Account Information</strong></td>
+          <td>Name, email address, phone number, password</td>
+          <td>Registration</td>
+        </tr>
+        <tr>
+          <td><strong>Profile Information</strong></td>
+          <td>Home/delivery address, laundry preferences, special instructions</td>
+          <td>Account setup, order placement</td>
+        </tr>
+        <tr>
+          <td><strong>Payment Information</strong></td>
+          <td>Payment card details (processed and stored by our payment processor — we do not store full card numbers), billing address</td>
+          <td>Payment setup or checkout</td>
+        </tr>
+        <tr>
+          <td><strong>Order Information</strong></td>
+          <td>Service type, bag count, special item details, pickup/delivery instructions, order history</td>
+          <td>Order placement</td>
+        </tr>
+        <tr>
+          <td><strong>Communications</strong></td>
+          <td>Messages you send to support, reviews, feedback, survey responses</td>
+          <td>Customer interactions</td>
+        </tr>
+        <tr>
+          <td><strong>Identity Verification</strong></td>
+          <td>Government-issued ID (where required for account security or dispute resolution)</td>
+          <td>As needed</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Information Collected Automatically</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Examples</th>
+          <th>How Collected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Device Information</strong></td>
+          <td>Device type, operating system, browser type, device identifiers, IP address</td>
+          <td>Automatically when you access the Services</td>
+        </tr>
+        <tr>
+          <td><strong>Location Data</strong></td>
+          <td>Precise GPS location (if permitted), pickup/delivery addresses, approximate location from IP</td>
+          <td>App usage, order placement</td>
+        </tr>
+        <tr>
+          <td><strong>Usage Data</strong></td>
+          <td>Pages visited, features used, time spent, links clicked, search queries within the app</td>
+          <td>Analytics and logging systems</td>
+        </tr>
+        <tr>
+          <td><strong>Transaction Data</strong></td>
+          <td>Order timestamps, service completion, payment confirmations, refund history</td>
+          <td>Order processing systems</td>
+        </tr>
+        <tr>
+          <td><strong>Cookies and Trackers</strong></td>
+          <td>Session cookies, analytics pixels, preference cookies</td>
+          <td>Browser and app interactions</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Information from Third Parties</h3>
+    <ul>
+      <li><strong>Payment processors:</strong> Confirmation of payment status and card updates.</li>
+      <li><strong>Social login providers:</strong> If you create an account via Google or Apple, we receive your name, email, and profile photo from that provider.</li>
+      <li><strong>Wireless carriers:</strong> Account information (name, device identifier, billing address) for identity verification and fraud prevention, as authorized by you.</li>
+      <li><strong>Analytics providers:</strong> Aggregated information about how users interact with our Services.</li>
+      <li><strong>Background check providers:</strong> For Laundry Partners only — not for regular customers.</li>
+    </ul>
+  </div>
+
+  <!-- Section 3: How We Use -->
+  <div class="section" id="how-used">
+    <h2 class="section-title"><span class="section-num">3</span>How We Use Your Information</h2>
+
+    <h3>To Provide the Services</h3>
+    <ul>
+      <li>Process and fulfill laundry pickup and delivery orders</li>
+      <li>Connect you with available Laundry Partners in your area</li>
+      <li>Process payments, issue receipts, and manage billing</li>
+      <li>Send order confirmations, status updates, and delivery notifications via SMS, push notification, and email</li>
+      <li>Facilitate tips and gratuity payments to Laundry Partners</li>
+      <li>Provide customer support and respond to inquiries</li>
+      <li>Resolve damage, loss, and billing disputes</li>
+    </ul>
+
+    <h3>To Improve and Personalize the Services</h3>
+    <ul>
+      <li>Analyze usage patterns to improve app design and features</li>
+      <li>Personalize your experience (e.g., saved preferences, recommended services)</li>
+      <li>Conduct research and analytics to understand user behavior and preferences</li>
+      <li>Test new features and conduct A/B testing</li>
+      <li>Train and improve our routing and matching algorithms</li>
+    </ul>
+
+    <h3>To Communicate with You</h3>
+    <ul>
+      <li>Send transactional communications related to your orders and account</li>
+      <li>Send promotional offers, loyalty program updates, and marketing messages (with your consent and subject to your preferences)</li>
+      <li>Notify you of changes to our Terms, Privacy Policy, or service offerings</li>
+      <li>Respond to your questions, comments, and requests</li>
+    </ul>
+
+    <h3>For Safety and Legal Compliance</h3>
+    <ul>
+      <li>Detect, prevent, and investigate fraud, unauthorized use, and other illegal activity</li>
+      <li>Enforce our Terms of Service and other policies</li>
+      <li>Comply with applicable legal obligations, court orders, and regulatory requirements</li>
+      <li>Protect the rights, property, and safety of Offload, our users, Laundry Partners, and the public</li>
+      <li>Verify your identity and prevent account takeovers</li>
+    </ul>
+
+    <h3>Business Operations</h3>
+    <ul>
+      <li>Operate and maintain the Services</li>
+      <li>Conduct internal reporting and business analytics</li>
+      <li>Support potential mergers, acquisitions, or other corporate transactions</li>
+    </ul>
+  </div>
+
+  <!-- Section 4: Sharing -->
+  <div class="section" id="sharing">
+    <h2 class="section-title"><span class="section-num">4</span>How We Share Your Information</h2>
+
+    <p style="font-weight: 600; color: #1A5250; background: #EDF7F6; border-radius: 6px; padding: 10px 14px; border: 1px solid #7DC4C1;">We do not sell your personal information to third parties. We share information only as described below.</p>
+
+    <h3>Laundry Partners</h3>
+    <p>To fulfill your orders, we share relevant order information with your assigned Laundry Partner, including:</p>
+    <ul>
+      <li>First name and delivery address or pickup location</li>
+      <li>Order details (bag count, service type, special instructions)</li>
+      <li>Contact phone number (shared only as needed for pickup/delivery coordination)</li>
+    </ul>
+    <p>Laundry Partners are not permitted to use this information for any purpose other than fulfilling your order. They are prohibited from contacting you after order completion without your consent.</p>
+
+    <h3>Service Providers</h3>
+    <p>We share information with trusted third-party service providers who assist us in operating the Services, subject to confidentiality obligations. These include:</p>
+    <ul>
+      <li><strong>Payment processors</strong> (to process transactions securely)</li>
+      <li><strong>Cloud infrastructure providers</strong> (to host and store our data)</li>
+      <li><strong>Analytics providers</strong> (to understand how users interact with the Services)</li>
+      <li><strong>Customer support platforms</strong> (to manage support tickets and communications)</li>
+      <li><strong>SMS and push notification providers</strong> (to send you order updates)</li>
+      <li><strong>Mapping and routing services</strong> (to coordinate pickups and deliveries)</li>
+      <li><strong>Email service providers</strong> (to send transactional and marketing emails)</li>
+    </ul>
+
+    <h3>Legal and Safety Disclosures</h3>
+    <p>We may disclose your information if we believe in good faith that disclosure is necessary to:</p>
+    <ul>
+      <li>Comply with applicable law, regulation, legal process, or governmental request</li>
+      <li>Enforce our Terms of Service or other agreements</li>
+      <li>Detect, prevent, or address fraud, security issues, or technical problems</li>
+      <li>Protect the rights, property, or safety of Offload, our users, Laundry Partners, or the public</li>
+    </ul>
+
+    <h3>Business Transfers</h3>
+    <p>If Offload is involved in a merger, acquisition, financing, reorganization, bankruptcy, or sale of all or a portion of its assets, your information may be transferred as part of that transaction. We will notify you of any such change via email or a prominent notice in the app, and you will have the opportunity to close your account if you object to the transfer.</p>
+
+    <h3>Aggregated and De-identified Data</h3>
+    <p>We may share aggregated, de-identified, or anonymized information that cannot reasonably be used to identify you with partners, researchers, or the public for business, research, or marketing purposes.</p>
+
+    <h3>With Your Consent</h3>
+    <p>We may share your information for any other purpose with your explicit consent.</p>
+  </div>
+
+  <!-- Section 5: Security -->
+  <div class="section" id="security">
+    <h2 class="section-title"><span class="section-num">5</span>Data Security</h2>
+    <p>Offload implements technical, administrative, and physical safeguards designed to protect your personal information from unauthorized access, disclosure, alteration, and destruction. Our security measures include:</p>
+    <ul>
+      <li><strong>Encryption in transit:</strong> All data transmitted between your device and our servers uses TLS/SSL encryption.</li>
+      <li><strong>Encryption at rest:</strong> Sensitive personal information is encrypted in our databases.</li>
+      <li><strong>Payment security:</strong> We use PCI-DSS-compliant payment processors and do not store full payment card numbers on our servers.</li>
+      <li><strong>Access controls:</strong> Employee access to personal information is limited to those with a business need, and all access is logged and audited.</li>
+      <li><strong>Security monitoring:</strong> We continuously monitor our systems for suspicious activity and potential vulnerabilities.</li>
+      <li><strong>Regular assessments:</strong> We conduct periodic security assessments and penetration testing.</li>
+    </ul>
+    <p>No security system is impenetrable. While we use industry-standard security measures, we cannot guarantee the absolute security of your information. In the event of a data breach that is likely to result in high risk to your rights and freedoms, we will notify you and applicable regulatory authorities as required by law.</p>
+  </div>
+
+  <!-- Section 6: Rights -->
+  <div class="section" id="rights">
+    <h2 class="section-title"><span class="section-num">6</span>Your Privacy Rights</h2>
+
+    <div class="rights-box">
+      <strong>Your Rights at a Glance</strong>
+      <ul>
+        <li>Access and download your personal data</li>
+        <li>Correct inaccurate information</li>
+        <li>Request deletion of your data</li>
+        <li>Opt out of marketing communications</li>
+        <li>Opt out of targeted advertising</li>
+        <li>Data portability (receive your data in a structured format)</li>
+        <li>Non-discrimination for exercising your rights</li>
+      </ul>
+    </div>
+
+    <h3>Right to Access</h3>
+    <p>You may request a copy of the personal information we hold about you. We will provide this information within 30 days of a verified request.</p>
+
+    <h3>Right to Correction</h3>
+    <p>You may request that we correct inaccurate or incomplete personal information. You can update most account information directly in the app settings.</p>
+
+    <h3>Right to Deletion</h3>
+    <p>You may request deletion of your personal information. We will delete your data as requested, subject to certain exceptions where retention is required by law, for legitimate business purposes (e.g., resolving disputes, enforcing agreements), or for security purposes. Note that deleting your account will result in loss of all order history, preferences, and loyalty rewards.</p>
+
+    <h3>Right to Opt Out of Marketing</h3>
+    <p>You may opt out of promotional emails at any time by clicking the "unsubscribe" link in any marketing email, or by updating your notification preferences in the app. You may opt out of promotional SMS by replying STOP to any marketing text message. You will continue to receive transactional messages related to your orders and account.</p>
+
+    <h3>Right to Opt Out of Targeted Advertising</h3>
+    <p>You may opt out of targeted advertising based on your use of our Services. See Section 7 (Cookies and Tracking) for details on managing your advertising preferences.</p>
+
+    <h3>Right to Data Portability</h3>
+    <p>Upon request, we will provide your personal data in a structured, commonly used, and machine-readable format (e.g., CSV).</p>
+
+    <h3>Non-Discrimination</h3>
+    <p>We will not discriminate against you for exercising any of your privacy rights. You will not receive lower quality service, higher prices, or denial of services for exercising your rights.</p>
+
+    <h3>How to Exercise Your Rights</h3>
+    <p>Submit privacy rights requests to <a href="mailto:privacy@offloadusa.com">privacy@offloadusa.com</a>. We may need to verify your identity before processing your request. We will respond within 30 days (or 45 days for complex requests, with notice of the extension).</p>
+  </div>
+
+  <!-- Section 7: Cookies -->
+  <div class="section" id="cookies">
+    <h2 class="section-title"><span class="section-num">7</span>Cookies and Tracking</h2>
+
+    <h3>Types of Cookies We Use</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Purpose</th>
+          <th>Can Opt Out?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Essential</strong></td>
+          <td>Required for the Services to function (login, cart, security)</td>
+          <td>No — required</td>
+        </tr>
+        <tr>
+          <td><strong>Functional</strong></td>
+          <td>Remember your preferences, language, and settings</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td><strong>Analytics</strong></td>
+          <td>Understand how you use the Services, measure performance</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td><strong>Advertising</strong></td>
+          <td>Deliver relevant ads on third-party platforms; measure ad effectiveness</td>
+          <td>Yes</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Managing Cookies</h3>
+    <p>You can control cookies through your browser settings. Most browsers allow you to block or delete cookies. Note that disabling certain cookies may affect the functionality of the Services. You can also use browser tools such as the Google Analytics Opt-Out Browser Add-on or platform-specific privacy settings to limit analytics tracking.</p>
+
+    <h3>Do Not Track</h3>
+    <p>Some browsers offer a "Do Not Track" signal. Our Services do not currently respond to Do Not Track signals. However, we honor opt-out requests submitted through our privacy rights process above.</p>
+
+    <h3>Mobile App Tracking</h3>
+    <p>Our mobile app may use device identifiers (such as Apple's IDFA or Android's Advertising ID) for analytics and advertising purposes. You can limit ad tracking through your device's privacy settings (iOS: Settings → Privacy → Tracking; Android: Settings → Privacy → Ads).</p>
+  </div>
+
+  <!-- Section 8: Children -->
+  <div class="section" id="children">
+    <h2 class="section-title"><span class="section-num">8</span>Children's Privacy</h2>
+    <p>Our Services are not directed to children under the age of 13, and we do not knowingly collect personal information from children under 13. We require all users to be at least 18 years old to create an account and place orders.</p>
+    <p>If you are a parent or guardian and believe that your child under 13 has provided us with personal information, please contact us immediately at <a href="mailto:privacy@offloadusa.com">privacy@offloadusa.com</a>. We will promptly investigate and delete any such information from our systems.</p>
+    <p>We comply with the Children's Online Privacy Protection Act (COPPA) and do not knowingly use, share, or retain personal information from children under 13.</p>
+  </div>
+
+  <!-- Section 9: Retention -->
+  <div class="section" id="retention">
+    <h2 class="section-title"><span class="section-num">9</span>Data Retention</h2>
+    <p>We retain your personal information for as long as necessary to provide the Services, fulfill the purposes described in this Policy, and comply with our legal obligations. Specific retention periods:</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Data Type</th>
+          <th>Retention Period</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Active account information</td>
+          <td>Duration of account + 3 years after closure</td>
+        </tr>
+        <tr>
+          <td>Order history and transaction records</td>
+          <td>7 years (for tax and legal compliance)</td>
+        </tr>
+        <tr>
+          <td>Customer support communications</td>
+          <td>3 years from last interaction</td>
+        </tr>
+        <tr>
+          <td>Payment records</td>
+          <td>7 years (for tax and legal compliance)</td>
+        </tr>
+        <tr>
+          <td>Dispute and claim records</td>
+          <td>5 years from resolution</td>
+        </tr>
+        <tr>
+          <td>Analytics and usage data (anonymized)</td>
+          <td>Indefinitely (in anonymized form)</td>
+        </tr>
+        <tr>
+          <td>Marketing consent records</td>
+          <td>Duration of account + 3 years</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>After the applicable retention period, we will delete or anonymize your personal information. If deletion is not possible (e.g., due to backup storage), we will isolate it from further processing until deletion is feasible.</p>
+  </div>
+
+  <!-- Section 10: Third-Party Links -->
+  <div class="section" id="third-party">
+    <h2 class="section-title"><span class="section-num">10</span>Third-Party Links and Services</h2>
+    <p>Our Services may contain links to third-party websites, services, or applications that are not operated or controlled by Offload. This Privacy Policy does not apply to third-party services. We encourage you to review the privacy policies of any third-party services you access through our platform.</p>
+    <p>Third-party services that may be integrated with or linked from our Services include:</p>
+    <ul>
+      <li><strong>Payment processors</strong> (e.g., Stripe) — governed by their own privacy policies</li>
+      <li><strong>Mapping services</strong> (e.g., Google Maps) — governed by their own privacy policies</li>
+      <li><strong>Social login providers</strong> (e.g., Google, Apple) — governed by their own privacy policies</li>
+      <li><strong>Review and rating platforms</strong> — governed by their own privacy policies</li>
+    </ul>
+    <p>We are not responsible for the privacy practices of any third-party services. Your interactions with these services are solely governed by their terms and privacy policies.</p>
+  </div>
+
+  <!-- Section 11: State-Specific -->
+  <div class="section" id="state-laws">
+    <h2 class="section-title"><span class="section-num">11</span>State-Specific Privacy Rights</h2>
+
+    <h3>California Residents (CCPA / CPRA)</h3>
+    <p>California residents have additional rights under the California Consumer Privacy Act (CCPA) as amended by the California Privacy Rights Act (CPRA):</p>
+    <ul>
+      <li><span class="pill">Know</span> The right to know what personal information is collected, used, shared, or sold about you.</li>
+      <li><span class="pill">Delete</span> The right to request deletion of personal information collected from you (subject to exceptions).</li>
+      <li><span class="pill">Correct</span> The right to correct inaccurate personal information.</li>
+      <li><span class="pill">Opt-Out</span> The right to opt out of the sale or sharing of personal information. <strong>We do not sell or share your personal information for cross-context behavioral advertising.</strong></li>
+      <li><span class="pill">Limit</span> The right to limit the use and disclosure of sensitive personal information.</li>
+      <li><span class="pill">Non-Discrimination</span> The right to non-discriminatory treatment for exercising your rights.</li>
+    </ul>
+    <p>To exercise California rights, email <a href="mailto:privacy@offloadusa.com">privacy@offloadusa.com</a> with subject "CCPA Privacy Request." You may also designate an authorized agent to submit requests on your behalf. We will verify the identity of requestors before fulfilling requests.</p>
+    <p><strong>Categories of information collected in the past 12 months:</strong> Identifiers, commercial information (order records), internet/network activity, geolocation data, and inferences drawn from the above to create user profiles. See Section 2 for details.</p>
+
+    <h3>New York Residents</h3>
+    <p>Offload complies with the New York SHIELD Act and applicable New York data security and breach notification requirements. In the event of a data breach affecting New York residents, we will notify you and the New York Attorney General as required by law.</p>
+
+    <h3>Other U.S. State Privacy Laws</h3>
+    <p>Residents of Virginia (CDPA), Colorado (CPA), Connecticut (CTDPA), Texas (TDPSA), and other states with comprehensive privacy laws may also have rights to access, correct, delete, and opt out of certain processing of their personal information. To exercise these rights, contact us at <a href="mailto:privacy@offloadusa.com">privacy@offloadusa.com</a>. We will process requests in accordance with applicable law for your state of residence.</p>
+  </div>
+
+  <!-- Section 12: Changes -->
+  <div class="section" id="changes">
+    <h2 class="section-title"><span class="section-num">12</span>Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal requirements, or for other operational reasons. When we make material changes, we will notify you by:</p>
+    <ul>
+      <li>Sending an email to your registered email address; and/or</li>
+      <li>Posting a prominent notice within the Offload app or on our website.</li>
+    </ul>
+    <p>We will give you at least 30 days' notice before material changes take effect. The effective date at the top of this Policy will always indicate when the Policy was last updated. Your continued use of the Services after the effective date of any updated Policy constitutes your acceptance of the changes.</p>
+    <p>If you disagree with any changes, you may close your account by contacting <a href="mailto:support@offloadusa.com">support@offloadusa.com</a>.</p>
+  </div>
+
+  <!-- Section 13: Contact -->
+  <div class="section" id="contact">
+    <h2 class="section-title"><span class="section-num">13</span>Contact Us</h2>
+    <p>For privacy questions, requests, or concerns, please contact us:</p>
+    <ul>
+      <li><strong>Privacy Inquiries:</strong> <a href="mailto:privacy@offloadusa.com">privacy@offloadusa.com</a></li>
+      <li><strong>General Support:</strong> <a href="mailto:support@offloadusa.com">support@offloadusa.com</a></li>
+      <li><strong>General Inquiries:</strong> <a href="mailto:info@offloadusa.com">info@offloadusa.com</a></li>
+      <li><strong>Phone:</strong> (800) 555-OFLD</li>
+      <li><strong>Website:</strong> <a href="https://offloadusa.com">offloadusa.com</a></li>
+    </ul>
+    <p>We aim to respond to all privacy requests within 30 days. For complex requests, we may extend this period by up to 45 additional days and will notify you of the extension.</p>
+    <p>If you are not satisfied with our response, you may have the right to lodge a complaint with your applicable state data protection authority.</p>
+  </div>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <p><strong>Offload USA, Inc.</strong> &nbsp;·&nbsp; <a href="https://offloadusa.com">offloadusa.com</a></p>
+    <p>© 2026 Offload USA, Inc. All rights reserved.</p>
+    <p>This Privacy Policy was last updated on <strong>July 1, 2025</strong>. Prior versions are available upon request.</p>
+    <p style="margin-top: 8px;">See also: <a href="terms.html">Terms of Service</a></p>
+  </div>
+
+</div>
+</body>
+</html>

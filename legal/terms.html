@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service — Offload USA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F6F2;
+      --surface: #FFFFFF;
+      --border: #D4D1CA;
+      --text: #28251D;
+      --muted: #6B6863;
+      --faint: #BAB9B4;
+      --accent: #01696F;
+      --accent-hover: #0C4E54;
+      --warning-bg: #FEF9F0;
+      --warning-border: #E8C27A;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .page-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* Header */
+    .doc-header {
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 24px;
+      margin-bottom: 36px;
+    }
+
+    .brand {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .doc-meta {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Differentiator callout */
+    .consumer-callout {
+      background: #EDF7F6;
+      border: 1.5px solid #7DC4C1;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 36px;
+      font-size: 14px;
+      color: #1A5250;
+      line-height: 1.6;
+    }
+
+    .consumer-callout strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+
+    .toc h2 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .toc ol {
+      padding-left: 20px;
+    }
+
+    .toc li {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .toc a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .toc a:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 44px;
+    }
+
+    h2.section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 18px 0 8px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    ul, ol {
+      padding-left: 22px;
+      margin-bottom: 12px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Capsule labels */
+    .section-num {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-right: 8px;
+      vertical-align: middle;
+      position: relative;
+      top: -2px;
+    }
+
+    /* Arbitration / important notice box */
+    .notice-box {
+      background: var(--warning-bg);
+      border: 1.5px solid var(--warning-border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .notice-box strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7A5800;
+      margin-bottom: 6px;
+    }
+
+    /* Caps / disclaimer blocks */
+    .caps-block {
+      background: #F2F1EE;
+      border-left: 3px solid var(--accent);
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* Better than competitors highlight */
+    .better-than {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: #EDF7F6;
+      border: 1px solid #7DC4C1;
+      border-radius: 4px;
+      padding: 2px 8px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* Footer */
+    .doc-footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .doc-footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .doc-footer p {
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 22px; }
+      h2.section-title { font-size: 18px; }
+      .page-wrapper { padding: 28px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="brand">Offload USA</div>
+    <h1>Terms of Service</h1>
+    <div class="doc-meta">
+      Effective Date: July 1, 2025 &nbsp;·&nbsp; Version 1.0<br>
+      Governing Law: State of New York &nbsp;·&nbsp; Contact: <a href="mailto:info@offloadusa.com">info@offloadusa.com</a>
+    </div>
+  </div>
+
+  <div class="consumer-callout">
+    <strong>Better for Customers</strong>
+    Offload offers one of the highest garment damage protections in the industry — up to $250 per item and $750 per order — compared to $100–$200/item at most competitors. We respond to claims within 24 hours and resolve within 5 business days. These Terms are designed to protect both you and us fairly.
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#acceptance">Acceptance of Terms</a></li>
+      <li><a href="#service">Service Description</a></li>
+      <li><a href="#accounts">Account Creation and Responsibility</a></li>
+      <li><a href="#orders">Ordering and Payment</a></li>
+      <li><a href="#garments">Garment Damage and Lost Items</a></li>
+      <li><a href="#contractors">Independent Contractor Disclaimer</a></li>
+      <li><a href="#warranties">Disclaimer of Warranties</a></li>
+      <li><a href="#liability">Limitation of Liability</a></li>
+      <li><a href="#indemnification">Indemnification</a></li>
+      <li><a href="#arbitration">Dispute Resolution and Arbitration</a></li>
+      <li><a href="#privacy">Data Use and Privacy</a></li>
+      <li><a href="#availability">Service Availability and Force Majeure</a></li>
+      <li><a href="#termination">Account Termination</a></li>
+      <li><a href="#modifications">Modifications to These Terms</a></li>
+      <li><a href="#governing">Governing Law and Venue</a></li>
+      <li><a href="#general">General Provisions</a></li>
+      <li><a href="#contact">Contact Information</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1: Acceptance -->
+  <div class="section" id="acceptance">
+    <h2 class="section-title"><span class="section-num">1</span>Acceptance of Terms</h2>
+    <p>These Terms of Service ("Terms") constitute a legally binding agreement between you and Offload USA, Inc. ("Offload," "we," "our," or "us") governing your access to and use of the Offload website at <a href="https://offloadusa.com">offloadusa.com</a>, our mobile application, and all related services (collectively, the "Services").</p>
+    <p>By creating an account, accessing, or using our Services, you confirm that you are at least 18 years old, have read and understood these Terms, and agree to be legally bound by them. If you do not agree to these Terms, you may not access or use the Services.</p>
+    <p>These Terms incorporate by reference our <a href="privacy.html">Privacy Policy</a> and any additional policies, guidelines, or rules we make available through the Services.</p>
+  </div>
+
+  <!-- Section 2: Service Description -->
+  <div class="section" id="service">
+    <h2 class="section-title"><span class="section-num">2</span>Service Description</h2>
+    <p>Offload operates an on-demand laundry pickup, cleaning, and delivery marketplace that connects customers ("you") with independent laundry service providers and laundromat partners ("Laundry Partners") through our technology platform.</p>
+
+    <h3>What Offload Does</h3>
+    <p>Offload's platform allows you to:</p>
+    <ul>
+      <li>Schedule laundry pickup from your home or designated location</li>
+      <li>Select service types (Wash &amp; Fold, dry cleaning, delicate care, special items)</li>
+      <li>Track your order in real time through the app</li>
+      <li>Receive your cleaned laundry via delivery to your specified address</li>
+      <li>Manage payments, tips, and account preferences</li>
+    </ul>
+
+    <h3>What Offload Is Not</h3>
+    <p>Offload is a technology platform — not a laundry service, dry cleaning business, or delivery company. We do not perform laundry services ourselves. We connect you with independent Laundry Partners who provide those services.</p>
+
+    <h3>Service Tiers</h3>
+    <p>Offload offers multiple service levels, including standard Wash &amp; Fold (bag-based pricing), dry cleaning, delicate item handling, and special item services (e.g., comforters, rugs). Specific pricing and service options are displayed in the app at the time of ordering. Service availability may vary by location.</p>
+  </div>
+
+  <!-- Section 3: Accounts -->
+  <div class="section" id="accounts">
+    <h2 class="section-title"><span class="section-num">3</span>Account Creation and Responsibility</h2>
+
+    <h3>Registration</h3>
+    <p>To use the Services, you must create an account by providing accurate, current, and complete information including your name, email address, phone number, and billing address. You agree to update your account information promptly if it changes.</p>
+
+    <h3>Account Security</h3>
+    <p>You are solely responsible for maintaining the confidentiality of your account credentials. You must not share your account with any third party. You are responsible for all activity that occurs under your account, with or without your authorization.</p>
+    <p>If you believe your account has been compromised, you must notify us immediately at <a href="mailto:support@offloadusa.com">support@offloadusa.com</a>. Offload is not liable for any loss resulting from unauthorized use of your account.</p>
+
+    <h3>Eligibility</h3>
+    <p>The Services are available only to individuals who are 18 years of age or older and who can form legally binding contracts under applicable law. By creating an account, you represent and warrant that you meet these requirements.</p>
+
+    <h3>One Account Per Person</h3>
+    <p>You may maintain only one personal customer account. Creating multiple accounts to abuse promotions, referral programs, or service policies is prohibited and may result in account termination.</p>
+  </div>
+
+  <!-- Section 4: Orders and Payment -->
+  <div class="section" id="orders">
+    <h2 class="section-title"><span class="section-num">4</span>Ordering and Payment</h2>
+
+    <h3>Placing Orders</h3>
+    <p>Orders are placed through the Offload app or website. When you submit an order, you are making an offer to purchase services from a Laundry Partner at the prices and conditions displayed. Offload confirms your order upon acceptance by a Laundry Partner.</p>
+
+    <h3>Bag-Based Pricing</h3>
+    <p>Standard Wash &amp; Fold services are priced by the bag. Your quoted price at checkout is based on a standard bag size. If your laundry exceeds the standard bag weight or volume, overage charges will apply as disclosed in the app. You will be notified of any overages before your card is charged for the excess amount.</p>
+
+    <h3>Payment Authorization</h3>
+    <p>By placing an order, you authorize Offload to charge your payment method on file for all applicable fees, including:</p>
+    <ul>
+      <li>Service fees (Wash &amp; Fold, dry cleaning, special items)</li>
+      <li>Pickup and delivery fees</li>
+      <li>Overage charges for laundry exceeding standard bag parameters</li>
+      <li>Applicable taxes and surcharges</li>
+      <li>Any gratuity you elect to provide</li>
+    </ul>
+
+    <h3>Authorization Holds</h3>
+    <p>When you place an order, Offload may place a temporary authorization hold on your payment method in an amount greater than your estimated order total. This hold accounts for potential adjustments including actual laundry weight, special handling, or overstuffed bags. The hold amount is disclosed at checkout. You will be charged the final, verified order amount upon service completion. Temporary holds typically release within 3–5 business days if not captured, though timing varies by financial institution.</p>
+
+    <h3>Final Charges</h3>
+    <p>Charges for completed and delivered orders are final and non-refundable, except as expressly provided in Section 5 (Garment Damage) or as required by applicable law. By placing an order, you authorize Offload to charge your payment method the final order amount upon service completion.</p>
+
+    <h3>Overage Charges</h3>
+    <p>If your laundry order exceeds the standard bag weight or volume, a per-pound or per-item overage fee will apply as displayed in the app at the time of pickup. Offload will notify you of any significant overages. You have the option to remove excess items before the order proceeds.</p>
+
+    <h3>Tips and Gratuity</h3>
+    <p>Tips are entirely optional. If you choose to tip, 100% of your gratuity is passed directly to your Laundry Partner, less applicable payment processing fees. Tipping does not affect the quality or priority of your service. You may adjust your tip within 24 hours of delivery through the app.</p>
+
+    <h3>Cancellations</h3>
+    <p>You may cancel an order without charge before a Laundry Partner has been dispatched. If you cancel after a Laundry Partner is en route to your pickup location, a cancellation fee of up to $10.00 may be applied. Orders that have been picked up and are in process cannot be cancelled.</p>
+
+    <h3>Refunds</h3>
+    <p>Completed and delivered orders are generally non-refundable. Offload may, in its sole discretion, issue credits or partial refunds for documented service failures. For garment damage or loss claims, see Section 5 below. Offload may also correct pricing errors and cancel or adjust orders where inaccuracies exist.</p>
+
+    <h3>Subscription Plans</h3>
+    <p>If you subscribe to an Offload membership plan, your subscription automatically renews at the end of each billing period at the then-current rate unless you cancel before the renewal date via your account settings. Offload will provide advance notice of any price changes before they take effect. If you cancel within 30 days of your initial paid subscription and have not used the Services during that period, you may request a full refund of the subscription fee.</p>
+
+    <h3>Payment Method Updates</h3>
+    <p>Your card provider may supply Offload with updated payment card details to prevent service interruptions. You are responsible for keeping your payment information current. Offload may use updated card information provided by your card issuer.</p>
+
+    <h3>Taxes</h3>
+    <p>You are responsible for all applicable sales, use, or other taxes arising from your transactions through the Services, other than taxes on Offload's net income. Taxes are calculated based on your service location and applicable rates.</p>
+  </div>
+
+  <!-- Section 5: Garment Damage -->
+  <div class="section" id="garments">
+    <h2 class="section-title">
+      <span class="section-num">5</span>Garment Damage and Lost Items
+      <span class="better-than">↑ Better Than Competitors</span>
+    </h2>
+
+    <div class="consumer-callout">
+      <strong>Offload's Consumer Commitment</strong>
+      We offer a $250/item and $750/order damage cap — significantly higher than most laundry platforms ($100–$200/item). We acknowledge claims within 24 hours and resolve them within 5 business days. Damaged or lost garment claims must be submitted within 14 days of delivery.
+    </div>
+
+    <h3>General Care Standard</h3>
+    <p>Offload uses commercially reasonable efforts to prevent damage to or loss of your garments. However, professional laundering involves inherent risks, including those arising from the condition of garments at pickup, care label requirements, and the nature of laundry processing.</p>
+
+    <h3>What Offload Is Not Responsible For</h3>
+    <p>Offload and its Laundry Partners are not responsible for:</p>
+    <ul>
+      <li><strong>Normal wear and tear</strong>, including color fading, shrinkage, pilling, zipper or fastener breakage, loss of buttons, pre-existing stains or holes, or fabric fatiguing;</li>
+      <li><strong>Care label violations</strong>: damage to garments submitted for a service that contradicts the item's care label (e.g., a "dry clean only" item submitted for Wash &amp; Fold);</li>
+      <li><strong>Incomplete stain removal</strong>, including stains that have been set through prior washing or heat exposure;</li>
+      <li><strong>Items left in pockets or garment bags</strong> not constituting clothing, including keys, jewelry, cash, electronics, earbuds, or other personal effects;</li>
+      <li><strong>Loss or damage after delivery</strong>: once laundry is delivered to your designated drop-off location and confirmed via the app, Offload is not responsible for theft, loss, or damage occurring thereafter;</li>
+      <li><strong>Garments not individually documented</strong> at pickup by your Laundry Partner;</li>
+      <li><strong>Manufacturer defects</strong> or pre-existing damage not caused by Offload's services.</li>
+    </ul>
+
+    <h3>Claims Process</h3>
+    <p>If you believe a garment was lost or damaged due to Offload's error, you must:</p>
+    <ol>
+      <li>Notify Offload in writing by emailing <a href="mailto:support@offloadusa.com">support@offloadusa.com</a> within <strong>fourteen (14) days</strong> of the delivery date; and</li>
+      <li>Provide reasonable documentation, including clear photographs of the damage and, where available, proof of purchase or evidence of the item's fair market value.</li>
+    </ol>
+    <p>Failure to notify Offload within the 14-day period constitutes a waiver of your damage or loss claim. Offload will acknowledge your claim within 24 hours of receipt and resolve it within 5 business days.</p>
+
+    <h3>Reimbursement Limits</h3>
+    <p>Subject to review and verification, Offload may reimburse you up to the lesser of:</p>
+    <ul>
+      <li><strong>$250.00 per item</strong>, or</li>
+      <li><strong>$750.00 per order</strong>.</li>
+    </ul>
+    <p>Reimbursement is at Offload's reasonable discretion based on documented evidence. Items covered by manufacturer warranties should first be presented to the manufacturer. Reimbursement will be reduced by any amount recovered through such warranties.</p>
+    <p>Offload's garment reimbursement limits are separate from, and do not reduce, the aggregate liability cap in Section 8.</p>
+
+    <h3>Abandoned Items</h3>
+    <p>Garments or items not retrieved within 90 days of a delivery notification or failed pickup attempt may be donated to a charitable organization or disposed of at Offload's discretion, without further liability to you.</p>
+  </div>
+
+  <!-- Section 6: Independent Contractors -->
+  <div class="section" id="contractors">
+    <h2 class="section-title"><span class="section-num">6</span>Independent Contractor Disclaimer</h2>
+
+    <h3>Platform Role</h3>
+    <p>Offload is a technology platform that connects customers with independent laundry service providers and drivers. Offload is not a laundry service, dry cleaning business, or delivery company and does not itself perform laundry or delivery services.</p>
+
+    <h3>Independent Contractor Status</h3>
+    <p>Laundry Partners — including laundromat operators, wash-and-fold workers, and delivery drivers — are independent contractors. They are not employees, actual agents, apparent agents, ostensible agents, or joint venturers of Offload in any way. Offload does not supervise, direct, or control the manner or means by which Laundry Partners perform their services.</p>
+
+    <h3>No Employer-Employee Relationship</h3>
+    <p>Nothing in these Terms or your use of the Services creates an employer-employee, partnership, joint venture, or agency relationship between you, Offload, and any Laundry Partner. Laundry Partners have no authority to bind Offload, make representations on Offload's behalf, or incur obligations in Offload's name.</p>
+
+    <h3>No Guarantee of Laundry Partner Quality</h3>
+    <div class="caps-block">
+      OFFLOAD DOES NOT CONTROL, MANAGE, OR DIRECT ANY LAUNDRY PARTNER. OFFLOAD DOES NOT GUARANTEE THE QUALITY, SUITABILITY, SAFETY, RELIABILITY, OR ABILITY OF ANY LAUNDRY PARTNER. YOU AGREE THAT THE ENTIRE RISK ARISING OUT OF YOUR USE OF ANY LAUNDRY PARTNER'S SERVICES REMAINS SOLELY WITH YOU, TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW.
+    </div>
+
+    <h3>Third-Party Acts</h3>
+    <div class="caps-block">
+      OFFLOAD HAS NO RESPONSIBILITY OR LIABILITY FOR THE ACTS OR OMISSIONS OF ANY LAUNDRY PARTNER. OFFLOAD IS NOT RESPONSIBLE FOR THE SAFETY, QUALITY, OR LEGALITY OF ANY LAUNDRY SERVICES PERFORMED BY LAUNDRY PARTNERS, EXCEPT AS EXPRESSLY PROVIDED IN SECTION 5 OF THESE TERMS.
+    </div>
+  </div>
+
+  <!-- Section 7: Disclaimer of Warranties -->
+  <div class="section" id="warranties">
+    <h2 class="section-title"><span class="section-num">7</span>Disclaimer of Warranties</h2>
+    <div class="caps-block">
+      THE SERVICES ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT WARRANTIES OF ANY KIND. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, OFFLOAD AND ITS AFFILIATES, SERVICE PROVIDERS, LICENSORS, AND SUPPLIERS EXPRESSLY DISCLAIM ALL WARRANTIES, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING WITHOUT LIMITATION: (A) IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT; (B) ANY WARRANTY THAT THE SERVICES WILL BE UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE; (C) ANY WARRANTY OR REPRESENTATION REGARDING THE QUALITY, SUITABILITY, SAFETY, RELIABILITY, OR ABILITY OF ANY LAUNDRY PARTNER; (D) ANY WARRANTY REGARDING THE COMPLETE REMOVAL OF STAINS OR THE PREVENTION OF NORMAL WEAR AND TEAR; OR (E) ANY WARRANTY THAT ANY GARMENT WILL BE RETURNED IN ITS ORIGINAL CONDITION.
+    </div>
+    <p>Nothing in these Terms limits or excludes any warranties, conditions, or other terms that cannot lawfully be excluded under applicable consumer protection legislation.</p>
+  </div>
+
+  <!-- Section 8: Limitation of Liability -->
+  <div class="section" id="liability">
+    <h2 class="section-title"><span class="section-num">8</span>Limitation of Liability</h2>
+    <div class="caps-block">
+      TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, NEITHER OFFLOAD NOR ITS OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, OR SERVICE PROVIDERS SHALL BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES (INCLUDING LOST PROFITS, LOST DATA, LOSS OF GOODWILL, SERVICE INTERRUPTION, COMPUTER FAILURE, OR COST OF SUBSTITUTE SERVICES) ARISING OUT OF OR IN CONNECTION WITH THESE TERMS OR YOUR USE OF THE SERVICES, WHETHER BASED ON WARRANTY, CONTRACT, TORT (INCLUDING NEGLIGENCE), PRODUCT LIABILITY, OR ANY OTHER LEGAL THEORY, AND WHETHER OR NOT OFFLOAD HAS BEEN INFORMED OF THE POSSIBILITY OF SUCH DAMAGE.
+    </div>
+    <div class="caps-block">
+      OFFLOAD'S TOTAL AGGREGATE LIABILITY FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THESE TERMS OR YOUR USE OF THE SERVICES SHALL NOT EXCEED THE GREATER OF: (A) FIVE HUNDRED DOLLARS ($500.00), OR (B) THE TOTAL AMOUNTS PAID BY YOU TO OFFLOAD DURING THE SIX (6) MONTH PERIOD IMMEDIATELY PRECEDING THE EVENT GIVING RISE TO SUCH LIABILITY.
+    </div>
+    <p>The limitations and disclaimers in this Section do not purport to limit liability or alter your rights as a consumer to the extent they cannot be excluded under applicable law. Because some states or jurisdictions do not allow the exclusion or limitation of consequential or incidental damages, Offload's liability in such states or jurisdictions shall be limited to the maximum extent permitted by law.</p>
+  </div>
+
+  <!-- Section 9: Indemnification -->
+  <div class="section" id="indemnification">
+    <h2 class="section-title"><span class="section-num">9</span>Indemnification</h2>
+    <p>You agree to defend, indemnify, and hold harmless Offload USA, Inc. and its officers, directors, employees, agents, licensors, affiliates, and successors (collectively, "Offload Parties") from and against any and all claims, demands, actions, losses, liabilities, damages (actual and consequential), costs, and expenses (including reasonable attorneys' fees and expert fees) arising out of or in connection with:</p>
+    <ol type="a">
+      <li>Your access to or use of the Services, or any service, good, or content obtained through the Services;</li>
+      <li>Your breach or violation of any provision of these Terms;</li>
+      <li>Your violation of any applicable federal, state, or local law, rule, or regulation;</li>
+      <li>Any negligent or intentional act or omission by you;</li>
+      <li>Any dispute or issue between you and any Laundry Partner, including any claim arising from garment handling by such Laundry Partner;</li>
+      <li>Access to or use of the Services by any third party using your account credentials, with or without your authorization; or</li>
+      <li>Any breach of your consent to receive electronic communications.</li>
+    </ol>
+    <p>Offload will provide you with written notice of any such claim. Your indemnification obligation shall not be reduced by any failure of Offload to provide timely notice, except to the extent you are materially prejudiced by such failure.</p>
+  </div>
+
+  <!-- Section 10: Dispute Resolution -->
+  <div class="section" id="arbitration">
+    <h2 class="section-title"><span class="section-num">10</span>Dispute Resolution and Arbitration Agreement</h2>
+
+    <div class="notice-box">
+      <strong>Important — Please Read</strong>
+      This section contains a binding arbitration agreement and class action waiver that affects your legal rights. You may opt out within 30 days of first accepting these Terms by emailing <a href="mailto:legal@offloadusa.com">legal@offloadusa.com</a>.
+    </div>
+
+    <h3>10.1 Informal Resolution (Mandatory Precondition)</h3>
+    <p>Before initiating any formal dispute proceeding, you and Offload agree to attempt in good faith to resolve any dispute informally. You must provide Offload written notice of the dispute at <a href="mailto:legal@offloadusa.com">legal@offloadusa.com</a>, including: (i) your full name and account email; (ii) a detailed description of the dispute and the relevant transaction; and (iii) the specific relief sought, including any dollar amount. Offload will respond within 30 days. If the dispute is not resolved within 60 days of your notice, either party may commence arbitration. Statutes of limitations and filing deadlines are tolled during this informal resolution period.</p>
+
+    <h3>10.2 Binding Arbitration</h3>
+    <p>Except as provided in Section 10.5, any dispute, claim, or controversy arising out of or relating to these Terms, your use of the Services, any garment handling, or your relationship with Offload ("Claim") shall be resolved exclusively by binding individual arbitration administered by JAMS under its Streamlined Arbitration Rules and Procedures, except that for Claims exceeding $250,000, the Comprehensive Arbitration Rules and Procedures apply. Judgment on the arbitration award may be entered in any court of competent jurisdiction. The arbitrator may award any relief that a court of competent jurisdiction could award, limited by these Terms.</p>
+
+    <h3>10.3 Governing Law for Arbitration</h3>
+    <p>This Arbitration Agreement is governed by the Federal Arbitration Act (9 U.S.C. § 1 et seq.) to the fullest extent possible. If the FAA does not apply, the law of the State of New York governs this Arbitration Agreement.</p>
+
+    <h3>10.4 Arbitrator Authority</h3>
+    <p>The arbitrator, and not any court, shall have exclusive authority to resolve any dispute relating to the interpretation, applicability, enforceability, or formation of this Arbitration Agreement, except that any challenge to the Class Action Waiver (Section 10.7) shall be decided by a court of competent jurisdiction, not an arbitrator.</p>
+
+    <h3>10.5 Exceptions</h3>
+    <p>The following Claims are not subject to mandatory arbitration:</p>
+    <ol type="i">
+      <li>Claims within the jurisdiction of small claims court, brought on an individual basis;</li>
+      <li>Claims for temporary, preliminary, or emergency injunctive relief to prevent irreparable harm (including for intellectual property infringement); and</li>
+      <li>Claims of sexual assault or sexual harassment.</li>
+    </ol>
+
+    <h3>10.6 Location and Fees</h3>
+    <p>Arbitration shall take place in the county of your primary residence, or via videoconference by mutual agreement. Offload will pay all arbitration-specific fees (arbitrator compensation and JAMS filing fees) for Claims that do not exceed $75,000, provided your Claim is not determined to be frivolous under applicable federal standards. Each party is otherwise responsible for its own attorneys' fees and legal costs.</p>
+
+    <h3>10.7 Class Action Waiver</h3>
+    <div class="caps-block">
+      YOU AND OFFLOAD AGREE THAT ALL CLAIMS SHALL BE BROUGHT IN YOUR INDIVIDUAL CAPACITY ONLY, AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS, COLLECTIVE, COORDINATED, CONSOLIDATED, MASS, OR REPRESENTATIVE PROCEEDING. THE ARBITRATOR MAY AWARD RELIEF ONLY ON AN INDIVIDUAL BASIS. IF ANY COURT OR ARBITRATOR FINDS THIS CLASS ACTION WAIVER TO BE UNENFORCEABLE, THE ENTIRETY OF THIS ARBITRATION AGREEMENT SHALL BE NULL AND VOID, AND SUCH CLAIMS SHALL PROCEED EXCLUSIVELY IN A COURT OF COMPETENT JURISDICTION IN NEW YORK, WITHOUT CLASS ARBITRATION.
+    </div>
+
+    <h3>10.8 Mass Claims</h3>
+    <p>If 25 or more similar Claims are filed against Offload by the same or coordinated counsel within a 90-day period, JAMS may consolidate such Claims into batches of up to 100 per batch, with a single management conference and administrative fee per batch. This provision shall not otherwise limit individual rights.</p>
+
+    <h3>10.9 Opt-Out Right</h3>
+    <p>You may opt out of this Arbitration Agreement within <strong>thirty (30) days</strong> of first accepting these Terms by sending written notice to <a href="mailto:legal@offloadusa.com">legal@offloadusa.com</a> with the subject line "ARBITRATION OPT-OUT" and including your full name, account email address, and a clear statement of your intention to opt out. Opting out does not affect any other provision of these Terms. If you do not opt out within 30 days, you will be deemed to have agreed to this Arbitration Agreement.</p>
+
+    <h3>10.10 Survival and Severability</h3>
+    <p>This Arbitration Agreement survives termination of your account or these Terms. If any portion of this Arbitration Agreement (other than the Class Action Waiver) is found invalid or unenforceable, that portion shall be severed and the remainder shall be given full force and effect.</p>
+  </div>
+
+  <!-- Section 11: Privacy -->
+  <div class="section" id="privacy">
+    <h2 class="section-title"><span class="section-num">11</span>Data Use and Privacy</h2>
+    <p>Offload's collection, use, and disclosure of your personal information is governed by our <a href="privacy.html">Privacy Policy</a>, which is incorporated into these Terms by reference. By using the Services, you acknowledge that you have reviewed and consent to the practices described in our Privacy Policy.</p>
+
+    <h3>SMS and Push Notifications</h3>
+    <p>By providing your mobile phone number, you consent to receive SMS messages and push notifications from Offload regarding your orders, pickups, deliveries, account activity, and promotional offers. You may opt out of promotional SMS at any time by replying STOP. Standard message and data rates may apply. Consent to SMS is not a condition of purchasing our Services.</p>
+
+    <h3>Payment Data</h3>
+    <p>Payment information is processed by third-party payment processors. Offload does not store full payment card numbers on its servers. Your use of our payment services is also subject to the applicable payment processor's terms and privacy policy.</p>
+
+    <h3>Carrier Disclosure</h3>
+    <p>By providing a wireless phone number, you authorize your wireless carrier to disclose your account information (including name, device identifier, and billing address) to Offload for identity verification and fraud prevention purposes.</p>
+
+    <h3>Children</h3>
+    <p>The Services are not directed to individuals under the age of 13. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided personal information, contact us at <a href="mailto:privacy@offloadusa.com">privacy@offloadusa.com</a> and we will promptly delete such information.</p>
+  </div>
+
+  <!-- Section 12: Availability and Force Majeure -->
+  <div class="section" id="availability">
+    <h2 class="section-title"><span class="section-num">12</span>Service Availability and Force Majeure</h2>
+
+    <h3>Platform Availability</h3>
+    <p>Offload does not warrant that the Services will be available at all times. The Services may be interrupted for maintenance, upgrades, emergency repairs, or circumstances beyond Offload's control. Offload will use commercially reasonable efforts to minimize downtime and provide advance notice of scheduled maintenance where practicable.</p>
+
+    <h3>Force Majeure</h3>
+    <p>Offload shall not be liable for any delay, failure, or interruption in the Services resulting from circumstances beyond Offload's reasonable control, including without limitation: acts of God, natural disasters, pandemic or epidemic, fire, flood, severe weather, governmental action or regulation, labor disputes, war, terrorism, infrastructure failures (including internet or power outages), cyberattacks by third parties, or acts of third parties (including Laundry Partners). In such circumstances, Offload will make commercially reasonable efforts to notify affected users and restore service as soon as practicable.</p>
+
+    <h3>No Liability for Third-Party Actions</h3>
+    <p>Offload shall not be responsible for any failure by Laundry Partners to complete services due to circumstances beyond such partners' control, including equipment failure, transportation disruptions, or personal emergencies, provided Offload makes reasonable efforts to arrange an alternative Laundry Partner within a commercially reasonable time.</p>
+
+    <h3>Geographic Availability</h3>
+    <p>The Services are available in select geographic areas. Offload reserves the right to expand or reduce its service area at any time without notice. Service availability, pricing, and features may vary by location.</p>
+  </div>
+
+  <!-- Section 13: Termination -->
+  <div class="section" id="termination">
+    <h2 class="section-title"><span class="section-num">13</span>Account Termination</h2>
+
+    <h3>Termination by You</h3>
+    <p>You may close your Offload account at any time by contacting <a href="mailto:support@offloadusa.com">support@offloadusa.com</a> or using the account deletion function in the app. Termination does not relieve you of any obligations incurred prior to termination, including payment for completed services and outstanding fees.</p>
+
+    <h3>Termination by Offload</h3>
+    <p>Offload may suspend or permanently terminate your account at any time, with or without notice, for any reason, including:</p>
+    <ul>
+      <li>Breach of any provision of these Terms;</li>
+      <li>Conduct that Offload determines is harmful to other users, Laundry Partners, or Offload;</li>
+      <li>Fraudulent activity or abuse of the Services;</li>
+      <li>Provision of false or inaccurate account information;</li>
+      <li>Failure to pay outstanding amounts; or</li>
+      <li>Request by law enforcement or regulatory authorities.</li>
+    </ul>
+
+    <h3>Effect of Termination</h3>
+    <p>Upon termination: (i) all rights and licenses granted to you under these Terms immediately cease; (ii) Offload may delete your account data and content, subject to our Privacy Policy; (iii) no refunds will be issued for amounts already paid, except as required by applicable law or these Terms.</p>
+
+    <h3>Prohibition on Re-Registration</h3>
+    <p>If your account is terminated by Offload for cause, you may not create a new account without Offload's express prior written consent.</p>
+
+    <h3>Surviving Provisions</h3>
+    <p>The following provisions survive termination of your account or these Terms: Sections 5 (Garment Damage), 8 (Limitation of Liability), 9 (Indemnification), 10 (Dispute Resolution and Arbitration), 11 (Privacy), 15 (Governing Law), and all definitions and General Provisions.</p>
+  </div>
+
+  <!-- Section 14: Modifications -->
+  <div class="section" id="modifications">
+    <h2 class="section-title"><span class="section-num">14</span>Modifications to These Terms</h2>
+    <p>Offload reserves the right to modify these Terms at any time. For material changes, we will provide at least 30 days' advance notice via email to your registered address or through a prominent notice in the app. Non-material changes (such as typographical corrections, formatting updates, or clarifications that do not affect your rights) may take effect immediately upon posting.</p>
+    <p>Your continued use of the Services after the effective date of any modified Terms constitutes your acceptance of the changes. If you do not agree to the modified Terms, you must discontinue using the Services and may close your account. The date of the most recent revision is displayed at the top of this page.</p>
+  </div>
+
+  <!-- Section 15: Governing Law -->
+  <div class="section" id="governing">
+    <h2 class="section-title"><span class="section-num">15</span>Governing Law and Venue</h2>
+    <p>These Terms and any dispute arising out of or related to these Terms or the Services shall be governed by the laws of the State of New York, without regard to its conflict of law provisions, except as provided in the Arbitration Agreement above (which is governed by the Federal Arbitration Act).</p>
+    <p>To the extent any dispute is not subject to arbitration, you and Offload consent to the exclusive personal jurisdiction and venue of the state and federal courts located in New York County, New York.</p>
+  </div>
+
+  <!-- Section 16: General -->
+  <div class="section" id="general">
+    <h2 class="section-title"><span class="section-num">16</span>General Provisions</h2>
+
+    <h3>Entire Agreement</h3>
+    <p>These Terms, together with our Privacy Policy and any other policies incorporated by reference, constitute the entire agreement between you and Offload regarding the Services and supersede all prior agreements, representations, and understandings.</p>
+
+    <h3>Severability</h3>
+    <p>If any provision of these Terms is found to be invalid, illegal, or unenforceable, the remaining provisions will continue in full force and effect.</p>
+
+    <h3>Waiver</h3>
+    <p>Offload's failure to enforce any right or provision of these Terms does not constitute a waiver of that right or provision. Any waiver of a specific provision must be in writing and signed by Offload.</p>
+
+    <h3>Assignment</h3>
+    <p>You may not assign or transfer your rights or obligations under these Terms without Offload's prior written consent. Offload may freely assign its rights and obligations under these Terms, including in connection with a merger, acquisition, or sale of assets.</p>
+
+    <h3>Electronic Communications</h3>
+    <p>By using the Services, you consent to receiving communications from Offload electronically, including via email and in-app notifications. These electronic communications satisfy any legal requirement that such communications be in writing.</p>
+
+    <h3>User Content</h3>
+    <p>If you submit reviews, feedback, photos, or other content through the Services ("User Content"), you grant Offload a non-exclusive, royalty-free, worldwide, sublicensable, transferable license to use, reproduce, display, and distribute your User Content in connection with operating and improving the Services. You represent that you have the right to grant this license.</p>
+
+    <h3>Intellectual Property</h3>
+    <p>The Services and all content, features, and functionality therein (including text, graphics, logos, trademarks, and software) are owned by Offload or its licensors and are protected by copyright, trademark, and other intellectual property laws. You may not copy, modify, distribute, sell, or lease any part of the Services without Offload's express prior written consent.</p>
+
+    <h3>No Third-Party Beneficiaries</h3>
+    <p>These Terms do not and are not intended to confer any rights or remedies on any third parties.</p>
+  </div>
+
+  <!-- Section 17: Contact -->
+  <div class="section" id="contact">
+    <h2 class="section-title"><span class="section-num">17</span>Contact Information</h2>
+    <p>For questions about these Terms or the Services, contact us at:</p>
+    <ul>
+      <li><strong>General Inquiries:</strong> <a href="mailto:info@offloadusa.com">info@offloadusa.com</a></li>
+      <li><strong>Customer Support:</strong> <a href="mailto:support@offloadusa.com">support@offloadusa.com</a></li>
+      <li><strong>Legal / Arbitration Notices:</strong> <a href="mailto:legal@offloadusa.com">legal@offloadusa.com</a></li>
+      <li><strong>Privacy Requests:</strong> <a href="mailto:privacy@offloadusa.com">privacy@offloadusa.com</a></li>
+      <li><strong>Phone:</strong> (800) 555-OFLD</li>
+      <li><strong>Website:</strong> <a href="https://offloadusa.com">offloadusa.com</a></li>
+    </ul>
+    <p>For written legal notices including arbitration opt-out requests, please use <a href="mailto:legal@offloadusa.com">legal@offloadusa.com</a> with the appropriate subject line.</p>
+  </div>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <p><strong>Offload USA, Inc.</strong> &nbsp;·&nbsp; <a href="https://offloadusa.com">offloadusa.com</a></p>
+    <p>© 2026 Offload USA, Inc. All rights reserved.</p>
+    <p>These Terms of Service were last updated on <strong>July 1, 2025</strong>. Prior versions are available upon request.</p>
+  </div>
+
+</div>
+</body>
+</html>
