@@ -539,7 +539,7 @@ const CHAT_RESPONSES = {
   },
   delivery: {
     patterns: [/deliver/i, /speed/i, /fast/i, /how long/i, /turnaround/i, /when/i, /time/i, /quick/i, /express/i, /same.?day/i, /next.?day/i],
-    response: "We offer 4 delivery speeds:\n\n• Standard: 48 hours (free delivery)\n• Next Day: 24 hours (+$5.99)\n• Same Day: 12 hours (+$12.99)\n• Express: 3 hours (+$19.99)\n\nWe track every order against these windows — if we miss your delivery time, you get a credit."
+    response: "We offer 4 delivery speeds:\n\n• Standard: 48 hours (free delivery)\n• Next Day: 24 hours (+$5.99)\n• Same Day: 12 hours (+$12.99)\n• Express: 3 hours (+$19.99)\n\nWe track every order against these windows — if we miss your delivery time, reach out and we'll make it right."
   },
   tracking: {
     patterns: [/track/i, /where/i, /status/i, /driver/i, /gps/i, /location/i, /eta/i],
