@@ -848,7 +848,7 @@ a:hover { color: var(--teal); }
   margin-top: var(--space-2xl);
 }
 
-/* First feature (Real-Time Tracking) spans full width as a hero callout */
+/* First feature (Order Status Tracking) spans full width as a hero callout */
 .feature-card:first-child {
   grid-column: 1 / -1;
   display: grid;
@@ -1234,7 +1234,7 @@ a:hover { color: var(--teal); }
   .footer__bottom { flex-direction: column; gap: var(--space-md); text-align: center; }
 }
 
-/* ── AI Chatbot Widget ── */
+/* ── Chatbot Widget ── */
 .chatbot-trigger {
   position: fixed;
   bottom: 24px;

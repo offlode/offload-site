@@ -1,27 +1,27 @@
 [
   {
     "question": "How does Offload work?",
-    "answer": "Offload is an on-demand laundry pickup and delivery service. Here's how it works in three steps: (1) Schedule a pickup through the Offload app or website — choose your service type, select a pickup window, and drop your laundry in a bag outside your door. (2) A Laundry Partner picks up your laundry and brings it to a vetted local laundromat partner where it's professionally cleaned. (3) Your fresh, clean laundry is delivered back to you at a time that works for your schedule. It's that simple — no trips to the laundromat, no waiting around.",
+    "answer": "Offload is an on-demand laundry pickup and delivery service. Here's how it works in three steps: (1) Schedule a pickup through the Offload website — choose your service type, select a pickup window, and drop your laundry in a bag outside your door. (2) A Laundry Partner picks up your laundry and brings it to a vetted local laundromat partner where it's professionally cleaned. (3) Your fresh, clean laundry is delivered back to you at a time that works for your schedule. It's that simple — no trips to the laundromat, no waiting around.",
     "category": "ordering"
   },
   {
     "question": "How do I place an order?",
-    "answer": "Download the Offload app (iOS and Android), create a free account with your name, email, and address, then tap 'Schedule Pickup.' Choose your service type (Wash & Fold, dry cleaning, or special items), select your preferred pickup and delivery windows, add any special instructions, and confirm. You'll receive a confirmation notification right away, and real-time updates throughout the process.",
+    "answer": "Visit offloadusa.com, create a free account with your name, email, and address, then click 'Schedule Pickup.' Choose your service type (Wash & Fold, dry cleaning, or special items), select your preferred pickup and delivery windows, add any special instructions, and confirm. You'll receive a confirmation email right away, and status updates throughout the process.",
     "category": "ordering"
   },
   {
     "question": "Do I need to be home for pickup or delivery?",
-    "answer": "No — that's one of the best parts about Offload. Most customers leave their laundry bag outside their door, in a building lobby, or at a designated spot and go about their day. For delivery, your clean laundry is left at your specified drop-off location. You'll get notifications at every step so you know exactly when your laundry is picked up and when it arrives back home.",
+    "answer": "No — that's one of the best parts about Offload. Most customers leave their laundry bag outside their door, in a building lobby, or at a designated spot and go about their day. For delivery, your clean laundry is left at your specified drop-off location. You'll get email updates at every step so you know exactly when your laundry is picked up and when it arrives back home.",
     "category": "ordering"
   },
   {
     "question": "What happens if I'm not happy with my order?",
-    "answer": "Your satisfaction matters to us. If there's a problem with your order — a missed item, a washing issue, or something that doesn't look right — contact our support team at support@offloadusa.com or through the app within 14 days of delivery. We'll review the situation and work to make it right. For garment damage or loss, we have an industry-leading claims process with one of the highest reimbursement caps in the industry (see our damage policy below).",
+    "answer": "Your satisfaction matters to us. If there's a problem with your order — a missed item, a washing issue, or something that doesn't look right — contact our support team at support@offloadusa.com within 14 days of delivery. We'll review the situation and work to make it right. For garment damage or loss, we have an industry-leading claims process with one of the highest reimbursement caps in the industry (see our damage policy below).",
     "category": "ordering"
   },
   {
     "question": "Can I schedule recurring orders?",
-    "answer": "Yes. Offload supports recurring pickup schedules — weekly, bi-weekly, or on whatever cadence works for you. Set it up once in the app and we'll automatically schedule your pickups. You can pause, adjust, or cancel recurring orders at any time through your account settings with no fees.",
+    "answer": "Yes. Offload supports recurring pickup schedules — weekly, bi-weekly, or on whatever cadence works for you. Set it up once on our website and we'll automatically schedule your pickups. You can pause, adjust, or cancel recurring orders at any time through your account settings with no fees.",
     "category": "ordering"
   },
   {
@@ -31,7 +31,7 @@
   },
   {
     "question": "What are overage charges and how do they work?",
-    "answer": "Each Offload laundry bag has a standard weight limit. If your laundry exceeds that weight, we charge a small per-pound overage fee. You'll see your estimated charge at checkout. When our Laundry Partner weighs your items, if there's a significant overage, we'll notify you through the app before processing the additional charge. You always have the option to remove items before the order proceeds if you'd prefer to avoid the overage.",
+    "answer": "Each Offload laundry bag has a standard weight limit. If your laundry exceeds that weight, we charge a small per-pound overage fee. You'll see your estimated charge at checkout. When our Laundry Partner weighs your items, if there's a significant overage, we'll notify you before processing the additional charge. You always have the option to remove items before the order proceeds if you'd prefer to avoid the overage.",
     "category": "pricing"
   },
   {
@@ -56,22 +56,22 @@
   },
   {
     "question": "What areas does Offload serve?",
-    "answer": "Offload currently serves select neighborhoods in the New York metropolitan area, with ongoing expansion. Enter your address in the app or on offloadusa.com to see if service is available at your location. We're growing fast — if we don't serve your area yet, you can join the waitlist and we'll notify you when we launch nearby.",
+    "answer": "Offload currently serves select neighborhoods in the New York metropolitan area, with ongoing expansion. Enter your address on offloadusa.com to see if service is available at your location. We're growing fast — if we don't serve your area yet, you can join the waitlist and we'll notify you when we launch nearby.",
     "category": "service"
   },
   {
     "question": "How fast is Offload's turnaround time?",
-    "answer": "Standard Offload orders have a 24–48 hour turnaround from pickup to delivery. We offer next-day delivery for orders placed before the daily cutoff time in your area. Same-day service may be available in select areas — check the app for current availability. Dry cleaning and special items typically require 48–72 hours. Exact timing is always shown when you schedule your order.",
+    "answer": "Standard Offload orders have a 24–48 hour turnaround from pickup to delivery. We offer next-day delivery for orders placed before the daily cutoff time in your area. Same-day service may be available in select areas — check the website for current availability. Dry cleaning and special items typically require 48–72 hours. Exact timing is always shown when you schedule your order.",
     "category": "service"
   },
   {
     "question": "Can I choose when my laundry is picked up and delivered?",
-    "answer": "Yes. When you schedule an order, you select from available pickup windows (typically 2-hour blocks) and delivery windows for your return. You can also request a specific delivery date. The app shows real-time availability so you can choose what works best for your schedule.",
+    "answer": "Yes. When you schedule an order, you select from available pickup windows (typically 2-hour blocks) and delivery windows for your return. You can also request a specific delivery date. The website shows current availability so you can choose what works best for your schedule.",
     "category": "service"
   },
   {
     "question": "What laundry services does Offload offer?",
-    "answer": "Offload offers: (1) Wash & Fold — everyday laundry washed, dried, and folded; (2) Dry Cleaning — professional dry cleaning for suits, dresses, delicate fabrics, and formal wear; (3) Delicate Care — hand-wash-appropriate or gentle-cycle items requiring special attention; (4) Special Items — oversized items like comforters, duvets, blankets, and rugs (priced per item). Check the app for the full current menu of services in your area.",
+    "answer": "Offload offers: (1) Wash & Fold — everyday laundry washed, dried, and folded; (2) Dry Cleaning — professional dry cleaning for suits, dresses, delicate fabrics, and formal wear; (3) Delicate Care — hand-wash-appropriate or gentle-cycle items requiring special attention; (4) Special Items — oversized items like comforters, duvets, blankets, and rugs (priced per item). Check the website for the full current menu of services in your area.",
     "category": "service"
   },
   {
@@ -86,12 +86,12 @@
   },
   {
     "question": "What should I do to prepare my laundry for pickup?",
-    "answer": "A few simple steps make everything go smoothly: (1) Check pockets — remove all items from pockets, including cash, keys, earbuds, and small valuables. Offload is not responsible for items left in pockets. (2) Separate dry cleaning from Wash & Fold in separate bags. (3) Note any special care instructions in the app's order notes. (4) For delicate items, consider adding a note about specific care requirements. That's it — we handle the rest.",
+    "answer": "A few simple steps make everything go smoothly: (1) Check pockets — remove all items from pockets, including cash, keys, earbuds, and small valuables. Offload is not responsible for items left in pockets. (2) Separate dry cleaning from Wash & Fold in separate bags. (3) Note any special care instructions in the order notes. (4) For delicate items, consider adding a note about specific care requirements. That's it — we handle the rest.",
     "category": "service"
   },
   {
     "question": "Can I cancel or modify my order?",
-    "answer": "You can cancel your order at no charge before a Laundry Partner has been dispatched to your location. To cancel, open your order in the app and tap 'Cancel Order.' If a Laundry Partner is already en route, a cancellation fee of up to $10 may apply. Once your laundry has been picked up and is in process at the laundromat, orders cannot be cancelled. To modify an order (e.g., add special instructions), contact support@offloadusa.com as early as possible.",
+    "answer": "You can cancel your order at no charge before a Laundry Partner has been dispatched to your location. To cancel, open your order on the website and click 'Cancel Order.' If a Laundry Partner is already en route, a cancellation fee of up to $10 may apply. Once your laundry has been picked up and is in process at the laundromat, orders cannot be cancelled. To modify an order (e.g., add special instructions), contact support@offloadusa.com as early as possible.",
     "category": "policy"
   },
   {
@@ -116,7 +116,7 @@
   },
   {
     "question": "What payment methods does Offload accept?",
-    "answer": "Offload accepts all major credit and debit cards (Visa, Mastercard, American Express, Discover), and Offload account credits. Payment is securely processed through our payment partner — we never store your full card number on our servers. You can manage your saved payment methods in the app's account settings.",
+    "answer": "Offload accepts all major credit and debit cards (Visa, Mastercard, American Express, Discover), and Offload account credits. Payment is securely processed through our payment partner — we never store your full card number on our servers. You can manage your saved payment methods in your account settings.",
     "category": "policy"
   },
   {
@@ -126,17 +126,17 @@
   },
   {
     "question": "Are tips included in the price?",
-    "answer": "Tips are not included in your order total and are entirely optional. If you'd like to tip your Laundry Partner, you can do so through the app during checkout or up to 24 hours after delivery. 100% of your tip goes directly to your Laundry Partner (minus a small payment processing fee). Your decision to tip or not tip has no effect on the quality or priority of your service.",
+    "answer": "Tips are not included in your order total and are entirely optional. If you'd like to tip your Laundry Partner, you can do so during checkout or up to 24 hours after delivery. 100% of your tip goes directly to your Laundry Partner (minus a small payment processing fee). Your decision to tip or not tip has no effect on the quality or priority of your service.",
     "category": "policy"
   },
   {
     "question": "Does Offload have a loyalty or rewards program?",
-    "answer": "Yes. Offload Rewards lets you earn points on every order. Points can be redeemed for service credits, free bags, and exclusive member perks. You earn points automatically on every completed order when you're logged into your account. Check the Rewards section of the app to see your current balance and available rewards. Members on subscription plans earn bonus points on every order.",
+    "answer": "Yes. Offload Rewards lets you earn points on every order. Points can be redeemed for service credits, free bags, and exclusive member perks. You earn points automatically on every completed order when you're logged into your account. Check the Rewards section of your account to see your current balance and available rewards. Members on subscription plans earn bonus points on every order.",
     "category": "service"
   },
   {
     "question": "Does Offload offer referral bonuses?",
-    "answer": "Yes. Share your unique referral link from the app with friends and family. When a new customer completes their first order using your referral code, you'll both receive a credit toward your next order. Referral credits are applied automatically to your account and can be combined with other promotions. See the app for current referral bonus amounts.",
+    "answer": "Yes. Share your unique referral link with friends and family. When a new customer completes their first order using your referral code, you'll both receive a credit toward your next order. Referral credits are applied automatically to your account and can be combined with other promotions. See your account for current referral bonus amounts.",
     "category": "service"
   },
   {
@@ -151,27 +151,27 @@
   },
   {
     "question": "Can I request a specific Laundry Partner for my order?",
-    "answer": "After your first completed order with a particular Laundry Partner, you can mark them as a favorite in the app. When you schedule future orders, we'll do our best to assign your preferred partner — but availability varies. If your preferred partner isn't available, we'll assign the next best-rated partner in your area.",
+    "answer": "After your first completed order with a particular Laundry Partner, you can mark them as a favorite in your account. When you schedule future orders, we'll do our best to assign your preferred partner — but availability varies. If your preferred partner isn't available, we'll assign the next best-rated partner in your area.",
     "category": "service"
   },
   {
     "question": "How do I contact Offload support?",
-    "answer": "Our support team is available 7 days a week. You can reach us through: (1) In-app chat — tap the chat icon in the bottom-right corner of any screen; (2) Email — support@offloadusa.com (we respond within a few hours during business hours); (3) Phone — (800) 555-OFLD; (4) Website — offloadusa.com. For urgent issues like a missed pickup or delivery problem, in-app chat or phone is the fastest way to reach us.",
+    "answer": "Our support team is available 7 days a week. You can reach us through: (1) Website chat — click the chat icon in the bottom-right corner of offloadusa.com; (2) Email — support@offloadusa.com (we respond within a few hours during business hours); (3) Phone — (800) 555-OFLD. For urgent issues like a missed pickup or delivery problem, phone is the fastest way to reach us.",
     "category": "support"
   },
   {
     "question": "What are Offload's support hours?",
-    "answer": "Our customer support team is available 7 days a week from 7am to 10pm Eastern Time. For urgent order-related issues (e.g., a driver can't find your location, a pickup is running very late), use in-app chat for the fastest response. For non-urgent inquiries, you can email support@offloadusa.com at any time and we'll respond within one business day.",
+    "answer": "Our customer support team is available 7 days a week from 7am to 10pm Eastern Time. For urgent order-related issues (e.g., a driver can't find your location, a pickup is running very late), use phone or website chat for the fastest response. For non-urgent inquiries, you can email support@offloadusa.com at any time and we'll respond within one business day.",
     "category": "support"
   },
   {
     "question": "What if my pickup is running late?",
-    "answer": "If your Laundry Partner is delayed, you'll receive an in-app notification with an updated estimated arrival time. If your pickup window passes without contact or pickup, please reach out through in-app chat or call (800) 555-OFLD immediately so we can dispatch an alternative partner. We monitor all active pickups and proactively reach out if we detect significant delays.",
+    "answer": "If your Laundry Partner is delayed, you'll receive an email with an updated estimated arrival time. If your pickup window passes without contact or pickup, please reach out via email at support@offloadusa.com or call (800) 555-OFLD immediately so we can dispatch an alternative partner. We monitor all active pickups and proactively reach out if we detect significant delays.",
     "category": "support"
   },
   {
     "question": "Can I change my delivery address after placing an order?",
-    "answer": "Address changes may be possible if the order hasn't been picked up yet. Contact our support team through in-app chat or at support@offloadusa.com as quickly as possible with your new delivery address. Once the order is in transit for delivery, address changes may not be possible, and a re-delivery fee may apply for returned or re-routed orders.",
+    "answer": "Address changes may be possible if the order hasn't been picked up yet. Contact our support team via support@offloadusa.com as quickly as possible with your new delivery address. Once the order is in transit for delivery, address changes may not be possible, and a re-delivery fee may apply for returned or re-routed orders.",
     "category": "support"
   },
   {
@@ -181,7 +181,7 @@
   },
   {
     "question": "How do I delete my account?",
-    "answer": "You can request account deletion by emailing support@offloadusa.com or using the 'Delete Account' option in your app settings. Deleting your account will remove your personal information (subject to legal retention requirements), order history, loyalty points, and saved preferences. Outstanding order obligations and payment duties must be settled before deletion is processed. We'll confirm deletion within 5 business days of your request.",
+    "answer": "You can request account deletion by emailing support@offloadusa.com or using the 'Delete Account' option in your account settings. Deleting your account will remove your personal information (subject to legal retention requirements), order history, loyalty points, and saved preferences. Outstanding order obligations and payment duties must be settled before deletion is processed. We'll confirm deletion within 5 business days of your request.",
     "category": "support"
   }
 ]
