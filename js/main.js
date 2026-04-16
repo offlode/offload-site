@@ -547,7 +547,7 @@ const CHAT_RESPONSES = {
   },
   damage: {
     patterns: [/damage/i, /lost/i, /missing/i, /broken/i, /ruin/i, /stain/i, /claim/i, /protect/i, /guarantee/i, /insurance/i],
-    response: "We offer industry-leading garment protection:\n\n• Up to $250 per item\n• Up to $750 per order\n\nThis is higher than any competitor. If something goes wrong, file a claim within 14 days and we'll acknowledge it within 24 hours. We take photo proof at every handoff to protect both you and us."
+    response: "Every order is protected under our garment care policy. If something goes wrong, file a claim within 14 days and we'll work to resolve it quickly. We take photo proof at every handoff to protect both you and us."
   },
   services: {
     patterns: [/service/i, /offer/i, /dry clean/i, /comforter/i, /alteration/i, /bedding/i, /type/i],
@@ -575,7 +575,7 @@ const CHAT_RESPONSES = {
   },
   partner: {
     patterns: [/partner/i, /laundromat/i, /join/i, /drive/i, /driver/i, /earn/i, /work/i],
-    response: "Want to grow with Offload?\n\n🏪 Laundromat Partners: Get a steady stream of orders with AI-optimized queuing and automated payouts. Email partners@offloadusa.com\n\n🚗 Drivers: Earn $8.50+ per trip plus tips on your own schedule. Email drivers@offloadusa.com\n\nBoth get access to our full logistics platform."
+    response: "Want to grow with Offload?\n\n🏪 Laundromat Partners: Get a steady stream of orders with smart order queuing and automated payouts. Email partners@offloadusa.com\n\n🚗 Drivers: Earn $8.50+ per trip plus tips on your own schedule. Email drivers@offloadusa.com\n\nBoth get access to our full logistics platform."
   }
 };
 
