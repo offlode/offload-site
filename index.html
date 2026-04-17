@@ -205,6 +205,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <!-- Google Places Autocomplete (loaded dynamically in main.js) -->
+
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -234,6 +236,7 @@
       <a href="mailto:support@offloadusa.com" style="font-size:0.85rem; color:var(--gray-300); margin-right:12px; white-space:nowrap; text-decoration:none; font-weight:500; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--gray-300)'">
         Contact Us
       </a>
+      <a href="#signup-section" class="btn btn--outline btn--small" style="margin-right:8px; font-size:0.82rem; padding:6px 14px; border-color:var(--gray-500); color:var(--gray-200);" aria-label="Sign up for an account">Sign Up</a>
       <a href="#hero-widget" class="btn btn--primary" aria-label="Order now">Order Now</a>
     </div>
 
@@ -250,7 +253,8 @@
   <a href="#features" onclick="closeMobile()">Features</a>
   <a href="#faq" onclick="closeMobile()">FAQ</a>
   <a href="#partners" onclick="closeMobile()">Partners</a>
-  <a href="#hero-widget" class="btn btn--primary" onclick="closeMobile()" style="text-align:center; margin-top:16px;">Order Now</a>
+  <a href="#signup-section" class="btn btn--outline" onclick="closeMobile()" style="text-align:center; margin-top:12px; border-color:var(--gray-500); color:var(--gray-200);">Sign Up</a>
+  <a href="#hero-widget" class="btn btn--primary" onclick="closeMobile()" style="text-align:center; margin-top:8px;">Order Now</a>
 </nav>
 
 <!-- ═══════════════════════ HERO ═══════════════════════ -->
@@ -280,9 +284,9 @@
   </div>
   <div class="container hero__content">
     <div class="hero__text">
-      <div class="hero__badge">
-        <span style="width:6px;height:6px;border-radius:50%;background:#5B4BC4;"></span>
-        Serving New York City
+      <div class="hero__badge" id="hero-location-badge">
+        <span class="hero__badge-dot" style="width:6px;height:6px;border-radius:50%;background:#5B4BC4;animation:pulse-dot 2s ease infinite;"></span>
+        <span id="hero-location-text">Serving New York City</span>
       </div>
       <h1 class="hero__title">Fresh clothes,<br><span class="text-teal">zero hassle.</span></h1>
       <p class="hero__subtitle">We pick up your dirty laundry, professionally wash and fold it, and deliver it back to your door. Get your price in 5 seconds — no account needed.</p>
@@ -353,8 +357,9 @@
 
         <!-- Price Preview (shows dynamically) -->
         <div class="price-preview" id="price-preview">
+          <div id="pp-service-note" style="display:none; font-size:0.75rem; color:#5B4BC4; font-weight:600; margin-bottom:6px; text-align:center;"></div>
           <div class="price-row">
-            <span>Bag price</span>
+            <span>Service price</span>
             <span class="price-value" id="pp-bag">$0.00</span>
           </div>
           <div class="price-row">
@@ -815,16 +820,9 @@
           <li style="padding:6px 0; color:var(--text-secondary); font-size:0.92rem;">✓ &nbsp;Digital weight reporting</li>
           <li style="padding:6px 0; color:var(--text-secondary); font-size:0.92rem;">✓ &nbsp;Full order history &amp; preferences</li>
         </ul>
-        <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--space-md);">
-          <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:12px; font-weight:600;">Join our early access list</p>
-          <form style="display:flex; gap:8px; flex-wrap:wrap;" onsubmit="handleEarlyAccess(event)">
-            <label for="early-access-email" class="sr-only">Email address</label>
-            <input type="email" id="early-access-email" name="email" placeholder="Your email address" required
-              aria-label="Email address for early app access"
-              style="flex:1; min-width:180px; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); font-family:var(--font-body); font-size:0.9rem;">
-            <button type="submit" class="btn btn--primary btn--small" aria-label="Join early access list">Notify Me</button>
-          </form>
-          <p id="early-access-msg" aria-live="polite" style="font-size:0.82rem; color:var(--text-secondary); margin-top:8px; min-height:1.2em;"></p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
+          <a href="#hero-widget" class="btn btn--primary btn--small">Order Now</a>
+          <a href="#signup-section" class="btn btn--outline btn--small" style="border-color:var(--gray-500); color:var(--gray-200);">Create Account</a>
         </div>
       </div>
     </div>
@@ -1049,6 +1047,44 @@
   </div>
 </section>
 
+<!-- ═══════════════════════ SIGN UP ═══════════════════════ -->
+<section class="section" id="signup-section" style="background:linear-gradient(135deg, #0a0a0a 0%, #1a1033 50%, #0a0a0a 100%); padding:80px 0;">
+  <div class="container" style="max-width:520px; text-align:center;">
+    <div class="animate-in">
+      <span class="section-header__label" style="margin-bottom:12px; display:inline-block;">Create Your Account</span>
+      <h2 style="font-size:2rem; font-weight:800; margin-bottom:8px; color:#fff;">Sign Up for Offload</h2>
+      <p style="color:var(--text-secondary); font-size:0.95rem; margin-bottom:32px; line-height:1.6;">Track orders, save addresses, earn loyalty rewards, and manage your laundry — all in one place.</p>
+    </div>
+    <form id="signup-form" onsubmit="return false;" class="animate-in delay-1" style="text-align:left;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+        <div>
+          <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px;">First Name</label>
+          <input type="text" id="signup-first" class="widget__input" placeholder="John" autocomplete="given-name" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff;">
+        </div>
+        <div>
+          <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px;">Last Name</label>
+          <input type="text" id="signup-last" class="widget__input" placeholder="Doe" autocomplete="family-name" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff;">
+        </div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px;">Email Address</label>
+        <input type="email" id="signup-email" class="widget__input" placeholder="john@example.com" autocomplete="email" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px;">Phone Number</label>
+        <input type="tel" id="signup-phone" class="widget__input" placeholder="(555) 123-4567" autocomplete="tel" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px;">Password</label>
+        <input type="password" id="signup-password" class="widget__input" placeholder="Create a password (8+ characters)" autocomplete="new-password" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff;">
+      </div>
+      <button type="button" id="signup-btn" onclick="handleSignup()" class="widget__btn" style="width:100%; margin-top:8px; background:#5B4BC4; font-size:0.95rem; font-weight:700; border-radius:10px; padding:14px; border:none; color:#fff; cursor:pointer; transition:all 0.2s;">Create Account</button>
+      <p style="text-align:center; margin-top:14px; font-size:0.82rem; color:var(--text-muted);">Already have an account? <a href="#" onclick="showLoginModal(); return false;" style="color:#5B4BC4; text-decoration:none; font-weight:600;">Log In</a></p>
+      <div id="signup-msg" aria-live="polite" style="text-align:center; margin-top:12px; min-height:1.2em;"></div>
+    </form>
+  </div>
+</section>
+
 <!-- ═══════════════════════ CTA BANNER ═══════════════════════ -->
 <section class="cta-banner">
   <div class="cta-banner__bg"></div>
@@ -1173,18 +1209,7 @@
 
 <!-- ═══════════════════════ SCRIPTS ═══════════════════════ -->
 <script src="js/main.js"></script>
-<script>
-// Early access email form handler
-function handleEarlyAccess(e) {
-  e.preventDefault();
-  var msg = document.getElementById('early-access-msg');
-  var input = document.getElementById('early-access-email');
-  msg.textContent = 'Thanks! We\'ll notify you when the app launches.';
-  input.value = '';
-  input.disabled = true;
-  e.target.querySelector('button').disabled = true;
-}
-</script>
+
 <script>
 // Hero video/image fallback
 (function() {

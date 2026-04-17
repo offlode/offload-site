@@ -3,7 +3,23 @@
    Pricing engine, chatbot, animations, ordering
    ═══════════════════════════════════════════════ */
 
-// ── Pricing Data ──
+// ── Service-Type Pricing Multipliers ──
+// Dry cleaning costs more, comforters cost more, mixed = blended rate
+const SERVICE_MULTIPLIERS = {
+  wash_fold:    1.0,
+  dry_cleaning: 1.65,
+  comforters:   1.40,
+  mixed:        1.25,
+};
+
+const SERVICE_LABELS = {
+  wash_fold:    'Wash & Fold',
+  dry_cleaning: 'Dry Cleaning',
+  comforters:   'Comforters & Bedding',
+  mixed:        'Mix of Everything',
+};
+
+// ── Pricing Data (base = wash & fold prices) ──
 const PRICING = {
   small:  { price: 24.99, maxWeight: 10, label: 'Small Bag', per: 'up to 10 lbs' },
   medium: { price: 44.99, maxWeight: 20, label: 'Medium Bag', per: 'up to 20 lbs' },
@@ -12,18 +28,19 @@ const PRICING = {
 };
 
 const DELIVERY_FEES = {
-  '48h':      { fee: 0,     label: 'Standard (48h)' },
-  '24h':      { fee: 5.99,  label: 'Next Day (24h)' },
-  'same_day': { fee: 12.99, label: 'Same Day (12h)' },
-  'express':  { fee: 19.99, label: 'Express (3h)' },
+  '48h':        { fee: 0,     label: 'Standard (48h)' },
+  '24h':        { fee: 5.99,  label: 'Next Day (24h)' },
+  'same_day':   { fee: 12.99, label: 'Same Day (12h)' },
+  'express_3h': { fee: 19.99, label: 'Express (3h)' },
 };
 
 const TAX_RATE = 0.08875; // NY sales tax
 
-// ── Pricing Engine ──
+// ── Pricing Engine (with service-type adjustment) ──
 function updatePricePreview() {
   const bag = document.getElementById('bag-select').value;
   const speed = document.getElementById('speed-select').value;
+  const service = document.getElementById('service-select').value;
   const preview = document.getElementById('price-preview');
 
   if (!bag) {
@@ -33,14 +50,29 @@ function updatePricePreview() {
 
   const bagData = PRICING[bag];
   const deliveryData = DELIVERY_FEES[speed] || DELIVERY_FEES['48h'];
-  const subtotal = bagData.price + deliveryData.fee;
-  const tax = subtotal * TAX_RATE;
-  const total = subtotal + tax;
+  const serviceMultiplier = SERVICE_MULTIPLIERS[service] || 1.0;
 
-  document.getElementById('pp-bag').textContent = '$' + bagData.price.toFixed(2);
+  // Apply service multiplier to the base bag price
+  const adjustedBagPrice = Math.round(bagData.price * serviceMultiplier * 100) / 100;
+  const subtotal = adjustedBagPrice + deliveryData.fee;
+  const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
+  const total = Math.round((subtotal + tax) * 100) / 100;
+
+  document.getElementById('pp-bag').textContent = '$' + adjustedBagPrice.toFixed(2);
   document.getElementById('pp-delivery').textContent = deliveryData.fee === 0 ? 'Free' : '$' + deliveryData.fee.toFixed(2);
   document.getElementById('pp-tax').textContent = '$' + tax.toFixed(2);
   document.getElementById('pp-total').textContent = '$' + total.toFixed(2);
+
+  // Show service type label if not wash & fold
+  const serviceNote = document.getElementById('pp-service-note');
+  if (serviceNote) {
+    if (service && service !== 'wash_fold') {
+      serviceNote.textContent = SERVICE_LABELS[service] + ' pricing';
+      serviceNote.style.display = 'block';
+    } else {
+      serviceNote.style.display = 'none';
+    }
+  }
 
   preview.classList.add('visible');
 }
@@ -51,6 +83,11 @@ document.getElementById('bag-select').addEventListener('change', () => {
   saveFormState();
 });
 document.getElementById('speed-select').addEventListener('change', () => {
+  updatePricePreview();
+  saveFormState();
+});
+// Service type now also updates price
+document.getElementById('service-select').addEventListener('change', () => {
   updatePricePreview();
   saveFormState();
 });
@@ -77,7 +114,6 @@ function clearFormState() {
 
 // Save state on address/service changes
 document.getElementById('address-input')?.addEventListener('input', saveFormState);
-document.getElementById('service-select')?.addEventListener('change', saveFormState);
 
 // Restore on load
 restoreFormState();
@@ -297,7 +333,7 @@ async function submitRealQuote() {
   btn.style.opacity = '0.7';
 
   // Map speed select values to API values
-  const speedMap = { '48h': '48h', '24h': '24h', 'same_day': 'same_day', 'express': 'express_3h' };
+  const speedMap = { '48h': '48h', '24h': '24h', 'same_day': 'same_day', 'express_3h': 'express_3h' };
   const deliverySpeed = speedMap[speed] || '48h';
 
   // Generate a unique idempotency key to prevent duplicates
@@ -444,6 +480,37 @@ shakeStyle.textContent = `
     25% { transform: translateX(-6px); }
     75% { transform: translateX(6px); }
   }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+  .pac-container {
+    background: #1a1a1a !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 10px !important;
+    margin-top: 4px !important;
+    font-family: 'Inter', sans-serif !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+    z-index: 10000 !important;
+  }
+  .pac-item {
+    padding: 10px 14px !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    color: #e2e8f0 !important;
+    cursor: pointer !important;
+    font-size: 0.88rem !important;
+  }
+  .pac-item:hover, .pac-item-selected {
+    background: rgba(91,75,196,0.15) !important;
+  }
+  .pac-item-query {
+    color: #fff !important;
+    font-weight: 600 !important;
+  }
+  .pac-icon { display: none !important; }
+  .pac-item span { color: #94a3b8 !important; }
+  .pac-item-query span { color: #fff !important; }
+  .pac-logo::after { display: none !important; }
 `;
 document.head.appendChild(shakeStyle);
 
@@ -535,7 +602,7 @@ chatbotClose?.addEventListener('click', () => {
 const CHAT_RESPONSES = {
   pricing: {
     patterns: [/pric/i, /cost/i, /how much/i, /rate/i, /bag/i, /pound/i, /\$/i, /cheap/i, /expensive/i, /afford/i],
-    response: "Our pricing is simple and transparent:\n\n• Small Bag (up to 10 lbs): $24.99\n• Medium Bag (up to 20 lbs): $44.99\n• Large Bag (up to 30 lbs): $59.99\n• XL Bag (up to 50 lbs): $89.99\n\nIf you go over the weight limit, it's just $2.50 per extra pound. Standard delivery (48h) is free! Would you like to place an order?"
+    response: "Our pricing is simple and transparent:\n\n**Wash & Fold (base prices):**\n• Small Bag (up to 10 lbs): $24.99\n• Medium Bag (up to 20 lbs): $44.99\n• Large Bag (up to 30 lbs): $59.99\n• XL Bag (up to 50 lbs): $89.99\n\n**Service adjustments:**\n• Dry Cleaning: +65% over base\n• Comforters & Bedding: +40% over base\n• Mix of Everything: +25% over base\n\nIf you go over the weight limit, it's just $2.50 per extra pound. Standard delivery (48h) is free! Would you like to place an order?"
   },
   delivery: {
     patterns: [/deliver/i, /speed/i, /fast/i, /how long/i, /turnaround/i, /when/i, /time/i, /quick/i, /express/i, /same.?day/i, /next.?day/i],
@@ -551,7 +618,7 @@ const CHAT_RESPONSES = {
   },
   services: {
     patterns: [/service/i, /offer/i, /dry clean/i, /comforter/i, /alteration/i, /bedding/i, /type/i],
-    response: "We offer:\n\n• Wash & Fold — your everyday laundry\n• Dry Cleaning — professional garment care\n• Comforters & Bedding — bulky items handled with care\n• Alterations — hems, repairs, and more\n• Commercial — bulk orders for businesses\n\nYou can even mix services in a single order!"
+    response: "We offer:\n\n• Wash & Fold — your everyday laundry\n• Dry Cleaning — professional garment care (1.65x base price)\n• Comforters & Bedding — bulky items handled with care (1.4x base price)\n• Alterations — hems, repairs, and more\n• Commercial — bulk orders for businesses\n\nPrices adjust automatically when you select a service in the order form!"
   },
   loyalty: {
     patterns: [/loyal/i, /reward/i, /point/i, /tier/i, /bronze/i, /silver/i, /gold/i, /platinum/i, /earn/i, /discount/i, /subscribe/i, /subscription/i, /plan/i, /member/i],
@@ -563,7 +630,7 @@ const CHAT_RESPONSES = {
   },
   account: {
     patterns: [/account/i, /sign.?up/i, /register/i, /login/i, /need.?account/i],
-    response: "No account needed to get a price or schedule a pickup! You'll only need to provide your email, phone, and payment info when you're ready to confirm. If you want to save your preferences, track past orders, or use loyalty points, you can create a free account at any time."
+    response: "No account needed to get a price or schedule a pickup! You'll only need to provide your email, phone, and payment info when you're ready to confirm. If you want to save your preferences, track past orders, or use loyalty points, scroll down to the Sign Up section to create a free account."
   },
   hello: {
     patterns: [/^hi$/i, /^hello$/i, /^hey$/i, /good morning/i, /good evening/i, /^sup/i, /^yo$/i],
@@ -575,7 +642,7 @@ const CHAT_RESPONSES = {
   },
   partner: {
     patterns: [/partner/i, /laundromat/i, /join/i, /drive/i, /driver/i, /earn/i, /work/i],
-    response: "Want to grow with Offload?\n\n🏪 Laundromat Partners: Get a steady stream of orders with smart order queuing and automated payouts. Email partners@offloadusa.com\n\n🚗 Drivers: Earn $8.50+ per trip plus tips on your own schedule. Email drivers@offloadusa.com\n\nBoth get access to our full logistics platform."
+    response: "Want to grow with Offload?\n\nLaundromat Partners: Get a steady stream of orders with smart order queuing and automated payouts. Email partners@offloadusa.com\n\nDrivers: Earn $8.50+ per trip plus tips on your own schedule. Email drivers@offloadusa.com\n\nBoth get access to our full logistics platform."
   }
 };
 
@@ -655,7 +722,55 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 
-// ── Geolocation for address ──
+// ══════════════════════════════════════════════
+//  ADDRESS AUTOCOMPLETE (Google Places API)
+// ══════════════════════════════════════════════
+
+let autocomplete = null;
+let selectedPlace = null;
+
+function initAutocomplete() {
+  const addressInput = document.getElementById('address-input');
+  if (!addressInput || !window.google || !window.google.maps) return;
+
+  autocomplete = new google.maps.places.Autocomplete(addressInput, {
+    types: ['address'],
+    componentRestrictions: { country: 'us' },
+    fields: ['address_components', 'formatted_address', 'geometry', 'name'],
+  });
+
+  autocomplete.addListener('place_changed', () => {
+    const place = autocomplete.getPlace();
+    if (!place.geometry) return;
+
+    selectedPlace = {
+      formatted: place.formatted_address,
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+      components: {},
+    };
+
+    // Parse address components
+    if (place.address_components) {
+      for (const comp of place.address_components) {
+        if (comp.types.includes('locality')) selectedPlace.components.city = comp.long_name;
+        if (comp.types.includes('administrative_area_level_1')) selectedPlace.components.state = comp.short_name;
+        if (comp.types.includes('postal_code')) selectedPlace.components.zip = comp.long_name;
+      }
+    }
+
+    addressInput.style.borderColor = '#5B4BC4';
+    setTimeout(() => { addressInput.style.borderColor = ''; }, 1500);
+    saveFormState();
+  });
+}
+
+// If Google Maps API was loaded via script tag, it calls initAutocomplete automatically.
+// Otherwise, we set it as a global callback
+window.initAutocomplete = initAutocomplete;
+
+
+// ── Geolocation for address (fallback if no Google Places) ──
 if ('geolocation' in navigator) {
   const addressInput = document.getElementById('address-input');
   // Add a subtle location hint
@@ -667,10 +782,31 @@ if ('geolocation' in navigator) {
   geoBtn.onclick = () => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        addressInput.value = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
-        addressInput.style.borderColor = '#5B4BC4';
-        setTimeout(() => addressInput.style.borderColor = '', 1500);
-        saveFormState();
+        // Reverse geocode with Nominatim (free, no API key)
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&addressdetails=1`)
+          .then(r => r.json())
+          .then(data => {
+            if (data.display_name) {
+              // Build a clean address
+              const a = data.address || {};
+              const parts = [];
+              if (a.house_number && a.road) parts.push(a.house_number + ' ' + a.road);
+              else if (a.road) parts.push(a.road);
+              if (a.city || a.town || a.village) parts.push(a.city || a.town || a.village);
+              if (a.state) parts.push(a.state);
+              if (a.postcode) parts.push(a.postcode);
+              addressInput.value = parts.join(', ') || data.display_name;
+            } else {
+              addressInput.value = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+            }
+            addressInput.style.borderColor = '#5B4BC4';
+            setTimeout(() => addressInput.style.borderColor = '', 1500);
+            saveFormState();
+          })
+          .catch(() => {
+            addressInput.value = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+            saveFormState();
+          });
       },
       () => { /* silent fail */ }
     );
@@ -679,6 +815,229 @@ if ('geolocation' in navigator) {
   const addressField = addressInput.parentElement;
   addressField.style.position = 'relative';
   addressField.appendChild(geoBtn);
+}
+
+
+// ══════════════════════════════════════════════
+//  GEO-LOCATION HERO — "Serving [City/State]"
+// ══════════════════════════════════════════════
+
+// Service areas we currently operate in
+const SERVICE_AREAS = {
+  // New York metro
+  'New York': true, 'Brooklyn': true, 'Queens': true, 'Bronx': true, 
+  'Staten Island': true, 'Manhattan': true, 'Jersey City': true,
+  'Hoboken': true, 'Newark': true, 'Yonkers': true, 'White Plains': true,
+  // State-level fallback
+  'NY': true, 'NJ': true,
+};
+
+// Friendly display names for states
+const STATE_NAMES = {
+  'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas',
+  'CA': 'California', 'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware',
+  'FL': 'Florida', 'GA': 'Georgia', 'HI': 'Hawaii', 'ID': 'Idaho',
+  'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa', 'KS': 'Kansas',
+  'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+  'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi',
+  'MO': 'Missouri', 'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada',
+  'NH': 'New Hampshire', 'NJ': 'New Jersey', 'NM': 'New Mexico', 'NY': 'New York',
+  'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio', 'OK': 'Oklahoma',
+  'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+  'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah',
+  'VT': 'Vermont', 'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia',
+  'WI': 'Wisconsin', 'WY': 'Wyoming', 'DC': 'District of Columbia',
+};
+
+(function detectLocation() {
+  const badge = document.getElementById('hero-location-badge');
+  const textEl = document.getElementById('hero-location-text');
+  if (!badge || !textEl) return;
+
+  // Try IP-based geolocation (free, no API key, no permission prompt)
+  fetch('https://ipapi.co/json/')
+    .then(r => r.json())
+    .then(data => {
+      if (!data || !data.region_code) return;
+
+      const city = data.city || '';
+      const stateCode = data.region_code || '';
+      const stateName = STATE_NAMES[stateCode] || stateCode;
+
+      // Check if we serve this location
+      const inServiceArea = SERVICE_AREAS[city] || SERVICE_AREAS[stateCode];
+
+      if (inServiceArea) {
+        // We serve them — show city name proudly
+        textEl.textContent = `Serving ${city || stateName}`;
+        badge.style.background = 'rgba(91,75,196,0.12)';
+      } else if (city) {
+        // We don't serve there yet — show "Coming soon to [State]"
+        textEl.textContent = `Coming Soon to ${stateName}`;
+        badge.style.background = 'rgba(255,165,0,0.12)';
+        badge.querySelector('.hero__badge-dot').style.background = '#f59e0b';
+      }
+      // If no data, leave default "Serving New York City"
+    })
+    .catch(() => {
+      // Silent fail — keep default text
+    });
+})();
+
+
+// ══════════════════════════════════════════════
+//  SIGN UP & LOGIN
+// ══════════════════════════════════════════════
+
+function handleSignup() {
+  const first = document.getElementById('signup-first');
+  const last = document.getElementById('signup-last');
+  const email = document.getElementById('signup-email');
+  const phone = document.getElementById('signup-phone');
+  const password = document.getElementById('signup-password');
+  const msgEl = document.getElementById('signup-msg');
+  const btn = document.getElementById('signup-btn');
+
+  // Clear previous messages
+  msgEl.textContent = '';
+  msgEl.style.color = '';
+
+  // Validate fields with inline red highlighting
+  if (!first.value.trim()) {
+    showFieldError(first, 'First name is required');
+    return;
+  }
+  if (!last.value.trim()) {
+    showFieldError(last, 'Last name is required');
+    return;
+  }
+  if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+    showFieldError(email, 'Please enter a valid email address');
+    return;
+  }
+  if (!phone.value.trim()) {
+    showFieldError(phone, 'Phone number is required');
+    return;
+  }
+  if (!password.value || password.value.length < 8) {
+    showFieldError(password, 'Password must be at least 8 characters');
+    return;
+  }
+
+  // Submit to API
+  btn.disabled = true;
+  btn.textContent = 'Creating Account...';
+  btn.style.opacity = '0.7';
+
+  fetch(API_BASE + '/api/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      firstName: first.value.trim(),
+      lastName: last.value.trim(),
+      email: email.value.trim(),
+      phone: phone.value.trim(),
+      password: password.value,
+      role: 'customer',
+    }),
+  })
+    .then(r => {
+      if (!r.ok) return r.json().then(d => { throw new Error(d.error || 'Registration failed'); });
+      return r.json();
+    })
+    .then(data => {
+      msgEl.style.color = '#22c55e';
+      msgEl.textContent = 'Account created successfully! You can now track orders and earn loyalty rewards.';
+      btn.textContent = 'Account Created';
+      btn.style.background = '#22c55e';
+      // Clear form
+      first.value = '';
+      last.value = '';
+      email.value = '';
+      phone.value = '';
+      password.value = '';
+    })
+    .catch(err => {
+      msgEl.style.color = '#ef4444';
+      msgEl.textContent = err.message || 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.textContent = 'Create Account';
+      btn.style.opacity = '1';
+    });
+}
+
+function showLoginModal() {
+  // Create a simple login modal overlay
+  const existing = document.getElementById('login-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'login-modal';
+  modal.style.cssText = 'position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px);';
+  modal.innerHTML = `
+    <div style="background:#1a1a1a; border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:32px; max-width:400px; width:90%; position:relative;">
+      <button onclick="document.getElementById('login-modal').remove()" style="position:absolute; top:12px; right:12px; background:none; border:none; color:#94a3b8; cursor:pointer; font-size:1.2rem;">&times;</button>
+      <h3 style="font-size:1.3rem; font-weight:700; color:#fff; margin-bottom:4px;">Welcome Back</h3>
+      <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:24px;">Log in to your Offload account</p>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-size:0.78rem; font-weight:600; color:#94a3b8; margin-bottom:4px;">Email</label>
+        <input type="email" id="login-email" class="widget__input" placeholder="your@email.com" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff; width:100%; box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:0.78rem; font-weight:600; color:#94a3b8; margin-bottom:4px;">Password</label>
+        <input type="password" id="login-password" class="widget__input" placeholder="Your password" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff; width:100%; box-sizing:border-box;">
+      </div>
+      <button onclick="handleLogin()" style="width:100%; background:#5B4BC4; color:#fff; border:none; padding:12px; border-radius:10px; font-weight:700; font-size:0.92rem; cursor:pointer;">Log In</button>
+      <div id="login-msg" style="text-align:center; margin-top:10px; font-size:0.82rem; min-height:1.2em;"></div>
+      <p style="text-align:center; margin-top:14px; font-size:0.82rem; color:#64748b;">Don't have an account? <a href="#signup-section" onclick="document.getElementById('login-modal').remove()" style="color:#5B4BC4; text-decoration:none; font-weight:600;">Sign Up</a></p>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+  document.getElementById('login-email')?.focus();
+}
+
+function handleLogin() {
+  const email = document.getElementById('login-email');
+  const password = document.getElementById('login-password');
+  const msgEl = document.getElementById('login-msg');
+
+  if (!email.value.trim()) {
+    showFieldError(email, 'Email is required');
+    return;
+  }
+  if (!password.value) {
+    showFieldError(password, 'Password is required');
+    return;
+  }
+
+  msgEl.textContent = 'Logging in...';
+  msgEl.style.color = '#94a3b8';
+
+  fetch(API_BASE + '/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: email.value.trim(),
+      password: password.value,
+    }),
+  })
+    .then(r => {
+      if (!r.ok) return r.json().then(d => { throw new Error(d.error || 'Login failed'); });
+      return r.json();
+    })
+    .then(data => {
+      msgEl.style.color = '#22c55e';
+      msgEl.textContent = 'Logged in successfully! Redirecting...';
+      // In production, redirect to the app dashboard
+      setTimeout(() => {
+        window.location.href = API_BASE;
+      }, 1000);
+    })
+    .catch(err => {
+      msgEl.style.color = '#ef4444';
+      msgEl.textContent = err.message || 'Invalid email or password.';
+    });
 }
 
 
