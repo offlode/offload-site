@@ -119,7 +119,7 @@ document.getElementById('address-input')?.addEventListener('input', saveFormStat
 restoreFormState();
 
 // ── Order Flow ──
-let orderState = 'quote'; // quote | schedule | checkout
+let orderState = 'quote'; // quote | schedule | checkout | payment
 let orderBtnLocked = false; // rapid-click protection
 
 async function handleOrderClick() {
