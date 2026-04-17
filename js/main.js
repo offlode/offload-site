@@ -988,9 +988,12 @@ if ('geolocation' in navigator) {
     );
   };
   
-  const addressField = addressInput.parentElement;
-  addressField.style.position = 'relative';
-  addressField.appendChild(geoBtn);
+  // Wrap the input in a relative container so the arrow centers on the input, not the label+input
+  const inputWrapper = document.createElement('div');
+  inputWrapper.style.position = 'relative';
+  addressInput.parentElement.insertBefore(inputWrapper, addressInput);
+  inputWrapper.appendChild(addressInput);
+  inputWrapper.appendChild(geoBtn);
 }
 
 
