@@ -1189,6 +1189,31 @@ function handleLogin() {
 }
 
 
+// ── App Coming Soon Modal ──
+function showAppComingSoon() {
+  // Remove existing modal if any
+  const existing = document.getElementById('app-coming-soon-modal');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'app-coming-soon-modal';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:10000;backdrop-filter:blur(4px);animation:fadeIn 0.2s ease;';
+  overlay.innerHTML = `
+    <div style="background:#1A1A1A;border:1px solid #2E2E2E;border-radius:20px;padding:40px 32px;max-width:400px;width:90%;text-align:center;position:relative;animation:scaleIn 0.25s ease;">
+      <button onclick="document.getElementById('app-coming-soon-modal').remove()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:#6b6b6b;font-size:1.3rem;cursor:pointer;padding:4px;line-height:1;">&times;</button>
+      <div style="width:64px;height:64px;background:rgba(91,75,196,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5B4BC4" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18.01" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <h3 style="color:#fff;font-size:1.2rem;font-weight:800;margin-bottom:8px;font-family:Inter,system-ui,sans-serif;">App Launching May 26</h3>
+      <p style="color:#a0a0a0;font-size:0.9rem;line-height:1.6;margin-bottom:24px;font-family:Inter,system-ui,sans-serif;">The Offload mobile app will be available on the App Store and Google Play on launch day. Sign up now to get notified the moment it drops.</p>
+      <a href="/#signup-section" onclick="document.getElementById('app-coming-soon-modal').remove()" style="display:inline-block;background:#5B4BC4;color:#fff;padding:12px 28px;border-radius:10px;font-weight:700;font-size:0.9rem;text-decoration:none;font-family:Inter,system-ui,sans-serif;transition:background 0.2s;" onmouseover="this.style.background='#4a3bb3'" onmouseout="this.style.background='#5B4BC4'">Sign Up for Early Access</a>
+    </div>
+  `;
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
+window.showAppComingSoon = showAppComingSoon;
+
 // ── Pricing card → pre-select bag size ──
 // Map pricing card "Select" buttons to bag sizes
 document.querySelectorAll('.pricing-card').forEach(card => {
