@@ -209,6 +209,13 @@
 
   <link rel="stylesheet" href="css/style.css">
   <script src="https://js.stripe.com/v3/"></script>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#5B4BC4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Offload">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
 <body>
 <a href="#main-content" class="skip-link" tabindex="0">Skip to main content</a>
@@ -1349,6 +1356,14 @@ function dismissLaunchPopup() {
 
 // Show popup after 2 seconds
 setTimeout(showLaunchPopup, 2000);
+</script>
+<script>
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
