@@ -258,7 +258,7 @@ async function handleSignIn() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        username: email.value.trim(),
+        email: email.value.trim(),
         password: password.value,
       }),
     });

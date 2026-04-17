@@ -212,7 +212,7 @@
 const ADMIN_URL = 'https://admin.offloadusa.com';
 const API_BASE = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
   ? 'http://localhost:5000'
-  : 'https://admin.offloadusa.com';
+  : 'https://api.offloadusa.com';
 
 async function handleAdminSignIn() {
   const email = document.getElementById('admin-email');
@@ -253,7 +253,7 @@ async function handleAdminSignIn() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        username: email.value.trim(),
+        email: email.value.trim(),
         password: password.value,
       }),
     });

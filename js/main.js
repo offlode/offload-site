@@ -861,58 +861,88 @@ window.addEventListener('scroll', () => {
 
 
 // ══════════════════════════════════════════════
-//  ADDRESS AUTOCOMPLETE (Google Places API)
+//  ADDRESS AUTOCOMPLETE (Nominatim / OpenStreetMap)
 // ══════════════════════════════════════════════
 
-let autocomplete = null;
 let selectedPlace = null;
 let addressVerified = false;
+let autocompleteTimeout = null;
+let autocompleteDropdown = null;
 
-function initAutocomplete() {
+(function initAddressAutocomplete() {
   const addressInput = document.getElementById('address-input');
-  if (!addressInput || !window.google || !window.google.maps) return;
+  if (!addressInput) return;
 
-  autocomplete = new google.maps.places.Autocomplete(addressInput, {
-    types: ['address'],
-    componentRestrictions: { country: 'us' },
-    fields: ['address_components', 'formatted_address', 'geometry', 'name'],
+  // Create dropdown container
+  autocompleteDropdown = document.createElement('div');
+  autocompleteDropdown.id = 'address-dropdown';
+  autocompleteDropdown.style.cssText = 'position:absolute;top:100%;left:0;right:0;background:#1A1A1A;border:1px solid #2E2E2E;border-top:none;border-radius:0 0 10px 10px;max-height:220px;overflow-y:auto;z-index:1000;display:none;box-shadow:0 8px 24px rgba(0,0,0,0.4);';
+  addressInput.parentElement.style.position = 'relative';
+  addressInput.parentElement.appendChild(autocompleteDropdown);
+
+  addressInput.addEventListener('input', () => {
+    addressVerified = false;
+    selectedPlace = null;
+    clearTimeout(autocompleteTimeout);
+    const q = addressInput.value.trim();
+    if (q.length < 4) { autocompleteDropdown.style.display = 'none'; return; }
+
+    autocompleteTimeout = setTimeout(() => {
+      fetch('https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=5&q=' + encodeURIComponent(q), {
+        headers: { 'Accept-Language': 'en' }
+      })
+        .then(r => r.json())
+        .then(results => {
+          autocompleteDropdown.innerHTML = '';
+          if (!results.length) { autocompleteDropdown.style.display = 'none'; return; }
+          autocompleteDropdown.style.display = 'block';
+          results.forEach(r => {
+            const item = document.createElement('div');
+            item.style.cssText = 'padding:10px 14px;cursor:pointer;font-size:0.88rem;color:#e0e0e0;border-bottom:1px solid #2E2E2E;transition:background 0.15s;';
+            item.textContent = r.display_name;
+            item.addEventListener('mouseenter', () => { item.style.background = 'rgba(91,75,196,0.15)'; });
+            item.addEventListener('mouseleave', () => { item.style.background = ''; });
+            item.addEventListener('mousedown', (e) => {
+              e.preventDefault();
+              addressInput.value = r.display_name;
+              selectedPlace = {
+                formatted: r.display_name,
+                lat: parseFloat(r.lat),
+                lng: parseFloat(r.lon),
+                components: {
+                  city: r.address?.city || r.address?.town || r.address?.village || '',
+                  state: r.address?.state || '',
+                  zip: r.address?.postcode || '',
+                },
+              };
+              addressVerified = true;
+              autocompleteDropdown.style.display = 'none';
+              addressInput.style.borderColor = '#5B4BC4';
+              setTimeout(() => { addressInput.style.borderColor = ''; }, 1500);
+              saveFormState();
+            });
+            autocompleteDropdown.appendChild(item);
+          });
+        })
+        .catch(() => { autocompleteDropdown.style.display = 'none'; });
+    }, 350);
   });
 
-  autocomplete.addListener('place_changed', () => {
-    const place = autocomplete.getPlace();
-    if (!place.geometry) return;
+  // Hide dropdown on blur
+  addressInput.addEventListener('blur', () => {
+    setTimeout(() => { autocompleteDropdown.style.display = 'none'; }, 200);
+  });
 
-    selectedPlace = {
-      formatted: place.formatted_address,
-      lat: place.geometry.location.lat(),
-      lng: place.geometry.location.lng(),
-      components: {},
-    };
-
-    // Parse address components
-    if (place.address_components) {
-      for (const comp of place.address_components) {
-        if (comp.types.includes('locality')) selectedPlace.components.city = comp.long_name;
-        if (comp.types.includes('administrative_area_level_1')) selectedPlace.components.state = comp.short_name;
-        if (comp.types.includes('postal_code')) selectedPlace.components.zip = comp.long_name;
-      }
+  // Hide dropdown on focus if empty
+  addressInput.addEventListener('focus', () => {
+    if (addressInput.value.trim().length >= 4 && autocompleteDropdown.children.length > 0) {
+      autocompleteDropdown.style.display = 'block';
     }
-
-    addressInput.style.borderColor = '#5B4BC4';
-    setTimeout(() => { addressInput.style.borderColor = ''; }, 1500);
-    saveFormState();
-    addressVerified = true;
   });
-}
+})();
 
-// If Google Maps API was loaded via script tag, it calls initAutocomplete automatically.
-// Otherwise, we set it as a global callback
-window.initAutocomplete = initAutocomplete;
-
-// Reset address verification when user manually edits the field
-document.getElementById('address-input')?.addEventListener('input', () => {
-  addressVerified = false;
-});
+// Keep global initAutocomplete for compatibility (no-op now)
+window.initAutocomplete = function() {};
 
 // ── Geolocation for address (fallback if no Google Places) ──
 if ('geolocation' in navigator) {
@@ -1079,12 +1109,10 @@ function handleSignup() {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      firstName: first.value.trim(),
-      lastName: last.value.trim(),
+      name: first.value.trim() + ' ' + last.value.trim(),
       email: email.value.trim(),
       phone: phone.value.trim(),
       password: password.value,
-      role: 'customer',
     }),
   })
     .then(r => {
