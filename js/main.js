@@ -1113,34 +1113,8 @@ function handleSignup() {
 }
 
 function showLoginModal() {
-  // Create a simple login modal overlay
-  const existing = document.getElementById('login-modal');
-  if (existing) existing.remove();
-
-  const modal = document.createElement('div');
-  modal.id = 'login-modal';
-  modal.style.cssText = 'position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px);';
-  modal.innerHTML = `
-    <div style="background:#1a1a1a; border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:32px; max-width:400px; width:90%; position:relative;">
-      <button onclick="document.getElementById('login-modal').remove()" style="position:absolute; top:12px; right:12px; background:none; border:none; color:#94a3b8; cursor:pointer; font-size:1.2rem;">&times;</button>
-      <h3 style="font-size:1.3rem; font-weight:700; color:#fff; margin-bottom:4px;">Welcome Back</h3>
-      <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:24px;">Log in to your Offload account</p>
-      <div style="margin-bottom:12px;">
-        <label style="display:block; font-size:0.78rem; font-weight:600; color:#94a3b8; margin-bottom:4px;">Email</label>
-        <input type="email" id="login-email" class="widget__input" placeholder="your@email.com" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff; width:100%; box-sizing:border-box;">
-      </div>
-      <div style="margin-bottom:16px;">
-        <label style="display:block; font-size:0.78rem; font-weight:600; color:#94a3b8; margin-bottom:4px;">Password</label>
-        <input type="password" id="login-password" class="widget__input" placeholder="Your password" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff; width:100%; box-sizing:border-box;">
-      </div>
-      <button onclick="handleLogin()" style="width:100%; background:#5B4BC4; color:#fff; border:none; padding:12px; border-radius:10px; font-weight:700; font-size:0.92rem; cursor:pointer;">Log In</button>
-      <div id="login-msg" style="text-align:center; margin-top:10px; font-size:0.82rem; min-height:1.2em;"></div>
-      <p style="text-align:center; margin-top:14px; font-size:0.82rem; color:#64748b;">Don't have an account? <a href="#signup-section" onclick="document.getElementById('login-modal').remove()" style="color:#5B4BC4; text-decoration:none; font-weight:600;">Sign Up</a></p>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
-  document.getElementById('login-email')?.focus();
+  // Redirect to dedicated sign-in page
+  window.location.href = 'sign-in.html';
 }
 
 function handleLogin() {
