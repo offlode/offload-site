@@ -122,7 +122,7 @@ restoreFormState();
 let orderState = 'quote'; // quote | schedule | checkout
 let orderBtnLocked = false; // rapid-click protection
 
-function handleOrderClick() {
+async function handleOrderClick() {
   // Rapid-click protection
   if (orderBtnLocked) return;
 
@@ -140,8 +140,9 @@ function handleOrderClick() {
 
   if (orderState === 'quote') {
     // Validate
-    if (!address) {
-      shakeField('address-input');
+    if (!address || !addressVerified) {
+      const addressInput = document.getElementById('address-input');
+      showFieldError(addressInput, address ? 'Please select an address from the suggestions' : 'Please enter your pickup address');
       return;
     }
     if (!service) {
@@ -191,7 +192,7 @@ function handleOrderClick() {
     // Email validation — inline red + scroll
     if (email) {
       if (!email.value) {
-        showFieldError(email, 'Please enter a valid email address');
+        showFieldError(email, 'Please enter your email address');
         return;
       }
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -200,14 +201,35 @@ function handleOrderClick() {
         return;
       }
     }
-    if (phone && !phone.value) {
-      shakeField('contact-phone');
-      return;
+    // Phone validation
+    if (phone) {
+      if (!phone.value) {
+        showFieldError(phone, 'Please enter your phone number');
+        return;
+      }
+      const digits = phone.value.replace(/\D/g, '');
+      if (digits.length < 10) {
+        showFieldError(phone, 'Please enter a valid 10-digit phone number');
+        return;
+      }
     }
 
-    // Submit to real quote API
-    clearFormState();
-    submitRealQuote();
+    // Transition to payment
+    orderState = 'payment';
+    btn.textContent = 'Place Order';
+    btn.style.background = '#5B4BC4';
+    
+    // Show Stripe card element
+    addPaymentField();
+    return;
+  }
+
+  if (orderState === 'payment') {
+    // Process payment and submit order
+    btn.disabled = true;
+    btn.textContent = 'Processing Payment...';
+    btn.style.opacity = '0.7';
+    await processPaymentAndOrder();
   }
 }
 
@@ -309,13 +331,109 @@ function addContactFields() {
   form.insertBefore(div, pricePreview);
 }
 
-// ── Real Quote API Integration ──
+// Auto-format phone number as user types
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'contact-phone') {
+    let val = e.target.value.replace(/\D/g, '');
+    if (val.length > 10) val = val.substring(0, 10);
+    if (val.length >= 7) {
+      e.target.value = '(' + val.substring(0, 3) + ') ' + val.substring(3, 6) + '-' + val.substring(6);
+    } else if (val.length >= 4) {
+      e.target.value = '(' + val.substring(0, 3) + ') ' + val.substring(3);
+    } else if (val.length > 0) {
+      e.target.value = '(' + val;
+    }
+  }
+});
+
 // Dynamic API base — matches the hostname the site is loaded from
 const API_BASE = window.location.hostname === '127.0.0.1' 
   ? 'http://127.0.0.1:5000' 
   : (window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://api.offloadusa.com');
 
-async function submitRealQuote() {
+// ── Stripe Payment Integration ──
+let stripeInstance = null;
+let stripeElements = null;
+let cardElement = null;
+
+function initStripe() {
+  if (stripeInstance) return;
+  if (typeof Stripe === 'undefined') {
+    console.warn('[Stripe] Stripe.js not loaded');
+    return;
+  }
+  stripeInstance = Stripe('pk_test_51TMiltKfiq0b5r3zXngAkvVa1KCRhnQGZPLZ4lQarShmk2JupWVhDjkN7LzFpANBTUw47iNFY4fXzfoaa1Lu9PU300Qs02jfiP');
+}
+
+function addPaymentField() {
+  const form = document.getElementById('order-form');
+  if (document.getElementById('payment-fields')) return;
+
+  initStripe();
+
+  const div = document.createElement('div');
+  div.id = 'payment-fields';
+  div.style.animation = 'fadeInUp 0.3s ease forwards';
+
+  div.innerHTML = `
+    <div class="widget__field" style="margin-bottom:12px;">
+      <label class="widget__label">Credit or Debit Card</label>
+      <div id="stripe-card-element" style="background:#fff; border:1.5px solid #e2e8f0; border-radius:8px; padding:12px 14px; font-size:0.95rem; transition:border-color 0.2s;"></div>
+      <div id="card-errors" style="color:#ef4444; font-size:0.78rem; margin-top:4px; font-weight:500; display:none;"></div>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5B4BC4" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span style="font-size:0.75rem; color:var(--text-muted);">Secured by Stripe. Your card info never touches our servers.</span>
+    </div>
+  `;
+
+  const pricePreview = document.getElementById('price-preview');
+  form.insertBefore(div, pricePreview);
+
+  // Mount Stripe card element
+  if (stripeInstance) {
+    stripeElements = stripeInstance.elements();
+    cardElement = stripeElements.create('card', {
+      style: {
+        base: {
+          fontSize: '16px',
+          color: '#1a1a1a',
+          fontFamily: 'Inter, system-ui, sans-serif',
+          '::placeholder': { color: '#a0aec0' },
+        },
+        invalid: {
+          color: '#ef4444',
+          iconColor: '#ef4444',
+        },
+      },
+    });
+    cardElement.mount('#stripe-card-element');
+
+    // Handle real-time card errors
+    cardElement.on('change', (event) => {
+      const errorEl = document.getElementById('card-errors');
+      if (event.error) {
+        errorEl.textContent = event.error.message;
+        errorEl.style.display = 'block';
+      } else {
+        errorEl.style.display = 'none';
+      }
+    });
+
+    // Style the container on focus/blur
+    cardElement.on('focus', () => {
+      document.getElementById('stripe-card-element').style.borderColor = '#5B4BC4';
+      document.getElementById('stripe-card-element').style.boxShadow = '0 0 0 3px rgba(91,75,196,0.12)';
+    });
+    cardElement.on('blur', () => {
+      document.getElementById('stripe-card-element').style.borderColor = '#e2e8f0';
+      document.getElementById('stripe-card-element').style.boxShadow = 'none';
+    });
+  }
+}
+
+async function processPaymentAndOrder() {
+  const btn = document.getElementById('order-btn');
   const bag = document.getElementById('bag-select').value;
   const address = document.getElementById('address-input').value;
   const speed = document.getElementById('speed-select').value;
@@ -326,108 +444,126 @@ async function submitRealQuote() {
   const date = document.getElementById('pickup-date')?.value || '';
   const time = document.getElementById('pickup-time')?.value || '';
 
-  const btn = document.getElementById('order-btn');
-  const originalText = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Processing...';
-  btn.style.opacity = '0.7';
-
-  // Map speed select values to API values
-  const speedMap = { '48h': '48h', '24h': '24h', 'same_day': 'same_day', 'express_3h': 'express_3h' };
-  const deliverySpeed = speedMap[speed] || '48h';
-
-  // Generate a unique idempotency key to prevent duplicates
-  const idempotencyKey = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-
   try {
-    const response = await fetch(API_BASE + '/api/quotes', {
+    // Step 1: Create quote on the server
+    const speedMap = { '48h': '48h', '24h': '24h', 'same_day': 'same_day', 'express_3h': 'express_3h' };
+    const deliverySpeed = speedMap[speed] || '48h';
+    const idempotencyKey = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+    const quoteRes = await fetch(API_BASE + '/api/quotes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         pickupAddress: address,
-        pickupCity: 'New York',
-        pickupState: 'NY',
+        pickupCity: selectedPlace?.components?.city || '',
+        pickupState: selectedPlace?.components?.state || 'NY',
+        pickupZip: selectedPlace?.components?.zip || '',
+        pickupLat: selectedPlace?.lat,
+        pickupLng: selectedPlace?.lng,
         serviceType: service || 'wash_fold',
         tierName: bag,
-        deliverySpeed: deliverySpeed,
-        idempotencyKey: idempotencyKey,
+        deliverySpeed,
+        idempotencyKey,
       }),
     });
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({ error: 'Server error' }));
+    if (!quoteRes.ok) {
+      const err = await quoteRes.json().catch(() => ({ error: 'Server error' }));
       throw new Error(err.error || 'Failed to create quote');
     }
 
-    const quote = await response.json();
+    const quote = await quoteRes.json();
 
-    // Show real confirmation with server-calculated pricing
-    showRealOrderConfirmation(quote, {
-      address,
-      email,
-      phone,
-      notes,
-      pickupDate: date,
-      pickupTime: time,
-      bagLabel: PRICING[bag]?.label || bag,
+    // Step 2: Create payment intent via the public checkout endpoint
+    const intentRes = await fetch(API_BASE + '/api/public/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        quoteId: quote.id,
+        email,
+        phone,
+        notes,
+        pickupDate: date,
+        pickupTime: time,
+      }),
     });
 
+    if (!intentRes.ok) {
+      const err = await intentRes.json().catch(() => ({ error: 'Payment setup failed' }));
+      throw new Error(err.error || 'Payment setup failed');
+    }
+
+    const { clientSecret, orderId, orderNumber } = await intentRes.json();
+
+    // Step 3: Confirm card payment with Stripe
+    if (!stripeInstance || !cardElement) {
+      throw new Error('Payment system not loaded. Please refresh and try again.');
+    }
+
+    const { error: stripeError, paymentIntent } = await stripeInstance.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: cardElement,
+        billing_details: {
+          email: email,
+          phone: phone,
+        },
+      },
+    });
+
+    if (stripeError) {
+      // Show card error
+      const errorEl = document.getElementById('card-errors');
+      if (errorEl) {
+        errorEl.textContent = stripeError.message;
+        errorEl.style.display = 'block';
+      }
+      throw new Error(stripeError.message);
+    }
+
+    if (paymentIntent.status === 'succeeded') {
+      // Payment successful — show confirmation
+      showPaymentConfirmation(quote, orderNumber, {
+        address, email, phone, notes,
+        pickupDate: date, pickupTime: time,
+        bagLabel: PRICING[bag]?.label || bag,
+      });
+    }
+
   } catch (err) {
-    console.error('Quote submission failed:', err);
-    // Show error inline
+    console.error('Payment failed:', err);
     btn.disabled = false;
-    btn.textContent = originalText;
+    btn.textContent = 'Place Order';
     btn.style.opacity = '1';
 
+    // Show error inline
     const errorBanner = document.createElement('div');
-    errorBanner.id = 'quote-error-banner';
+    errorBanner.id = 'payment-error-banner';
     errorBanner.style.cssText = 'background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:12px 16px; border-radius:8px; font-size:0.88rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;';
     errorBanner.innerHTML = `
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-      <span>${err.message || 'Something went wrong. Please try again.'}</span>
+      <span>${err.message || 'Payment failed. Please check your card and try again.'}</span>
     `;
-    // Remove any existing error banner
-    const existing = document.getElementById('quote-error-banner');
+    const existing = document.getElementById('payment-error-banner');
     if (existing) existing.remove();
     const form = document.getElementById('order-form');
     form.insertBefore(errorBanner, form.firstChild);
     errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    // Auto-remove after 8 seconds
     setTimeout(() => errorBanner?.remove(), 8000);
   }
 }
 
-function showRealOrderConfirmation(quote, details) {
+function showPaymentConfirmation(quote, orderNumber, details) {
   const widget = document.getElementById('hero-widget');
-  
-  // Build line items display from server data
-  const lineItems = quote.lineItems || [];
-  let lineItemsHtml = '';
-  lineItems.forEach(item => {
-    const amt = item.amount === 0 ? 'Free' : '$' + item.amount.toFixed(2);
-    lineItemsHtml += `
-      <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--gray-100);">
-        <span style="color:var(--text-muted); font-size:0.85rem;">${item.label}</span>
-        <span style="font-weight:600; font-size:0.85rem;">${amt}</span>
-      </div>
-    `;
-  });
-
-  // Format the total from the server
   const total = '$' + Number(quote.total).toFixed(2);
-  const quoteNum = quote.quoteNumber || 'N/A';
-  const expiresAt = quote.expiresAt ? new Date(quote.expiresAt) : null;
-  const expiresIn = expiresAt ? Math.max(0, Math.round((expiresAt - Date.now()) / 60000)) : 15;
 
   widget.innerHTML = `
     <div style="text-align:center; padding:20px 0;">
       <div style="width:64px; height:64px; margin:0 auto 16px; background:rgba(91,75,196,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center;">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5B4BC4" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
       </div>
-      <h3 style="font-size:1.3rem; font-weight:700; margin-bottom:4px; font-family:var(--font-display);">Quote Confirmed</h3>
-      <p style="color:var(--text-secondary); font-size:0.82rem; margin-bottom:4px;">Quote #${quoteNum}</p>
-      <p style="color:var(--text-muted); font-size:0.78rem; margin-bottom:20px;">Valid for ${expiresIn} minutes</p>
+      <h3 style="font-size:1.3rem; font-weight:700; margin-bottom:4px; font-family:var(--font-display);">Order Confirmed!</h3>
+      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:4px;">Order #${orderNumber}</p>
+      <p style="color:var(--text-muted); font-size:0.78rem; margin-bottom:20px;">Payment of ${total} processed successfully</p>
       
       <div style="background:var(--gray-50); border-radius:10px; padding:16px; text-align:left; font-size:0.88rem;">
         <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--gray-100);">
@@ -438,18 +574,20 @@ function showRealOrderConfirmation(quote, details) {
           <span style="color:var(--text-muted);">Pickup</span>
           <span style="font-weight:600;">${details.pickupDate || 'Today'} ${details.pickupTime || ''}</span>
         </div>
-        ${lineItemsHtml}
-        <div style="display:flex; justify-content:space-between; padding:8px 0 2px; margin-top:4px;">
-          <span style="font-weight:700;">Total</span>
-          <span style="font-weight:700; color:#5B4BC4; font-size:1.05rem;">${total}</span>
+        <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--gray-100);">
+          <span style="color:var(--text-muted);">Total Paid</span>
+          <span style="font-weight:700; color:#5B4BC4;">${total}</span>
         </div>
       </div>
 
-      <p style="color:var(--text-muted); font-size:0.78rem; margin-top:16px; line-height:1.5;">We'll confirm pickup availability and send a payment link to <strong>${details.email}</strong>. You'll only be charged after your laundry is weighed.</p>
-      
-      <div style="display:flex; gap:10px; justify-content:center; margin-top:16px;">
-        <button onclick="resetOrder()" class="btn btn--outline btn--small">New Quote</button>
-      </div>
+      <p style="color:var(--text-muted); font-size:0.78rem; margin-top:16px;">
+        Confirmation sent to <strong>${details.email}</strong><br>
+        We'll text you at <strong>${details.phone}</strong> when your driver is on the way.
+      </p>
+
+      <button onclick="location.reload()" class="widget__btn" style="margin-top:16px; background:#5B4BC4; font-size:0.9rem; padding:12px 24px;">
+        Place Another Order
+      </button>
     </div>
   `;
 }
@@ -728,6 +866,7 @@ window.addEventListener('scroll', () => {
 
 let autocomplete = null;
 let selectedPlace = null;
+let addressVerified = false;
 
 function initAutocomplete() {
   const addressInput = document.getElementById('address-input');
@@ -762,6 +901,7 @@ function initAutocomplete() {
     addressInput.style.borderColor = '#5B4BC4';
     setTimeout(() => { addressInput.style.borderColor = ''; }, 1500);
     saveFormState();
+    addressVerified = true;
   });
 }
 
@@ -769,6 +909,10 @@ function initAutocomplete() {
 // Otherwise, we set it as a global callback
 window.initAutocomplete = initAutocomplete;
 
+// Reset address verification when user manually edits the field
+document.getElementById('address-input')?.addEventListener('input', () => {
+  addressVerified = false;
+});
 
 // ── Geolocation for address (fallback if no Google Places) ──
 if ('geolocation' in navigator) {
@@ -802,10 +946,12 @@ if ('geolocation' in navigator) {
             addressInput.style.borderColor = '#5B4BC4';
             setTimeout(() => addressInput.style.borderColor = '', 1500);
             saveFormState();
+            addressVerified = true;
           })
           .catch(() => {
             addressInput.value = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
             saveFormState();
+            addressVerified = true;
           });
       },
       () => { /* silent fail */ }
