@@ -209,87 +209,31 @@
   </div>
 
 <script>
-const ADMIN_URL = 'https://admin.offloadusa.com';
-const API_BASE = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
-  ? 'http://localhost:5000'
-  : 'https://api.offloadusa.com';
+const ADMIN_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+  ? 'http://localhost:5001'
+  : 'https://admin.offloadusa.com';
 
-async function handleAdminSignIn() {
-  const email = document.getElementById('admin-email');
-  const password = document.getElementById('admin-password');
-  const msg = document.getElementById('admin-msg');
+// Redirect straight to admin CRM login
+function handleAdminSignIn() {
   const btn = document.getElementById('admin-btn');
-
-  // Clear errors
-  email.classList.remove('error');
-  password.classList.remove('error');
-  document.getElementById('admin-email-error').style.display = 'none';
-  document.getElementById('admin-password-error').style.display = 'none';
-  msg.textContent = '';
-  msg.className = 'msg';
-
-  if (!email.value.trim()) {
-    email.classList.add('error');
-    const err = document.getElementById('admin-email-error');
-    err.textContent = 'Please enter your email';
-    err.style.display = 'block';
-    email.focus();
-    return;
-  }
-  if (!password.value) {
-    password.classList.add('error');
-    const err = document.getElementById('admin-password-error');
-    err.textContent = 'Please enter your password';
-    err.style.display = 'block';
-    password.focus();
-    return;
-  }
-
   btn.disabled = true;
-  btn.textContent = 'Signing in...';
-
-  try {
-    const res = await fetch(API_BASE + '/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: email.value.trim(),
-        password: password.value,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.error || 'Invalid credentials');
-    }
-
-    // Check if user is admin/manager
-    const role = data.user?.role;
-    if (role !== 'admin' && role !== 'manager') {
-      throw new Error('Access denied. Admin credentials required.');
-    }
-
-    msg.textContent = 'Authenticated. Redirecting to dashboard...';
-    msg.className = 'msg success';
-
-    // Redirect to admin dashboard
-    setTimeout(() => {
-      window.location.href = ADMIN_URL;
-    }, 800);
-  } catch (err) {
-    msg.textContent = err.message || 'Sign in failed. Please try again.';
-    msg.className = 'msg error';
-    btn.disabled = false;
-    btn.textContent = 'Sign In to Dashboard';
-  }
+  btn.textContent = 'Redirecting...';
+  const msg = document.getElementById('admin-msg');
+  msg.textContent = 'Redirecting to admin dashboard...';
+  msg.className = 'msg success';
+  setTimeout(() => { window.location.href = ADMIN_URL; }, 400);
 }
 
-document.getElementById('admin-password').addEventListener('keydown', (e) => {
+// Auto-redirect after short delay to show the page
+setTimeout(() => {
+  window.location.href = ADMIN_URL;
+}, 2500);
+
+document.getElementById('admin-password')?.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') handleAdminSignIn();
 });
-document.getElementById('admin-email').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') document.getElementById('admin-password').focus();
+document.getElementById('admin-email')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') handleAdminSignIn();
 });
 </script>
 </body>
