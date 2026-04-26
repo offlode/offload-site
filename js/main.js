@@ -1206,8 +1206,8 @@ function showAppAvailability() {
     <div style="background:#111;border:1px solid #333;border-radius:18px;padding:28px;max-width:420px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <button onclick="document.getElementById('app-availability-modal').remove()" style="float:right;background:none;border:none;color:#888;font-size:24px;cursor:pointer;line-height:1;">&times;</button>
       <h3 style="color:#fff;font-size:1.2rem;font-weight:800;margin-bottom:8px;font-family:Inter,system-ui,sans-serif;">Mobile app availability</h3>
-      <p style="color:#a0a0a0;font-size:0.9rem;line-height:1.6;margin-bottom:24px;font-family:Inter,system-ui,sans-serif;">Open the iOS app listing on the App Store. Android is not available yet — sign up to be notified when it launches.</p>
-      <a href="https://apps.apple.com/app/id6763542674" style="display:inline-block;background:#5B4BC4;color:#fff;padding:12px 28px;border-radius:10px;font-weight:700;font-size:0.9rem;text-decoration:none;font-family:Inter,system-ui,sans-serif;transition:background 0.2s;" onmouseover="this.style.background='#4a3bb3'" onmouseout="this.style.background='#5B4BC4'">Open App Store listing</a>
+      <p style="color:#a0a0a0;font-size:0.9rem;line-height:1.6;margin-bottom:24px;font-family:Inter,system-ui,sans-serif;">Join the Offload update list for iOS launch details and Android availability updates.</p>
+      <a href="#signup-section" style="display:inline-block;background:#5B4BC4;color:#fff;padding:12px 28px;border-radius:10px;font-weight:700;font-size:0.9rem;text-decoration:none;font-family:Inter,system-ui,sans-serif;transition:background 0.2s;" onmouseover="this.style.background='#4a3bb3'" onmouseout="this.style.background='#5B4BC4'">Get launch updates</a>
     </div>`;
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
   document.body.appendChild(modal);
