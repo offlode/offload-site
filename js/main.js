@@ -139,11 +139,14 @@ async function handleOrderClick() {
   const bag = document.getElementById('bag-select').value;
 
   if (orderState === 'quote') {
-    // Validate
-    if (!address || !addressVerified) {
+    // Validate. Autocomplete is an enhancement; typed addresses can continue.
+    if (!address) {
       const addressInput = document.getElementById('address-input');
-      showFieldError(addressInput, address ? 'Please select an address from the suggestions' : 'Please enter your pickup address');
+      showFieldError(addressInput, 'Please enter your pickup address');
       return;
+    }
+    if (!addressVerified) {
+      selectedPlace = { formatted: address, manual: true };
     }
     if (!service) {
       shakeField('service-select');
@@ -1051,8 +1054,8 @@ const STATE_NAMES = {
         textEl.textContent = `Serving ${city || stateName}`;
         badge.style.background = 'rgba(91,75,196,0.12)';
       } else if (city) {
-        // We don't serve there yet — show "Coming soon to [State]"
-        textEl.textContent = `Coming Soon to ${stateName}`;
+        // We do not serve there yet — show expansion copy
+        textEl.textContent = `Expanding to ${stateName}`;
         badge.style.background = 'rgba(255,165,0,0.12)';
         badge.querySelector('.hero__badge-dot').style.background = '#f59e0b';
       }
@@ -1192,30 +1195,24 @@ function handleLogin() {
 }
 
 
-// ── App Coming Soon Modal ──
-function showAppComingSoon() {
-  // Remove existing modal if any
-  const existing = document.getElementById('app-coming-soon-modal');
+// ── App availability modal ──
+function showAppAvailability() {
+  const existing = document.getElementById('app-availability-modal');
   if (existing) existing.remove();
-
-  const overlay = document.createElement('div');
-  overlay.id = 'app-coming-soon-modal';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:10000;backdrop-filter:blur(4px);animation:fadeIn 0.2s ease;';
-  overlay.innerHTML = `
-    <div style="background:#1A1A1A;border:1px solid #2E2E2E;border-radius:20px;padding:40px 32px;max-width:400px;width:90%;text-align:center;position:relative;animation:scaleIn 0.25s ease;">
-      <button onclick="document.getElementById('app-coming-soon-modal').remove()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:#6b6b6b;font-size:1.3rem;cursor:pointer;padding:4px;line-height:1;">&times;</button>
-      <div style="width:64px;height:64px;background:rgba(91,75,196,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5B4BC4" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18.01" stroke-width="2" stroke-linecap="round"/></svg>
-      </div>
-      <h3 style="color:#fff;font-size:1.2rem;font-weight:800;margin-bottom:8px;font-family:Inter,system-ui,sans-serif;">App Launching May 26</h3>
-      <p style="color:#a0a0a0;font-size:0.9rem;line-height:1.6;margin-bottom:24px;font-family:Inter,system-ui,sans-serif;">The Offload mobile app will be available on the App Store and Google Play on launch day. Sign up now to get notified the moment it drops.</p>
-      <a href="/#signup-section" onclick="document.getElementById('app-coming-soon-modal').remove()" style="display:inline-block;background:#5B4BC4;color:#fff;padding:12px 28px;border-radius:10px;font-weight:700;font-size:0.9rem;text-decoration:none;font-family:Inter,system-ui,sans-serif;transition:background 0.2s;" onmouseover="this.style.background='#4a3bb3'" onmouseout="this.style.background='#5B4BC4'">Sign Up for Early Access</a>
-    </div>
-  `;
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
-  document.body.appendChild(overlay);
+  const modal = document.createElement('div');
+  modal.id = 'app-availability-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = `
+    <div style="background:#111;border:1px solid #333;border-radius:18px;padding:28px;max-width:420px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <button onclick="document.getElementById('app-availability-modal').remove()" style="float:right;background:none;border:none;color:#888;font-size:24px;cursor:pointer;line-height:1;">&times;</button>
+      <h3 style="color:#fff;font-size:1.2rem;font-weight:800;margin-bottom:8px;font-family:Inter,system-ui,sans-serif;">Mobile app availability</h3>
+      <p style="color:#a0a0a0;font-size:0.9rem;line-height:1.6;margin-bottom:24px;font-family:Inter,system-ui,sans-serif;">The iOS app listing will open here once Apple approval is complete. Android is not available yet.</p>
+      <a href="https://apps.apple.com/app/id6763542674" style="display:inline-block;background:#5B4BC4;color:#fff;padding:12px 28px;border-radius:10px;font-weight:700;font-size:0.9rem;text-decoration:none;font-family:Inter,system-ui,sans-serif;transition:background 0.2s;" onmouseover="this.style.background='#4a3bb3'" onmouseout="this.style.background='#5B4BC4'">Open App Store listing</a>
+    </div>`;
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
 }
-window.showAppComingSoon = showAppComingSoon;
+window.showAppComingSoon = showAppAvailability;
 
 // ── Pricing card → pre-select bag size ──
 // Map pricing card "Select" buttons to bag sizes
