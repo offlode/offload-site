@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rate your order — Offload USA</title>
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#5B4BC4">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 36 36' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='18' cy='18' r='16' stroke='%235B4BC4' fill='none' stroke-width='2.5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="page-template.css">
+  <style>
+    .review-card { max-width:560px; margin:32px auto; background:#fff; border:1px solid #e5e5ea; border-radius:16px; padding:36px; box-shadow:0 4px 24px rgba(0,0,0,0.04); }
+    .star-row { display:flex; justify-content:center; gap:8px; margin:12px 0 24px; }
+    .star { font-size:36px; cursor:pointer; color:#d5d5dc; transition:color 0.15s, transform 0.15s; user-select:none; }
+    .star:hover { transform:scale(1.15); }
+    .star.active { color:#FFB400; }
+    .field-block { margin-bottom:28px; }
+    .field-block h3 { font-size:15px; font-weight:600; margin:0 0 4px; text-align:center; }
+    .field-block p { font-size:13px; color:#888; text-align:center; margin:0; }
+    .comment-field { width:100%; padding:12px; border:1px solid #d5d5dc; border-radius:8px; font-size:14px; min-height:100px; resize:vertical; font-family:inherit; }
+    .comment-field:focus { outline:none; border-color:#5B4BC4; box-shadow:0 0 0 3px rgba(91,75,196,0.1); }
+    .submit-btn { background:#5B4BC4; color:#fff; padding:14px 36px; border:none; border-radius:8px; font-size:15px; font-weight:600; cursor:pointer; width:100%; margin-top:8px; transition:background 0.15s; }
+    .submit-btn:hover:not(:disabled) { background:#4a3ba8; }
+    .submit-btn:disabled { opacity:0.6; cursor:not-allowed; }
+    .form-status { padding:14px; border-radius:8px; margin-top:16px; font-size:14px; text-align:center; }
+    .form-status.success { background:#e6f7ee; color:#0a6b3e; }
+    .form-status.error { background:#fde8e8; color:#a01a1a; }
+    .order-meta { background:#f9f9fb; padding:14px; border-radius:8px; margin-bottom:24px; font-size:13px; color:#555; }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="page-header__inner">
+    <a href="../index.html" class="page-header__logo">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="16" stroke="#5B4BC4" stroke-width="2.5"/>
+        <path d="M12 18c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6" stroke="#5B4BC4" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="18" cy="18" r="2" fill="#5B4BC4"/>
+      </svg>
+      offload
+    </a>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <h1>How did we do?</h1>
+      <p class="page-hero__sub">Your honest rating helps keep our quality high.</p>
+    </div>
+  </section>
+
+  <div class="review-card">
+    <div id="loading-state" class="form-status">Loading order details…</div>
+
+    <form id="review-form" style="display:none;">
+      <div class="order-meta" id="order-meta"></div>
+
+      <div class="field-block">
+        <h3>Rate the laundromat</h3>
+        <p id="vendor-name-hint">How clean and well-folded was your laundry?</p>
+        <div class="star-row" id="vendor-stars" data-rating="0">
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+        </div>
+      </div>
+
+      <div class="field-block" id="driver-block">
+        <h3>Rate your driver</h3>
+        <p id="driver-name-hint">On time? Friendly? Careful with your bags?</p>
+        <div class="star-row" id="driver-stars" data-rating="0">
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+        </div>
+      </div>
+
+      <div class="field-block">
+        <h3>Tell us more (optional)</h3>
+        <textarea class="comment-field" id="comment" placeholder="What stood out — good or bad?"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">Submit Review</button>
+      <div id="form-status" class="form-status" style="display:none;"></div>
+    </form>
+
+    <div id="signin-state" style="display:none; text-align:center; padding:24px;">
+      <h3 style="margin:0 0 8px;">Sign in to rate this order</h3>
+      <p style="color:#888; font-size:14px; margin:0 0 20px;">Log in to your Offload account to submit a review.</p>
+      <a id="signin-link" href="../sign-in.html" class="submit-btn" style="display:inline-block; text-decoration:none; padding:12px 28px; width:auto;">Sign In</a>
+    </div>
+  </div>
+</main>
+
+<footer class="page-footer">
+  <div class="container--wide">
+    <p class="page-footer__copyright">&copy; 2026 Offload USA.</p>
+  </div>
+</footer>
+
+<script>
+const API_BASE = "https://api.offloadusa.com";
+const params = new URLSearchParams(window.location.search);
+const orderId = params.get("orderId") || params.get("order");
+
+const loading = document.getElementById("loading-state");
+const form = document.getElementById("review-form");
+const signinState = document.getElementById("signin-state");
+const formStatus = document.getElementById("form-status");
+const submitBtn = document.getElementById("submit-btn");
+const orderMeta = document.getElementById("order-meta");
+const driverBlock = document.getElementById("driver-block");
+
+let vendorRating = 0;
+let driverRating = 0;
+
+function setupStars(containerId, onChange) {
+  const container = document.getElementById(containerId);
+  const stars = container.querySelectorAll(".star");
+  stars.forEach(star => {
+    star.addEventListener("click", () => {
+      const value = Number(star.dataset.value);
+      container.dataset.rating = value;
+      stars.forEach(s => s.classList.toggle("active", Number(s.dataset.value) <= value));
+      onChange(value);
+    });
+  });
+}
+setupStars("vendor-stars", v => vendorRating = v);
+setupStars("driver-stars", v => driverRating = v);
+
+async function loadOrder() {
+  if (!orderId) {
+    loading.className = "form-status error";
+    loading.textContent = "No order specified. Please use the link from your email or check your order history.";
+    return;
+  }
+
+  try {
+    // First check if signed in
+    const meR = await fetch(API_BASE + "/api/auth/me", { credentials: "include" });
+    if (!meR.ok) {
+      loading.style.display = "none";
+      signinState.style.display = "block";
+      // After sign-in, return to this page
+      const back = encodeURIComponent(window.location.href);
+      document.getElementById("signin-link").href = "../sign-in.html?next=" + back;
+      return;
+    }
+
+    // Fetch order
+    const r = await fetch(API_BASE + "/api/orders/" + orderId, { credentials: "include" });
+    if (!r.ok) {
+      const data = await r.json().catch(() => ({}));
+      throw new Error(data.error || "Order not found");
+    }
+    const order = await r.json();
+
+    // Check if already reviewed
+    const revR = await fetch(API_BASE + "/api/orders/" + orderId + "/review", { credentials: "include" });
+    if (revR.ok) {
+      loading.className = "form-status success";
+      loading.textContent = "Thanks — you've already rated this order.";
+      return;
+    }
+
+    orderMeta.innerHTML = "<strong>Order #" + (order.orderNumber || order.id) + "</strong>"
+      + (order.vendorName ? "<br>Laundromat: " + order.vendorName : "")
+      + (order.driverName ? "<br>Driver: " + order.driverName : "")
+      + (order.deliveredAt ? "<br>Delivered: " + new Date(order.deliveredAt).toLocaleString() : "");
+
+    if (!order.driverId) driverBlock.style.display = "none";
+
+    loading.style.display = "none";
+    form.style.display = "block";
+  } catch (err) {
+    loading.className = "form-status error";
+    loading.textContent = err.message || "Couldn't load order details.";
+  }
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (vendorRating === 0) {
+    formStatus.className = "form-status error";
+    formStatus.style.display = "block";
+    formStatus.textContent = "Please rate the laundromat with at least 1 star.";
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting…";
+  formStatus.style.display = "none";
+
+  const body = {
+    vendorRating,
+    driverRating: driverBlock.style.display === "none" ? null : (driverRating || null),
+    overallRating: Math.round(((vendorRating + (driverRating || vendorRating)) / 2) * 10) / 10,
+    comment: document.getElementById("comment").value,
+  };
+
+  try {
+    const r = await fetch(API_BASE + "/api/orders/" + orderId + "/review", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "Submission failed");
+    formStatus.className = "form-status success";
+    formStatus.style.display = "block";
+    formStatus.textContent = "Thanks for your review — it helps keep our quality high.";
+    form.querySelectorAll("input,textarea,button").forEach(el => el.disabled = true);
+  } catch (err) {
+    formStatus.className = "form-status error";
+    formStatus.style.display = "block";
+    formStatus.textContent = err.message || "Couldn't submit. Please try again.";
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit Review";
+  }
+});
+
+loadOrder();
+</script>
+</body>
+</html>
