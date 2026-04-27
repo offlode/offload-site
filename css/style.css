@@ -695,6 +695,37 @@ a:hover { color: var(--teal); }
 .adv-pill__sub   { font-size: 0.7rem;  color: #6b7280; }
 .adv-pill.is-selected .adv-pill__sub { color: #5B4BC4; }
 
+/* Add-on pills (hang-dry, eco detergent, etc.) */
+.addons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  margin-top: 6px;
+}
+.addon-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 9px 10px;
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+.addon-pill:hover { border-color: #c7c0f0; }
+.addon-pill.is-selected {
+  border-color: #5B4BC4;
+  background: rgba(91,75,196,0.06);
+  box-shadow: 0 0 0 2px rgba(91,75,196,0.10);
+}
+.addon-pill__title { font-size: 0.84rem; font-weight: 600; color: #111827; line-height: 1.2; }
+.addon-pill__price { font-size: 0.72rem; color: #6b7280; }
+.addon-pill.is-selected .addon-pill__price { color: #5B4BC4; font-weight: 600; }
+
 .cheapest-banner {
   display: flex;
   align-items: center;

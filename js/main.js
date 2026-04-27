@@ -167,33 +167,34 @@ function renderApiBreakdown(b) {
   const totalEl = document.getElementById('pp-total');
   if (totalEl) totalEl.textContent = '$' + (b.total ?? 0).toFixed(2);
 
-  // Logistics line items — walk through the API line items and render any
-  // logistics/discount rows the API surfaced (skip service/delivery/tax/promo — already shown).
+  // ── Simplified customer rendering ──
+  // The backend already collapsed logistics into a single "Pickup adjustments" line
+  // for customer view. We only need to render the rolled-up rows the API gives us.
   const container = document.getElementById('pp-logistics');
   if (container) {
     container.innerHTML = '';
     const lines = Array.isArray(b.lineItems) ? b.lineItems : [];
     for (const li of lines) {
-      if (!['logistics', 'discount'].includes(li.type)) continue;
-      // Skip the redundant promo discount; that's already reflected in total.
-      if (li.type === 'discount' && li.label && li.label.startsWith('Promo discount')) continue;
+      // Skip rows already rendered elsewhere (service/delivery/tax) and skip promo (folded into total).
+      if (['service', 'delivery', 'tax'].includes(li.type)) continue;
+      if (li.type === 'discount' && typeof li.label === 'string' && li.label.startsWith('Promo discount')) continue;
+      // Also skip add-on lines if we're rendering them in their own selector block;
+      // keep them visible in the breakdown for now so users see what they added.
       const row = document.createElement('div');
-      row.className = 'price-row price-row--logistics' + (li.type === 'discount' ? ' price-row--discount' : '');
+      const isDiscount = li.amount < 0;
+      row.className = 'price-row price-row--logistics' + (isDiscount ? ' price-row--discount' : '');
       const lbl = document.createElement('span'); lbl.textContent = li.label;
       const val = document.createElement('span'); val.className = 'price-value';
-      val.textContent = (li.amount < 0 ? '−$' : '$') + Math.abs(li.amount).toFixed(2);
+      val.textContent = (isDiscount ? '−$' : '$') + Math.abs(li.amount).toFixed(2);
       row.appendChild(lbl); row.appendChild(val);
       container.appendChild(row);
     }
   }
 
+  // "Live price" caption — keep it short and friendly, no vendor name, no traffic chatter.
   const sourceEl = document.getElementById('pp-source');
   if (sourceEl) {
-    const bits = [];
-    if (b.pickupDistanceMiles)  bits.push(`${b.pickupDistanceMiles.toFixed(1)} mi`);
-    if (b.trafficLevel && b.trafficLevel !== 'unknown') bits.push(`${b.trafficLevel} traffic`);
-    if (b.recommendedVendorName) bits.push(b.recommendedVendorName);
-    sourceEl.textContent = 'Live price' + (bits.length ? ' — ' + bits.join(' · ') : '');
+    sourceEl.textContent = 'Live price — final pickup adjustments included';
     sourceEl.hidden = false;
   }
 }
@@ -233,6 +234,9 @@ async function _fireDynamicQuote() {
   const logistics = collectLogisticsState();
   const seq = ++_dynQuoteSeq;
 
+  // Selected add-ons (hang-dry, eco detergent, etc.) — collected from the addon UI block
+  const selectedAddOns = collectSelectedAddOns();
+
   const body = {
     tierName: bag,
     deliverySpeed: speed,
@@ -245,7 +249,9 @@ async function _fireDynamicQuote() {
     pickupHandoff: logistics.pickupHandoff,
     pickupWindowMinutes: logistics.pickupWindowMinutes,
     vendorChoiceMode: logistics.vendorChoiceMode,
+    addOns: selectedAddOns,
     recommendCheapestWindow: logistics.pickupWindowMinutes >= 120,
+    view: 'customer',
   };
 
   try {
@@ -268,6 +274,69 @@ async function _fireDynamicQuote() {
     // Network blip — keep the local estimate, no UI scare
     console.warn('[dynamic quote] failed:', e?.message);
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  ADD-ONS UI — hang-dry, eco detergent, fragrance-free, etc.
+//  Fetched from /api/add-ons; rendered as toggle pills the customer can tap.
+//  Selections feed straight into the dynamic quote so the price reflects them live.
+// ─────────────────────────────────────────────────────────────────────────────
+let _availableAddOns = [];
+let _selectedAddOnIds = new Set();
+
+function collectSelectedAddOns() {
+  return Array.from(_selectedAddOnIds).map(id => ({ id: Number(id), qty: 1 }));
+}
+
+async function loadAddOns() {
+  const container = document.getElementById('addons-grid');
+  if (!container) return;
+  try {
+    const res = await fetch(API_BASE + '/api/add-ons');
+    if (!res.ok) return;
+    const data = await res.json();
+    _availableAddOns = Array.isArray(data) ? data : (data?.addOns || []);
+    renderAddOns();
+  } catch (e) {
+    console.warn('[loadAddOns] failed:', e?.message);
+  }
+}
+
+function renderAddOns() {
+  const container = document.getElementById('addons-grid');
+  if (!container) return;
+  container.innerHTML = '';
+  // Show only the most useful ones to customers — hide internal/operational add-ons.
+  // We use category filtering: keep "detergent", "treatment", "service".
+  const visible = _availableAddOns
+    .filter(a => a.isActive !== 0 && a.isActive !== false)
+    .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+  for (const ao of visible) {
+    const id = ao.id;
+    const isSelected = _selectedAddOnIds.has(id);
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'addon-pill' + (isSelected ? ' is-selected' : '');
+    pill.dataset.addonId = String(id);
+    pill.setAttribute('role', 'checkbox');
+    pill.setAttribute('aria-checked', isSelected ? 'true' : 'false');
+    pill.innerHTML =
+      '<span class="addon-pill__title">' + escapeHtml(ao.displayName || ao.name) + '</span>' +
+      '<span class="addon-pill__price">+$' + Number(ao.price || 0).toFixed(2) + '</span>';
+    pill.addEventListener('click', () => {
+      if (_selectedAddOnIds.has(id)) _selectedAddOnIds.delete(id);
+      else _selectedAddOnIds.add(id);
+      renderAddOns();        // re-render pill states
+      updatePricePreview();  // refresh live quote
+    });
+    container.appendChild(pill);
+  }
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
 }
 
 // Wire up advanced-options toggle, pills, and inputs
@@ -305,9 +374,10 @@ function _initAdvancedControls() {
 
 // Initialize once DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', _initAdvancedControls);
+  document.addEventListener('DOMContentLoaded', () => { _initAdvancedControls(); loadAddOns(); });
 } else {
   _initAdvancedControls();
+  loadAddOns();
 }
 
 // Listen to select changes
@@ -724,6 +794,7 @@ async function processPaymentAndOrder() {
         tierName: bag,
         deliverySpeed,
         idempotencyKey,
+        addOns: collectSelectedAddOns(),
         ...logisticsPayload,
         ...(scheduledPickup ? { scheduledPickup } : {}),
       }),
