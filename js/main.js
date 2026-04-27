@@ -37,7 +37,16 @@ const DELIVERY_FEES = {
 const TAX_RATE = 0.08875; // NY sales tax
 
 // ── Pricing Engine (with service-type adjustment) ──
+// Local quick-estimate. Used as the instant-feedback path BEFORE the user has
+// entered an address. After they have an address (with lat/lng), the dynamic
+// engine below takes over and calls /api/quote/dynamic for live pricing.
 function updatePricePreview() {
+  // If we have address coords, prefer the live dynamic API path.
+  if (typeof selectedPlace !== 'undefined' && selectedPlace && selectedPlace.lat && selectedPlace.lng) {
+    requestDynamicQuote();
+    return;
+  }
+
   const bag = document.getElementById('bag-select').value;
   const speed = document.getElementById('speed-select').value;
   const service = document.getElementById('service-select').value;
@@ -54,7 +63,10 @@ function updatePricePreview() {
 
   // Apply service multiplier to the base bag price
   const adjustedBagPrice = Math.round(bagData.price * serviceMultiplier * 100) / 100;
-  const subtotal = adjustedBagPrice + deliveryData.fee;
+  // Add a local estimate of logistics (handoff + window discount) so the price
+  // doesn't appear to flicker when the live call eventually returns.
+  const localLogistics = computeLocalLogistics();
+  const subtotal = adjustedBagPrice + deliveryData.fee + localLogistics.net;
   const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
   const total = Math.round((subtotal + tax) * 100) / 100;
 
@@ -62,6 +74,7 @@ function updatePricePreview() {
   document.getElementById('pp-delivery').textContent = deliveryData.fee === 0 ? 'Free' : '$' + deliveryData.fee.toFixed(2);
   document.getElementById('pp-tax').textContent = '$' + tax.toFixed(2);
   document.getElementById('pp-total').textContent = '$' + total.toFixed(2);
+  renderLocalLogistics(localLogistics.lines);
 
   // Show service type label if not wash & fold
   const serviceNote = document.getElementById('pp-service-note');
@@ -74,7 +87,227 @@ function updatePricePreview() {
     }
   }
 
+  // Estimate disclaimer (will become "Live" once dynamic call returns)
+  const sourceEl = document.getElementById('pp-source');
+  if (sourceEl) { sourceEl.textContent = 'Estimated price — enter address for live quote'; sourceEl.hidden = false; }
+
   preview.classList.add('visible');
+}
+
+// ───────────────────────────────────────────────────────────────────────────────
+//  DYNAMIC LOGISTICS UI (Uber-style) — collects pickup details and shows live price
+// ───────────────────────────────────────────────────────────────────────────────
+const LOGISTICS_DEFAULTS = {
+  floor: 1,
+  hasElevator: 1,
+  handoff: 'curbside',
+  windowMinutes: 30,
+  vendorChoice: 'auto',
+};
+
+function collectLogisticsState() {
+  const floorEl    = document.getElementById('pickup-floor');
+  const elevEl     = document.getElementById('pickup-elevator');
+  const vendorEl   = document.getElementById('vendor-choice');
+  const handoffPill = document.querySelector('.adv-pill.is-selected[data-handoff]');
+  const windowPill  = document.querySelector('.adv-pill.is-selected[data-window]');
+  return {
+    pickupFloor: parseInt(floorEl?.value || '1', 10) || 1,
+    pickupHasElevator: elevEl ? (elevEl.value === '1') : true,
+    pickupHandoff: handoffPill?.dataset.handoff || LOGISTICS_DEFAULTS.handoff,
+    pickupWindowMinutes: parseInt(windowPill?.dataset.window || '30', 10) || 30,
+    vendorChoiceMode: vendorEl?.value || LOGISTICS_DEFAULTS.vendorChoice,
+  };
+}
+
+// Compute a local, optimistic estimate of the logistics line so the UI feels snappy
+// before /api/quote/dynamic returns. Uses the same constants as the backend config.
+function computeLocalLogistics() {
+  const s = collectLogisticsState();
+  let floorFee = 0;
+  if (!s.pickupHasElevator && s.pickupFloor > 3) {
+    floorFee = Math.min(20, (s.pickupFloor - 3) * 2);
+  }
+  const handoffFee = s.pickupHandoff === 'door' ? 3 : 0;
+  const base = floorFee + handoffFee;
+  const windowRate = s.pickupWindowMinutes === 240 ? 0.10 : s.pickupWindowMinutes === 120 ? 0.05 : 0;
+  const windowDiscount = Math.round(base * windowRate * 100) / 100;
+  const lines = [];
+  if (floorFee > 0)   lines.push({ label: 'Walk-up floor fee', amount: floorFee, type: 'logistics' });
+  if (handoffFee > 0) lines.push({ label: 'Door handoff', amount: handoffFee, type: 'logistics' });
+  if (windowDiscount > 0) lines.push({ label: `Flexible-window discount (${Math.round(windowRate*100)}%)`, amount: -windowDiscount, type: 'discount' });
+  return { net: Math.max(0, base - windowDiscount), lines };
+}
+
+function renderLocalLogistics(lines) {
+  const container = document.getElementById('pp-logistics');
+  if (!container) return;
+  container.innerHTML = '';
+  for (const li of lines) {
+    const row = document.createElement('div');
+    row.className = 'price-row price-row--logistics' + (li.type === 'discount' ? ' price-row--discount' : '');
+    const lbl = document.createElement('span'); lbl.textContent = li.label;
+    const val = document.createElement('span'); val.className = 'price-value';
+    val.textContent = (li.amount < 0 ? '−$' : '$') + Math.abs(li.amount).toFixed(2);
+    row.appendChild(lbl); row.appendChild(val);
+    container.appendChild(row);
+  }
+}
+
+function renderApiBreakdown(b) {
+  // Service price (after multiplier)
+  const serviceEl = document.getElementById('pp-bag');
+  if (serviceEl) serviceEl.textContent = '$' + (b.laundryServicePrice ?? 0).toFixed(2);
+  // Delivery fee
+  const deliveryEl = document.getElementById('pp-delivery');
+  if (deliveryEl) deliveryEl.textContent = (b.deliveryFee || 0) === 0 ? 'Free' : '$' + b.deliveryFee.toFixed(2);
+  // Tax + total
+  const taxEl = document.getElementById('pp-tax');
+  if (taxEl) taxEl.textContent = '$' + (b.taxAmount ?? 0).toFixed(2);
+  const totalEl = document.getElementById('pp-total');
+  if (totalEl) totalEl.textContent = '$' + (b.total ?? 0).toFixed(2);
+
+  // Logistics line items — walk through the API line items and render any
+  // logistics/discount rows the API surfaced (skip service/delivery/tax/promo — already shown).
+  const container = document.getElementById('pp-logistics');
+  if (container) {
+    container.innerHTML = '';
+    const lines = Array.isArray(b.lineItems) ? b.lineItems : [];
+    for (const li of lines) {
+      if (!['logistics', 'discount'].includes(li.type)) continue;
+      // Skip the redundant promo discount; that's already reflected in total.
+      if (li.type === 'discount' && li.label && li.label.startsWith('Promo discount')) continue;
+      const row = document.createElement('div');
+      row.className = 'price-row price-row--logistics' + (li.type === 'discount' ? ' price-row--discount' : '');
+      const lbl = document.createElement('span'); lbl.textContent = li.label;
+      const val = document.createElement('span'); val.className = 'price-value';
+      val.textContent = (li.amount < 0 ? '−$' : '$') + Math.abs(li.amount).toFixed(2);
+      row.appendChild(lbl); row.appendChild(val);
+      container.appendChild(row);
+    }
+  }
+
+  const sourceEl = document.getElementById('pp-source');
+  if (sourceEl) {
+    const bits = [];
+    if (b.pickupDistanceMiles)  bits.push(`${b.pickupDistanceMiles.toFixed(1)} mi`);
+    if (b.trafficLevel && b.trafficLevel !== 'unknown') bits.push(`${b.trafficLevel} traffic`);
+    if (b.recommendedVendorName) bits.push(b.recommendedVendorName);
+    sourceEl.textContent = 'Live price' + (bits.length ? ' — ' + bits.join(' · ') : '');
+    sourceEl.hidden = false;
+  }
+}
+
+function renderCheapestSlot(cs) {
+  const banner = document.getElementById('cheapest-banner');
+  const text   = document.getElementById('cheapest-banner-text');
+  if (!banner || !text) return;
+  if (!cs || !cs.scheduledPickup || cs.multiplier >= 1.05) {
+    banner.hidden = true;
+    return;
+  }
+  // Format the recommended local time
+  let when = '';
+  try {
+    const d = new Date(cs.scheduledPickup);
+    when = d.toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' });
+  } catch (_) { when = 'soon'; }
+  text.textContent = `Cheapest pickup window starts ${when} — ${cs.trafficLevel} traffic`;
+  banner.hidden = false;
+}
+
+let _dynQuoteTimer = null;
+let _dynQuoteSeq = 0;
+function requestDynamicQuote() {
+  // Debounce: wait 250ms after the last input change before firing the request
+  if (_dynQuoteTimer) clearTimeout(_dynQuoteTimer);
+  _dynQuoteTimer = setTimeout(_fireDynamicQuote, 250);
+}
+
+async function _fireDynamicQuote() {
+  const bag = document.getElementById('bag-select')?.value;
+  if (!bag) return;
+  const speed = document.getElementById('speed-select')?.value || '48h';
+  const service = document.getElementById('service-select')?.value || 'wash_fold';
+  const place = (typeof selectedPlace !== 'undefined') ? selectedPlace : null;
+  const logistics = collectLogisticsState();
+  const seq = ++_dynQuoteSeq;
+
+  const body = {
+    tierName: bag,
+    deliverySpeed: speed,
+    serviceType: service,
+    pickupAddress: place?.formatted || document.getElementById('address-input')?.value || '',
+    pickupLat: place?.lat,
+    pickupLng: place?.lng,
+    pickupFloor: logistics.pickupFloor,
+    pickupHasElevator: logistics.pickupHasElevator,
+    pickupHandoff: logistics.pickupHandoff,
+    pickupWindowMinutes: logistics.pickupWindowMinutes,
+    vendorChoiceMode: logistics.vendorChoiceMode,
+    recommendCheapestWindow: logistics.pickupWindowMinutes >= 120,
+  };
+
+  try {
+    const res = await fetch(API_BASE + '/api/quote/dynamic', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) return;  // swallow — keep showing the local estimate
+    const data = await res.json();
+    // Discard if a newer request has been fired in the meantime
+    if (seq !== _dynQuoteSeq) return;
+    if (data && data.breakdown) {
+      renderApiBreakdown(data.breakdown);
+      const preview = document.getElementById('price-preview');
+      if (preview) preview.classList.add('visible');
+    }
+    renderCheapestSlot(data?.cheapestSlot);
+  } catch (e) {
+    // Network blip — keep the local estimate, no UI scare
+    console.warn('[dynamic quote] failed:', e?.message);
+  }
+}
+
+// Wire up advanced-options toggle, pills, and inputs
+function _initAdvancedControls() {
+  const toggle = document.getElementById('adv-toggle');
+  const panel  = document.getElementById('adv-options');
+  if (toggle && panel) {
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', open ? 'false' : 'true');
+      panel.hidden = open;
+      if (!open) requestDynamicQuote();
+    });
+  }
+
+  // Pills (handoff + window) — single-select per group
+  document.querySelectorAll('.adv-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const group = pill.dataset.handoff != null ? '[data-handoff]' : '[data-window]';
+      document.querySelectorAll(`.adv-pill${group}`).forEach(p => {
+        p.classList.remove('is-selected');
+        p.setAttribute('aria-checked', 'false');
+      });
+      pill.classList.add('is-selected');
+      pill.setAttribute('aria-checked', 'true');
+      updatePricePreview();
+    });
+  });
+
+  // Floor + elevator inputs
+  document.getElementById('pickup-floor')?.addEventListener('input', () => updatePricePreview());
+  document.getElementById('pickup-elevator')?.addEventListener('change', () => updatePricePreview());
+  document.getElementById('vendor-choice')?.addEventListener('change', () => updatePricePreview());
+}
+
+// Initialize once DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _initAdvancedControls);
+} else {
+  _initAdvancedControls();
 }
 
 // Listen to select changes
@@ -453,6 +686,30 @@ async function processPaymentAndOrder() {
     const deliverySpeed = speedMap[speed] || '48h';
     const idempotencyKey = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
+    // Collect logistics inputs from advanced controls (safe fallbacks if controls missing)
+    let logisticsPayload = {};
+    try {
+      const ls = (typeof collectLogisticsState === 'function') ? collectLogisticsState() : null;
+      if (ls) {
+        logisticsPayload = {
+          pickupFloor: ls.pickupFloor,
+          pickupHasElevator: ls.pickupHasElevator,
+          pickupHandoff: ls.pickupHandoff,
+          pickupWindowMinutes: ls.pickupWindowMinutes,
+          vendorChoiceMode: ls.vendorChoiceMode,
+        };
+      }
+    } catch (_) {}
+
+    // Combine date + time into ISO scheduledPickup
+    let scheduledPickup = null;
+    if (date && time) {
+      try {
+        const dt = new Date(`${date}T${time}:00`);
+        if (!isNaN(dt.getTime())) scheduledPickup = dt.toISOString();
+      } catch (_) {}
+    }
+
     const quoteRes = await fetch(API_BASE + '/api/quotes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -467,6 +724,8 @@ async function processPaymentAndOrder() {
         tierName: bag,
         deliverySpeed,
         idempotencyKey,
+        ...logisticsPayload,
+        ...(scheduledPickup ? { scheduledPickup } : {}),
       }),
     });
 
@@ -923,6 +1182,7 @@ let autocompleteDropdown = null;
               addressInput.style.borderColor = '#5B4BC4';
               setTimeout(() => { addressInput.style.borderColor = ''; }, 1500);
               saveFormState();
+              try { updatePricePreview(); } catch (_) {}
             });
             autocompleteDropdown.appendChild(item);
           });
@@ -978,13 +1238,36 @@ if ('geolocation' in navigator) {
             }
             addressInput.style.borderColor = '#5B4BC4';
             setTimeout(() => addressInput.style.borderColor = '', 1500);
+            // Capture coords for live dynamic pricing even on Nominatim path
+            try {
+              selectedPlace = {
+                formatted: addressInput.value,
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+                components: {
+                  city: a.city || a.town || a.village || '',
+                  state: a.state || '',
+                  zip: a.postcode || '',
+                },
+              };
+            } catch (_) {}
             saveFormState();
             addressVerified = true;
+            try { updatePricePreview(); } catch (_) {}
           })
           .catch(() => {
             addressInput.value = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+            try {
+              selectedPlace = {
+                formatted: addressInput.value,
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+                components: { city: '', state: 'NY', zip: '' },
+              };
+            } catch (_) {}
             saveFormState();
             addressVerified = true;
+            try { updatePricePreview(); } catch (_) {}
           });
       },
       () => { /* silent fail */ }

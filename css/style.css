@@ -607,6 +607,111 @@ a:hover { color: var(--teal); }
   font-size: 1rem;
 }
 
+.price-row--logistics {
+  font-size: 0.83rem;
+  color: var(--text-muted, #6b7280);
+  padding: 3px 0;
+}
+.price-row--logistics .price-value { font-weight: 600; }
+.price-row--discount { color: #16a34a; }
+.price-row--discount .price-value { color: #16a34a; font-weight: 600; }
+
+.price-source {
+  font-size: 0.7rem;
+  color: var(--text-muted, #94a3b8);
+  text-align: center;
+  margin-top: 8px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ── Advanced (Uber-style) pickup options ── */
+.adv-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: transparent;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 4px 0 12px;
+  font: inherit;
+  color: #1f2937;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.adv-toggle:hover { border-color: #5B4BC4; background: rgba(91,75,196,0.04); }
+.adv-toggle__label { font-size: 0.86rem; font-weight: 600; }
+.adv-toggle__hint  { font-size: 0.75rem; color: #6b7280; flex: 1; text-align: left; margin-left: 4px; }
+.adv-toggle__chevron { transition: transform 0.18s ease; color: #6b7280; }
+.adv-toggle[aria-expanded="true"] .adv-toggle__chevron { transform: rotate(180deg); color: #5B4BC4; }
+.adv-toggle[aria-expanded="true"] { border-color: #5B4BC4; border-style: solid; background: rgba(91,75,196,0.05); }
+
+.adv-options {
+  background: #fafbff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 14px 6px;
+  margin-bottom: 12px;
+  animation: fadeInUp 0.25s ease;
+}
+.adv-options[hidden] { display: none; }
+
+.adv-help {
+  font-size: 0.72rem;
+  color: #6b7280;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+.adv-pills {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.adv-pills--3 { grid-template-columns: 1fr 1fr 1fr; }
+.adv-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 9px 10px;
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+.adv-pill:hover { border-color: #c7c0f0; }
+.adv-pill.is-selected {
+  border-color: #5B4BC4;
+  background: rgba(91,75,196,0.06);
+  box-shadow: 0 0 0 2px rgba(91,75,196,0.10);
+}
+.adv-pill__title { font-size: 0.84rem; font-weight: 600; color: #111827; }
+.adv-pill__sub   { font-size: 0.7rem;  color: #6b7280; }
+.adv-pill.is-selected .adv-pill__sub { color: #5B4BC4; }
+
+.cheapest-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  background: linear-gradient(135deg, rgba(22,163,74,0.08), rgba(91,75,196,0.06));
+  color: #14532d;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  border: 1px solid rgba(22,163,74,0.18);
+  animation: fadeInUp 0.25s ease;
+}
+.cheapest-banner[hidden] { display: none; }
+.cheapest-banner svg { color: #16a34a; flex-shrink: 0; }
+
 .price-value { 
   font-weight: 600; 
   color: var(--text-primary);
