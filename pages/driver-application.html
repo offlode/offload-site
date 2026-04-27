@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driver Application — Offload USA</title>
+  <meta name="description" content="Apply to drive with Offload. Earn $25+/hour delivering laundry across NYC. Flexible schedule, weekly pay.">
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#5B4BC4">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 36 36' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='18' cy='18' r='16' stroke='%235B4BC4' fill='none' stroke-width='2.5'/%3E%3Cpath d='M12 18c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6' stroke='%235B4BC4' fill='none' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='18' cy='18' r='2' fill='%235B4BC4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="page-template.css">
+  <style>
+    .form-card { max-width:760px; margin:32px auto; background:#fff; border:1px solid #e5e5ea; border-radius:16px; padding:36px; box-shadow:0 4px 24px rgba(0,0,0,0.04); }
+    .form-card h2 { font-size:18px; margin:32px 0 8px; padding-top:24px; border-top:1px solid #f0f0f3; color:#5B4BC4; }
+    .form-card h2:first-of-type { border-top:none; padding-top:0; margin-top:0; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:14px; }
+    @media (max-width:640px) { .form-row { grid-template-columns:1fr; } }
+    .form-field { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+    .form-field label { font-size:13px; color:#444; font-weight:500; }
+    .form-field input, .form-field select, .form-field textarea {
+      padding:12px 14px; border:1px solid #d5d5dc; border-radius:8px; font-size:14px; font-family:inherit;
+      background:#fff; transition:border-color 0.15s;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      outline:none; border-color:#5B4BC4; box-shadow:0 0 0 3px rgba(91,75,196,0.1);
+    }
+    .form-field textarea { min-height:100px; resize:vertical; }
+    .checkbox-row { display:flex; gap:10px; align-items:flex-start; padding:12px; background:#f9f9fb; border-radius:8px; margin-bottom:8px; }
+    .checkbox-row input[type=checkbox] { margin-top:3px; flex-shrink:0; transform:scale(1.15); }
+    .checkbox-row label { font-size:13px; line-height:1.5; color:#333; }
+    .submit-btn { background:#5B4BC4; color:#fff; padding:16px 36px; border:none; border-radius:8px; font-size:15px; font-weight:600; cursor:pointer; width:100%; margin-top:16px; transition:background 0.15s; }
+    .submit-btn:hover:not(:disabled) { background:#4a3ba8; }
+    .submit-btn:disabled { opacity:0.6; cursor:not-allowed; }
+    .form-status { padding:14px; border-radius:8px; margin-top:16px; font-size:14px; }
+    .form-status.success { background:#e6f7ee; color:#0a6b3e; border:1px solid #a8e0c0; }
+    .form-status.error { background:#fde8e8; color:#a01a1a; border:1px solid #f5b3b3; }
+    .step-hint { font-size:12px; color:#888; margin-bottom:18px; }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="page-skip-link">Skip to main content</a>
+
+<header class="page-header">
+  <div class="page-header__inner">
+    <a href="../index.html" class="page-header__logo">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="16" stroke="#5B4BC4" stroke-width="2.5"/>
+        <path d="M12 18c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6" stroke="#5B4BC4" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="18" cy="18" r="2" fill="#5B4BC4"/>
+      </svg>
+      offload
+    </a>
+    <nav class="page-header__nav">
+      <a href="../index.html#how-it-works">How It Works</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="../index.html#faq">FAQ</a>
+      <a href="become-a-driver.html">Drive With Us</a>
+    </nav>
+    <a href="../driver/index.html" class="page-header__cta">Driver Sign In</a>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="page-hero">
+    <div class="container">
+      <h1>Driver Application</h1>
+      <p class="page-hero__sub">Earn $25+/hr delivering laundry. Flexible schedule. Weekly direct deposit. Reviewed in 1–2 business days.</p>
+    </div>
+  </section>
+
+  <div class="form-card">
+    <p class="step-hint">All fields marked * are required. Once approved, you'll get a welcome email with your sign-in link and a temporary password.</p>
+    <form id="driver-app-form" autocomplete="on">
+      <input type="hidden" name="applicantType" value="driver">
+
+      <h2>About You</h2>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Full legal name *</label>
+          <input name="fullName" required placeholder="As shown on driver's license">
+        </div>
+        <div class="form-field">
+          <label>Email *</label>
+          <input name="email" type="email" required placeholder="you@example.com">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Mobile phone *</label>
+          <input name="phone" type="tel" required placeholder="(212) 555-0100">
+        </div>
+        <div class="form-field">
+          <label>Years driving</label>
+          <input name="yearsDriving" type="number" min="0" max="60" placeholder="5">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Home address</label>
+        <input name="addressLine" placeholder="Street address">
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>City</label><input name="city" placeholder="Brooklyn"></div>
+        <div class="form-field"><label>State</label><input name="state" maxlength="2" placeholder="NY"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>ZIP</label><input name="zip" placeholder="11215"></div>
+        <div class="form-field"><label>ZIPs you can serve (comma-separated)</label><input name="serviceZipsRaw" placeholder="11215, 11217, 10001"></div>
+      </div>
+
+      <h2>Vehicle &amp; License</h2>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Vehicle type *</label>
+          <select name="vehicleType" required>
+            <option value="">Select…</option>
+            <option value="car">Car (sedan/hatchback)</option>
+            <option value="suv">SUV</option>
+            <option value="van">Minivan</option>
+            <option value="cargo_van">Cargo van</option>
+            <option value="box_truck">Box truck</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>License plate *</label>
+          <input name="licensePlate" required placeholder="ABC-1234">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Driver's license # *</label><input name="driversLicenseNumber" required></div>
+        <div class="form-field"><label>License state *</label><input name="driversLicenseState" maxlength="2" required placeholder="NY"></div>
+      </div>
+      <div class="form-field"><label>License expiration *</label><input name="driversLicenseExpiry" type="date" required></div>
+
+      <h2>Insurance</h2>
+      <div class="form-row">
+        <div class="form-field"><label>Insurance carrier *</label><input name="insuranceCarrier" required placeholder="Geico, State Farm, etc."></div>
+        <div class="form-field"><label>Policy number *</label><input name="insurancePolicyNumber" required></div>
+      </div>
+      <div class="form-field"><label>Policy expiration *</label><input name="insuranceExpiry" type="date" required></div>
+
+      <h2>Availability</h2>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Hours per week you can work</label>
+          <input name="hoursPerWeek" type="number" min="1" max="80" placeholder="20">
+        </div>
+        <div class="form-field">
+          <label>Smartphone (iOS/Android) *</label>
+          <select name="ownsSmartphone" required>
+            <option value="">Select…</option>
+            <option value="1">Yes — I own one</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Days you typically prefer to work</label>
+        <input name="availabilityRaw" placeholder="e.g. Mon-Fri evenings, weekends">
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Clean driving record (no major violations in 3 years)? *</label>
+          <select name="hasCleanDrivingRecord" required>
+            <option value="">Select…</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Consent to background check *</label>
+          <select name="consentBackgroundCheck" required>
+            <option value="">Select…</option>
+            <option value="1">Yes — I consent</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+      </div>
+
+      <h2>Tell Us About You</h2>
+      <div class="form-field">
+        <label>Why do you want to drive with Offload? (optional)</label>
+        <textarea name="whyJoin" placeholder="Anything you'd like us to know about your background or interest."></textarea>
+      </div>
+      <div class="form-field">
+        <label>References (optional)</label>
+        <textarea name="references" placeholder="Past delivery experience, references with phone/email."></textarea>
+      </div>
+
+      <h2>Acknowledgements (all required)</h2>
+      <div class="checkbox-row">
+        <input type="checkbox" name="agreesToQualityStandards" id="ack1" required>
+        <label for="ack1">I agree to follow Offload's quality and conduct standards: respectful customer interactions, on-time arrivals, careful handling of bags, and prompt photo proof at pickup and delivery.</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" name="agreesToPricing" id="ack2" required>
+        <label for="ack2">I understand pay is per-trip plus tips ($8.50+ base per leg, varies by distance and time). Pay is weekly via direct deposit. I understand pay structure may change with notice.</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" name="agreesToTermsOfService" id="ack3" required>
+        <label for="ack3">I have read and agree to Offload's <a href="../index.html#legal" target="_blank" style="color:#5B4BC4;">Driver Terms of Service</a> and confirm all information above is true.</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" name="agreesToBackgroundCheck" id="ack4" required>
+        <label for="ack4">I authorize Offload to run a motor vehicle records check and criminal background screening prior to onboarding.</label>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">Submit Driver Application</button>
+      <div id="form-status" class="form-status" style="display:none;"></div>
+    </form>
+  </div>
+</main>
+
+<footer class="page-footer">
+  <div class="container--wide">
+    <div class="page-footer__grid">
+      <div>
+        <p><strong style="color:#fff;">Offload</strong> — On-demand laundry pickup and delivery. Serving NYC.</p>
+        <p style="margin-top:12px;">info@offloadusa.com | partners@offloadusa.com</p>
+      </div>
+      <div>
+        <div class="page-footer__heading">Partners</div>
+        <ul class="page-footer__links">
+          <li><a href="become-a-driver.html">Drive with Offload</a></li>
+          <li><a href="become-a-laundry-partner.html">Laundromat partners</a></li>
+          <li><a href="business-laundry.html">Business accounts</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="page-footer__copyright">&copy; 2026 Offload USA. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const API_BASE = "https://api.offloadusa.com";
+const form = document.getElementById("driver-app-form");
+const status = document.getElementById("form-status");
+const btn = document.getElementById("submit-btn");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  status.style.display = "none";
+  btn.disabled = true;
+  btn.textContent = "Submitting…";
+
+  const fd = new FormData(form);
+  const body = {};
+  for (const [k, v] of fd.entries()) {
+    if (v === "" || v === null) continue;
+    if (["yearsDriving","hoursPerWeek","hasCleanDrivingRecord","ownsSmartphone","consentBackgroundCheck"].includes(k)) {
+      body[k] = Number(v);
+    } else if (["agreesToQualityStandards","agreesToPricing","agreesToTermsOfService","agreesToBackgroundCheck"].includes(k)) {
+      body[k] = 1;
+    } else if (k === "serviceZipsRaw") {
+      const zips = String(v).split(",").map(z=>z.trim()).filter(Boolean);
+      if (zips.length) body.serviceZips = JSON.stringify(zips);
+    } else if (k === "availabilityRaw") {
+      if (v) body.availabilityJson = JSON.stringify({ note: String(v) });
+    } else {
+      body[k] = v;
+    }
+  }
+  // Force-set required acknowledgements that don't fire if unchecked (FormData omits them)
+  for (const f of ["agreesToQualityStandards","agreesToPricing","agreesToTermsOfService","agreesToBackgroundCheck"]) {
+    if (body[f] !== 1) body[f] = 0;
+  }
+
+  try {
+    const r = await fetch(API_BASE + "/api/partner-applications", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "Submission failed");
+    status.className = "form-status success";
+    status.style.display = "block";
+    status.innerHTML = "<strong>Thanks — your application is in.</strong><br>You'll get an email at <strong>" + body.email + "</strong> within 1–2 business days with our decision. If approved, the email contains your sign-in link and a temporary password.";
+    form.reset();
+    btn.style.display = "none";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (err) {
+    status.className = "form-status error";
+    status.style.display = "block";
+    status.textContent = err.message || "Something went wrong. Please try again or email partners@offloadusa.com.";
+    btn.disabled = false;
+    btn.textContent = "Submit Driver Application";
+  }
+});
+</script>
+</body>
+</html>
