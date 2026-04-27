@@ -63,10 +63,20 @@ function updatePricePreview() {
 
   // Apply service multiplier to the base bag price
   const adjustedBagPrice = Math.round(bagData.price * serviceMultiplier * 100) / 100;
+
+  // Local add-on estimate (so total reflects selected add-ons instantly,
+  // even before we have an address that triggers the live API).
+  const localAddOnsTotal = (typeof _availableAddOns !== 'undefined' && _availableAddOns.length)
+    ? Array.from(_selectedAddOnIds).reduce((sum, id) => {
+        const ao = _availableAddOns.find(a => a.id === id);
+        return sum + (ao ? Number(ao.price || 0) : 0);
+      }, 0)
+    : 0;
+
   // Add a local estimate of logistics (handoff + window discount) so the price
   // doesn't appear to flicker when the live call eventually returns.
   const localLogistics = computeLocalLogistics();
-  const subtotal = adjustedBagPrice + deliveryData.fee + localLogistics.net;
+  const subtotal = adjustedBagPrice + deliveryData.fee + localLogistics.net + localAddOnsTotal;
   const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
   const total = Math.round((subtotal + tax) * 100) / 100;
 
@@ -74,7 +84,16 @@ function updatePricePreview() {
   document.getElementById('pp-delivery').textContent = deliveryData.fee === 0 ? 'Free' : '$' + deliveryData.fee.toFixed(2);
   document.getElementById('pp-tax').textContent = '$' + tax.toFixed(2);
   document.getElementById('pp-total').textContent = '$' + total.toFixed(2);
-  renderLocalLogistics(localLogistics.lines);
+
+  // Build merged local lines: pickup adjustments + add-on chips so user sees what they tapped.
+  const localLines = [...localLogistics.lines];
+  if (localAddOnsTotal > 0) {
+    for (const id of _selectedAddOnIds) {
+      const ao = _availableAddOns.find(a => a.id === id);
+      if (ao) localLines.push({ label: ao.displayName + ' x1', amount: Number(ao.price), type: 'addon' });
+    }
+  }
+  renderLocalLogistics(localLines);
 
   // Show service type label if not wash & fold
   const serviceNote = document.getElementById('pp-service-note');
@@ -132,11 +151,16 @@ function computeLocalLogistics() {
   const base = floorFee + handoffFee;
   const windowRate = s.pickupWindowMinutes === 240 ? 0.10 : s.pickupWindowMinutes === 120 ? 0.05 : 0;
   const windowDiscount = Math.round(base * windowRate * 100) / 100;
+  // ── Roll up all pickup adjustments into a single customer-friendly line. ──
+  const net = Math.round((base - windowDiscount) * 100) / 100;
   const lines = [];
-  if (floorFee > 0)   lines.push({ label: 'Walk-up floor fee', amount: floorFee, type: 'logistics' });
-  if (handoffFee > 0) lines.push({ label: 'Door handoff', amount: handoffFee, type: 'logistics' });
-  if (windowDiscount > 0) lines.push({ label: `Flexible-window discount (${Math.round(windowRate*100)}%)`, amount: -windowDiscount, type: 'discount' });
-  return { net: Math.max(0, base - windowDiscount), lines };
+  if (net > 0) {
+    lines.push({ label: 'Pickup adjustments', amount: net, type: 'logistics' });
+  } else if (net < 0) {
+    lines.push({ label: 'Pickup savings', amount: net, type: 'discount' });
+  }
+  // (we still expose `net` so the local subtotal stays accurate)
+  return { net: Math.max(0, net), lines };
 }
 
 function renderLocalLogistics(lines) {
