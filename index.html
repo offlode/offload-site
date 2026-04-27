@@ -136,7 +136,7 @@
         "name": "How fast can I get my laundry back?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Standard delivery is within 48 hours (free). You can also choose Next Day (24h, +$5.99), Same Day (12h, +$12.99), or Express (3 hours, +$19.99)."
+          "text": "Standard delivery is within 48 hours (free). You can also choose Next Day (24h, +$5.99) or Same Day (12h, +$12.99) when you schedule pickup for today."
         }
       },
       {
@@ -1082,7 +1082,7 @@
           How fast can I get my laundry back?
           <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="faq-answer"><div class="faq-answer__inner">Standard delivery is within 48 hours (free). You can also choose Next Day (24h, +$5.99), Same Day (12h, +$12.99), or Express (3 hours, +$19.99). We track every order against delivery time targets.</div></div>
+        <div class="faq-answer"><div class="faq-answer__inner">Standard delivery is within 48 hours (free). You can also choose Next Day (24h, +$5.99) or Same Day (12h, +$12.99) — Same Day is only available when you schedule pickup for today. We track every order against delivery time targets.</div></div>
       </div>
 
       <div class="faq-item">
@@ -1313,7 +1313,114 @@
   </div>
 </div>
 
-<!-- ═══════════════════════ SCRIPTS ═══════════════════════ -->
+<!-- ════════════════════════ LAUNCH COUNTDOWN POPUP ════════════════════════ -->
+<div id="launch-popup" style="position:fixed; bottom:24px; right:24px; z-index:9999; max-width:380px; width:calc(100% - 48px); background:linear-gradient(135deg, #1a1033 0%, #0d0d1a 100%); border:1px solid rgba(91,75,196,0.3); border-radius:16px; padding:28px 24px 24px; box-shadow:0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(91,75,196,0.15); font-family:var(--font-body); animation:popupSlideIn 0.6s cubic-bezier(0.16,1,0.3,1); display:none;">
+  <button onclick="dismissLaunchPopup()" style="position:absolute; top:12px; right:12px; background:none; border:none; color:var(--gray-400); cursor:pointer; padding:4px; line-height:1; font-size:1.2rem; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--gray-400)'" aria-label="Close popup">&times;</button>
+
+  <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+    <div style="width:10px; height:10px; background:#5B4BC4; border-radius:50%; animation:pulse 2s infinite;"></div>
+    <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1.5px; color:#5B4BC4; font-weight:700;">iOS App — Almost Here</span>
+  </div>
+
+  <h3 style="font-size:1.3rem; font-weight:800; color:#fff; margin-bottom:4px; line-height:1.2;">Offload iOS App Launches In</h3>
+  <p style="font-size:0.78rem; color:var(--gray-400); margin-bottom:20px;">May 26, 2026 at 12:00 PM ET</p>
+
+  <div id="countdown-timer" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:20px;">
+    <div style="text-align:center;">
+      <div id="cd-days" style="font-size:1.8rem; font-weight:800; color:#fff; line-height:1; font-variant-numeric:tabular-nums;">00</div>
+      <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--gray-500); margin-top:4px;">Days</div>
+    </div>
+    <div style="text-align:center;">
+      <div id="cd-hours" style="font-size:1.8rem; font-weight:800; color:#fff; line-height:1; font-variant-numeric:tabular-nums;">00</div>
+      <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--gray-500); margin-top:4px;">Hours</div>
+    </div>
+    <div style="text-align:center;">
+      <div id="cd-mins" style="font-size:1.8rem; font-weight:800; color:#fff; line-height:1; font-variant-numeric:tabular-nums;">00</div>
+      <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--gray-500); margin-top:4px;">Minutes</div>
+    </div>
+    <div style="text-align:center;">
+      <div id="cd-secs" style="font-size:1.8rem; font-weight:800; color:#5B4BC4; line-height:1; font-variant-numeric:tabular-nums;">00</div>
+      <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--gray-500); margin-top:4px;">Seconds</div>
+    </div>
+  </div>
+
+  <div style="background:rgba(91,75,196,0.1); border-radius:10px; padding:12px 14px; border:1px solid rgba(91,75,196,0.15);">
+    <p style="font-size:0.82rem; color:var(--gray-300); line-height:1.5; margin:0;">You can already order on the web today. The iOS app drops on May 26 — web orders keep working without it.</p>
+  </div>
+
+  <a href="#hero-widget" onclick="dismissLaunchPopup()" style="display:block; text-align:center; background:#5B4BC4; color:#fff; padding:12px; border-radius:10px; font-size:0.88rem; font-weight:700; text-decoration:none; margin-top:14px; transition:background 0.2s;" onmouseover="this.style.background='#4a3bb3'" onmouseout="this.style.background='#5B4BC4'">Get Your Price Now</a>
+</div>
+
+<style>
+@keyframes popupSlideIn {
+  from { opacity:0; transform:translateY(40px) scale(0.95); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes popupSlideOut {
+  from { opacity:1; transform:translateY(0) scale(1); }
+  to { opacity:0; transform:translateY(40px) scale(0.95); }
+}
+@keyframes pulse {
+  0%, 100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.5; transform:scale(1.3); }
+}
+@media (max-width:480px) {
+  #launch-popup { bottom:12px; right:12px; max-width:calc(100% - 24px); padding:22px 18px 18px; }
+  #launch-popup h3 { font-size:1.15rem; }
+  #countdown-timer div > div:first-child { font-size:1.5rem; }
+}
+</style>
+
+<script>
+// Launch countdown: May 26, 2026 at 12:00 PM ET (UTC-4)
+const LAUNCH_DATE = new Date('2026-05-26T16:00:00.000Z'); // 12 PM ET = 16:00 UTC
+const POPUP_DISMISS_KEY = 'offload_popup_dismissed';
+
+function updateCountdown() {
+  const now = new Date();
+  const diff = LAUNCH_DATE - now;
+  if (diff <= 0) {
+    document.getElementById('cd-days').textContent = '00';
+    document.getElementById('cd-hours').textContent = '00';
+    document.getElementById('cd-mins').textContent = '00';
+    document.getElementById('cd-secs').textContent = '00';
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent = String(d).padStart(2, '0');
+  document.getElementById('cd-hours').textContent = String(h).padStart(2, '0');
+  document.getElementById('cd-mins').textContent = String(m).padStart(2, '0');
+  document.getElementById('cd-secs').textContent = String(s).padStart(2, '0');
+}
+
+function showLaunchPopup() {
+  const popup = document.getElementById('launch-popup');
+  if (!popup) return;
+  // Don't show after launch date has passed.
+  if ((LAUNCH_DATE - new Date()) <= 0) return;
+  // Check if user dismissed it this session
+  try { if (sessionStorage.getItem(POPUP_DISMISS_KEY)) return; } catch(e) {}
+  popup.style.display = 'block';
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+}
+
+function dismissLaunchPopup() {
+  const popup = document.getElementById('launch-popup');
+  if (!popup) return;
+  popup.style.animation = 'popupSlideOut 0.3s ease forwards';
+  setTimeout(() => { popup.style.display = 'none'; }, 300);
+  try { sessionStorage.setItem(POPUP_DISMISS_KEY, '1'); } catch(e) {}
+}
+
+// Show popup after 2 seconds
+setTimeout(showLaunchPopup, 2000);
+</script>
+
+<!-- ════════════════════════ SCRIPTS ════════════════════════ -->
 <script src="js/main.js"></script>
 
 <script>

@@ -326,14 +326,19 @@ async function loadAddOns() {
   }
 }
 
+// Add-ons whose name should NEVER appear in the add-on grid because they
+// belong in the Delivery Speed selector at the top of the form.
+const _SPEED_ADDONS = new Set(['rush_2hr', 'same_day', 'rush_2hour', 'sameday', 'express_3h']);
+
 function renderAddOns() {
   const container = document.getElementById('addons-grid');
   if (!container) return;
   container.innerHTML = '';
-  // Show only the most useful ones to customers — hide internal/operational add-ons.
-  // We use category filtering: keep "detergent", "treatment", "service".
+  // Show only the most useful ones to customers — hide internal/operational add-ons
+  // and anything that is really a delivery speed (those live in the Delivery Speed dropdown).
   const visible = _availableAddOns
     .filter(a => a.isActive !== 0 && a.isActive !== false)
+    .filter(a => !_SPEED_ADDONS.has(String(a.name || '').toLowerCase()))
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
   for (const ao of visible) {
     const id = ao.id;
@@ -631,6 +636,45 @@ function addScheduleField() {
   // Insert before price preview
   const pricePreview = document.getElementById('price-preview');
   form.insertBefore(div, pricePreview);
+
+  // Re-evaluate Same-Day delivery eligibility whenever pickup date changes.
+  const dateEl = div.querySelector('#pickup-date');
+  dateEl?.addEventListener('change', () => {
+    refreshSameDayEligibility();
+    updatePricePreview();
+  });
+  // Run once now to gate Same-Day correctly on first render.
+  refreshSameDayEligibility();
+}
+
+// Same-Day delivery is only valid when pickup is scheduled for TODAY.
+// If the customer picks a future day, disable the Same-Day option in the
+// Delivery Speed dropdown and bump them back to Standard.
+function refreshSameDayEligibility() {
+  const speedSel = document.getElementById('speed-select');
+  const dateEl   = document.getElementById('pickup-date');
+  if (!speedSel) return;
+  const sameDayOpt = speedSel.querySelector('option[value="same_day"]');
+  if (!sameDayOpt) return;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const pickupStr = dateEl ? (dateEl.value || todayStr) : todayStr;
+  const isToday = pickupStr === todayStr;
+
+  if (isToday) {
+    sameDayOpt.disabled = false;
+    sameDayOpt.hidden = false;
+    sameDayOpt.textContent = 'Same Day — 12 hours (+$12.99)';
+  } else {
+    // Not today — same-day delivery isn't possible. Hide it AND if it was selected, fall back.
+    sameDayOpt.disabled = true;
+    sameDayOpt.hidden = true;
+    sameDayOpt.textContent = 'Same Day — pick today\'s date to enable';
+    if (speedSel.value === 'same_day') {
+      speedSel.value = '48h';
+      speedSel.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
 }
 
 function addContactFields() {
@@ -1097,11 +1141,11 @@ chatbotClose?.addEventListener('click', () => {
 const CHAT_RESPONSES = {
   pricing: {
     patterns: [/pric/i, /cost/i, /how much/i, /rate/i, /bag/i, /pound/i, /\$/i, /cheap/i, /expensive/i, /afford/i],
-    response: "Our pricing is simple and transparent:\n\n**Wash & Fold (base prices):**\n• Small Bag (up to 10 lbs): $24.99\n• Medium Bag (up to 20 lbs): $44.99\n• Large Bag (up to 30 lbs): $59.99\n• XL Bag (up to 50 lbs): $89.99\n\n**Service adjustments:**\n• Dry Cleaning: +65% over base\n• Comforters & Bedding: +40% over base\n• Mix of Everything: +25% over base\n\nIf you go over the weight limit, it's just $2.50 per extra pound. Standard delivery (48h) is free! Would you like to place an order?"
+    response: "Our pricing is simple and transparent:\n\n**Wash & Fold (base prices):**\n• Small Bag (up to 10 lbs): $24.99\n• Medium Bag (up to 20 lbs): $44.99\n• Large Bag (up to 30 lbs): $59.99\n• XL Bag (up to 50 lbs): $89.99\n\n**Service adjustments:**\n• Dry Cleaning: +65% over base\n• Comforters & Bedding: +40% over base\n• Mix of Everything: +25% over base\n\nIf you go over the weight limit, it's just $2.50 per extra pound. Standard delivery (48h) is free. Would you like to place an order?"
   },
   delivery: {
     patterns: [/deliver/i, /speed/i, /fast/i, /how long/i, /turnaround/i, /when/i, /time/i, /quick/i, /express/i, /same.?day/i, /next.?day/i],
-    response: "We offer 4 delivery speeds:\n\n• Standard: 48 hours (free delivery)\n• Next Day: 24 hours (+$5.99)\n• Same Day: 12 hours (+$12.99)\n• Express: 3 hours (+$19.99)\n\nWe track every order against these windows — if we miss your delivery time, reach out and we'll make it right."
+    response: "We offer 3 delivery speeds:\n\n• Standard: 48 hours (free delivery)\n• Next Day: 24 hours (+$5.99)\n• Same Day: 12 hours (+$12.99) — only when you schedule pickup for today\n\nWe track every order against these windows — if we miss your delivery time, reach out and we'll make it right."
   },
   tracking: {
     patterns: [/track/i, /where/i, /status/i, /driver/i, /gps/i, /location/i, /eta/i],
