@@ -31,7 +31,6 @@ const DELIVERY_FEES = {
   '48h':        { fee: 0,     label: 'Standard (48h)' },
   '24h':        { fee: 5.99,  label: 'Next Day (24h)' },
   'same_day':   { fee: 12.99, label: 'Same Day (12h)' },
-  'express_3h': { fee: 19.99, label: 'Express (3h)' },
 };
 
 const TAX_RATE = 0.08875; // NY sales tax
@@ -328,7 +327,7 @@ async function loadAddOns() {
 
 // Add-ons whose name should NEVER appear in the add-on grid because they
 // belong in the Delivery Speed selector at the top of the form.
-const _SPEED_ADDONS = new Set(['rush_2hr', 'same_day', 'rush_2hour', 'sameday', 'express_3h']);
+const _SPEED_ADDONS = new Set(['same_day', 'sameday']);
 
 function renderAddOns() {
   const container = document.getElementById('addons-grid');
@@ -820,7 +819,7 @@ async function processPaymentAndOrder() {
 
   try {
     // Step 1: Create quote on the server
-    const speedMap = { '48h': '48h', '24h': '24h', 'same_day': 'same_day', 'express_3h': 'express_3h' };
+    const speedMap = { '48h': '48h', '24h': '24h', 'same_day': 'same_day' };
     const deliverySpeed = speedMap[speed] || '48h';
     const idempotencyKey = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
@@ -1161,7 +1160,7 @@ const CHAT_RESPONSES = {
   },
   loyalty: {
     patterns: [/loyal/i, /reward/i, /point/i, /tier/i, /bronze/i, /silver/i, /gold/i, /platinum/i, /earn/i, /discount/i, /subscribe/i, /subscription/i, /plan/i, /member/i],
-    response: "Our loyalty program rewards you on every order:\n\n• Bronze: Starting tier, 5% off first order\n• Silver (500 pts): 10% off + free delivery\n• Gold (2,000 pts): 15% off + priority matching\n• Platinum (5,000 pts): 20% off + dedicated support\n\nWe also have subscription plans ($19.99-$69.99/mo) with free deliveries, extra discounts, and bonus points."
+    response: "Our loyalty program rewards you on every order:\n\n• Bronze: Starting tier, 5% off first order\n• Silver (500 pts): 10% off + free delivery\n• Gold (2,000 pts): 15% off + priority matching\n• Platinum (5,000 pts): 20% off + dedicated support\n\nYou earn points on every order — the more you use Offload, the more you save."
   },
   cancel: {
     patterns: [/cancel/i, /refund/i, /reschedule/i, /change/i, /modify/i],
