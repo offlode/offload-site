@@ -272,12 +272,19 @@ async function handleSignIn() {
     msg.textContent = 'Signed in successfully. Redirecting...';
     msg.className = 'msg success';
 
+    // Persist token so the SPA at the API host picks up the session
+    try {
+      if (data.token) localStorage.setItem('offload_auth_token', data.token);
+      if (data.user) localStorage.setItem('offload_auth_user', JSON.stringify(data.user));
+    } catch (e) { /* ignore storage errors */ }
+
     // Redirect based on role
     const role = data.user?.role || 'customer';
     if (role === 'admin' || role === 'manager') {
-      window.location.href = 'https://admin.offloadusa.com';
+      window.location.href = 'https://offload-admin.onrender.com';
     } else {
-      window.location.href = '/';
+      // Customer SPA is served from the API host
+      window.location.href = 'https://api.offloadusa.com/';
     }
   } catch (err) {
     msg.textContent = err.message || 'Sign in failed. Please try again.';
