@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "TEAMID.com.offloadusa.app",
+        "appID": "A84U5PU3FD.com.offloadusa.app",
         "paths": ["NOT /api/*", "*"]
       }
     ]
