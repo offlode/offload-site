@@ -62,6 +62,10 @@
   --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
   --shadow-xl: 0 16px 48px rgba(0,0,0,0.16);
 
+  /* Brand accent + glow */
+  --accent: #5B4BC4;
+  --shadow-teal: 0 8px 24px rgba(91,75,196,0.4);
+
   /* Layout */
   --max-width: 1200px;
   --header-height: 72px;
@@ -167,7 +171,7 @@ a:hover { color: var(--teal); }
 
 .btn--primary {
   background: var(--teal);
-  color: var(--navy);
+  color: var(--white);
 }
 .btn--primary:hover {
   background: var(--teal-dark);
@@ -403,7 +407,7 @@ a:hover { color: var(--teal); }
   align-items: center;
   gap: var(--space-sm);
   background: var(--teal-glow);
-  border: 1px solid rgba(0,201,167,0.2);
+  border: 1px solid rgba(91,75,196,0.2);
   border-radius: var(--radius-full);
   padding: 6px 16px;
   font-size: 0.8rem;

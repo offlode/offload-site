@@ -735,7 +735,7 @@ function initStripe() {
     console.warn('[Stripe] Stripe.js not loaded');
     return;
   }
-  stripeInstance = Stripe('pk_test_51TMiltKfiq0b5r3zXngAkvVa1KCRhnQGZPLZ4lQarShmk2JupWVhDjkN7LzFpANBTUw47iNFY4fXzfoaa1Lu9PU300Qs02jfiP');
+  stripeInstance = Stripe('pk_live_51TMile3mAtA14Z2dNB4i6ub4vMBad93jQH9RAken5sB2QktvJhwy7ReHhFA4zkKNbytB0QqdxXk1gihXj8LfS6Yh00pyv9VVN9');
 }
 
 function addPaymentField() {
@@ -939,10 +939,16 @@ async function processPaymentAndOrder() {
     const errorBanner = document.createElement('div');
     errorBanner.id = 'payment-error-banner';
     errorBanner.style.cssText = 'background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:12px 16px; border-radius:8px; font-size:0.88rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;';
-    errorBanner.innerHTML = `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-      <span>${err.message || 'Payment failed. Please check your card and try again.'}</span>
-    `;
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('width', '18'); svg.setAttribute('height', '18'); svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', '#ef4444'); svg.setAttribute('stroke-width', '2');
+    var c = document.createElementNS(svgNS, 'circle'); c.setAttribute('cx','12'); c.setAttribute('cy','12'); c.setAttribute('r','10'); svg.appendChild(c);
+    var l1 = document.createElementNS(svgNS, 'line'); l1.setAttribute('x1','15'); l1.setAttribute('y1','9'); l1.setAttribute('x2','9'); l1.setAttribute('y2','15'); svg.appendChild(l1);
+    var l2 = document.createElementNS(svgNS, 'line'); l2.setAttribute('x1','9'); l2.setAttribute('y1','9'); l2.setAttribute('x2','15'); l2.setAttribute('y2','15'); svg.appendChild(l2);
+    errorBanner.appendChild(svg);
+    var span = document.createElement('span');
+    span.textContent = err.message || 'Payment failed. Please check your card and try again.';
+    errorBanner.appendChild(span);
     const existing = document.getElementById('payment-error-banner');
     if (existing) existing.remove();
     const form = document.getElementById('order-form');

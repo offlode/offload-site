@@ -279,7 +279,12 @@ form.addEventListener("submit", async (e) => {
     if (!r.ok) throw new Error(data.error || "Submission failed");
     status.className = "form-status success";
     status.style.display = "block";
-    status.innerHTML = "<strong>Thanks — your application is in.</strong><br>You'll get an email at <strong>" + body.email + "</strong> within 1–2 business days with our decision. If approved, the email contains your sign-in link and a temporary password for the Operations Console.";
+    status.textContent = "";
+    var s1 = document.createElement("strong"); s1.textContent = "Thanks — your application is in."; status.appendChild(s1);
+    status.appendChild(document.createElement("br"));
+    status.appendChild(document.createTextNode("You'll get an email at "));
+    var s2 = document.createElement("strong"); s2.textContent = body.email; status.appendChild(s2);
+    status.appendChild(document.createTextNode(" within 1–2 business days with our decision. If approved, the email contains your sign-in link and a temporary password for the Operations Console."));
     form.reset();
     btn.style.display = "none";
     window.scrollTo({ top: 0, behavior: "smooth" });

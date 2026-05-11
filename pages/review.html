@@ -170,10 +170,23 @@ async function loadOrder() {
       return;
     }
 
-    orderMeta.innerHTML = "<strong>Order #" + (order.orderNumber || order.id) + "</strong>"
-      + (order.vendorName ? "<br>Laundromat: " + order.vendorName : "")
-      + (order.driverName ? "<br>Driver: " + order.driverName : "")
-      + (order.deliveredAt ? "<br>Delivered: " + new Date(order.deliveredAt).toLocaleString() : "");
+    // Build order meta safely (textContent to prevent XSS via vendor/driver names)
+    orderMeta.textContent = "";
+    const orderLine = document.createElement("strong");
+    orderLine.textContent = "Order #" + (order.orderNumber || order.id);
+    orderMeta.appendChild(orderLine);
+    if (order.vendorName) {
+      orderMeta.appendChild(document.createElement("br"));
+      orderMeta.appendChild(document.createTextNode("Laundromat: " + order.vendorName));
+    }
+    if (order.driverName) {
+      orderMeta.appendChild(document.createElement("br"));
+      orderMeta.appendChild(document.createTextNode("Driver: " + order.driverName));
+    }
+    if (order.deliveredAt) {
+      orderMeta.appendChild(document.createElement("br"));
+      orderMeta.appendChild(document.createTextNode("Delivered: " + new Date(order.deliveredAt).toLocaleString()));
+    }
 
     if (!order.driverId) driverBlock.style.display = "none";
 
