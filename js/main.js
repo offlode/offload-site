@@ -722,7 +722,7 @@ document.addEventListener('input', (e) => {
 // Dynamic API base — matches the hostname the site is loaded from
 const API_BASE = window.location.hostname === '127.0.0.1' 
   ? 'http://127.0.0.1:5000' 
-  : (window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://api.offloadusa.com');
+  : (window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://offload-api-sandbox.onrender.com');
 
 // ── Stripe Payment Integration ──
 let stripeInstance = null;
@@ -735,7 +735,7 @@ function initStripe() {
     console.warn('[Stripe] Stripe.js not loaded');
     return;
   }
-  stripeInstance = Stripe('pk_live_51TMile3mAtA14Z2dNB4i6ub4vMBad93jQH9RAken5sB2QktvJhwy7ReHhFA4zkKNbytB0QqdxXk1gihXj8LfS6Yh00pyv9VVN9');
+  stripeInstance = Stripe('pk_test_51TMile3mAtA14Z2dwuOn6dIMyzX68bjyMIcGzGZHJB6KgfVr53uMOlJzVM9639c6F2nHnLDCpjS8r7WeURqHCiTU00yNs7nkHg');
 }
 
 function addPaymentField() {
