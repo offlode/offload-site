@@ -1267,17 +1267,102 @@ window.addEventListener('scroll', () => {
 
 
 // ══════════════════════════════════════════════
-//  ADDRESS AUTOCOMPLETE (Nominatim / OpenStreetMap)
+//  ADDRESS AUTOCOMPLETE (Google Places → Nominatim fallback)
 // ══════════════════════════════════════════════
 
 let selectedPlace = null;
 let addressVerified = false;
 let autocompleteTimeout = null;
 let autocompleteDropdown = null;
+let googlePlacesReady = false;
+let googleSessionToken = null;
+
+window.__OFFLOAD_API_BASE__ = window.__OFFLOAD_API_BASE__ || 'https://offload-api.onrender.com';
+
+function loadGooglePlaces() {
+  if (window.google && window.google.maps && window.google.maps.places) {
+    googlePlacesReady = true;
+    if (window.google.maps.places.AutocompleteSessionToken) {
+      googleSessionToken = new window.google.maps.places.AutocompleteSessionToken();
+    }
+    return Promise.resolve(true);
+  }
+  return fetch(window.__OFFLOAD_API_BASE__ + '/api/public/maps-key')
+    .then(function(r){ return r.json(); })
+    .then(function(cfg){
+      if (!cfg || !cfg.configured || !cfg.mapsKey) return false;
+      return new Promise(function(resolve){
+        var s = document.createElement('script');
+        s.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(cfg.mapsKey) + '&libraries=places&loading=async';
+        s.async = true; s.defer = true;
+        s.onload = function(){
+          googlePlacesReady = !!(window.google && window.google.maps && window.google.maps.places);
+          if (googlePlacesReady && window.google.maps.places.AutocompleteSessionToken) {
+            googleSessionToken = new window.google.maps.places.AutocompleteSessionToken();
+          }
+          resolve(googlePlacesReady);
+        };
+        s.onerror = function(){ resolve(false); };
+        document.head.appendChild(s);
+      });
+    })
+    .catch(function(){ return false; });
+}
+
+function googleAutocomplete(q) {
+  return new Promise(function(resolve){
+    if (!googlePlacesReady) return resolve([]);
+    try {
+      var service = new window.google.maps.places.AutocompleteService();
+      service.getPlacePredictions({
+        input: q,
+        componentRestrictions: { country: 'us' },
+        sessionToken: googleSessionToken,
+        types: ['address']
+      }, function(preds, status){
+        if (status !== window.google.maps.places.PlacesServiceStatus.OK || !preds) return resolve([]);
+        resolve(preds);
+      });
+    } catch (_) { resolve([]); }
+  });
+}
+
+function googlePlaceDetails(placeId) {
+  return new Promise(function(resolve){
+    if (!googlePlacesReady) return resolve(null);
+    try {
+      var div = document.createElement('div');
+      var svc = new window.google.maps.places.PlacesService(div);
+      svc.getDetails({
+        placeId: placeId,
+        fields: ['formatted_address', 'geometry', 'address_components'],
+        sessionToken: googleSessionToken
+      }, function(place, status){
+        if (status !== window.google.maps.places.PlacesServiceStatus.OK || !place) return resolve(null);
+        var comps = {};
+        (place.address_components || []).forEach(function(c){
+          if (c.types.indexOf('locality') !== -1) comps.city = c.long_name;
+          else if (c.types.indexOf('postal_town') !== -1 && !comps.city) comps.city = c.long_name;
+          else if (c.types.indexOf('administrative_area_level_1') !== -1) comps.state = c.short_name;
+          else if (c.types.indexOf('postal_code') !== -1) comps.zip = c.long_name;
+        });
+        resolve({
+          formatted: place.formatted_address,
+          lat: place.geometry && place.geometry.location.lat(),
+          lng: place.geometry && place.geometry.location.lng(),
+          components: comps
+        });
+      });
+    } catch (_) { resolve(null); }
+  });
+}
 
 (function initAddressAutocomplete() {
   const addressInput = document.getElementById('address-input');
   if (!addressInput) return;
+
+  // Kick off Google Places load (key fetched from public API endpoint)
+  loadGooglePlaces();
 
   // Create dropdown container
   autocompleteDropdown = document.createElement('div');
@@ -1293,7 +1378,41 @@ let autocompleteDropdown = null;
     const q = addressInput.value.trim();
     if (q.length < 4) { autocompleteDropdown.style.display = 'none'; return; }
 
-    autocompleteTimeout = setTimeout(() => {
+    autocompleteTimeout = setTimeout(async () => {
+      // Prefer Google Places when available; fall back to Nominatim.
+      if (googlePlacesReady) {
+        const preds = await googleAutocomplete(q);
+        if (preds && preds.length) {
+          autocompleteDropdown.innerHTML = '';
+          autocompleteDropdown.style.display = 'block';
+          preds.forEach(p => {
+            const item = document.createElement('div');
+            item.style.cssText = 'padding:10px 14px;cursor:pointer;font-size:0.88rem;color:#e0e0e0;border-bottom:1px solid #2E2E2E;transition:background 0.15s;';
+            item.textContent = p.description;
+            item.addEventListener('mouseenter', () => { item.style.background = 'rgba(91,75,196,0.15)'; });
+            item.addEventListener('mouseleave', () => { item.style.background = ''; });
+            item.addEventListener('mousedown', async (e) => {
+              e.preventDefault();
+              const details = await googlePlaceDetails(p.place_id);
+              if (details) {
+                addressInput.value = details.formatted;
+                selectedPlace = details;
+                addressVerified = true;
+                autocompleteDropdown.style.display = 'none';
+                addressInput.style.borderColor = '#5B4BC4';
+                setTimeout(() => { addressInput.style.borderColor = ''; }, 1500);
+                try { saveFormState(); } catch (_) {}
+                try { updatePricePreview(); } catch (_) {}
+                if (window.google && window.google.maps.places.AutocompleteSessionToken) {
+                  googleSessionToken = new window.google.maps.places.AutocompleteSessionToken();
+                }
+              }
+            });
+            autocompleteDropdown.appendChild(item);
+          });
+          return;
+        }
+      }
       fetch('https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=us&limit=5&q=' + encodeURIComponent(q), {
         headers: { 'Accept-Language': 'en' }
       })

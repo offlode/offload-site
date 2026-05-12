@@ -9,9 +9,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Brand colors — from Figma */
-  --navy: #0a0a0a;
-  --navy-light: #1a1a1a;
+  /* Brand colors — from Figma "Offload new version" (bg #1C1C1C, primary #5B4BC4) */
+  --navy: #1C1C1C;
+  --navy-light: #232323;
   --navy-mid: #2e2e2e;
   --teal: #5B4BC4;
   --teal-dark: #4a3ba3;
@@ -34,9 +34,9 @@
   --warning: #F59E0B;
   --error: #EF4444;
 
-  /* Typography — Inter only (per Figma) */
-  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Typography — Montserrat per Figma "Offload new version" */
+  --font-display: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
 
   /* Spacing */

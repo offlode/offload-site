@@ -201,9 +201,9 @@
   </script>
 
   <!-- Fonts -->
-  <!-- Inter only per Figma brand specs -->
+  <!-- Montserrat per Figma "Offload new version" brand specs (was Inter) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <!-- Google Places Autocomplete (loaded dynamically in main.js) -->
 
@@ -572,7 +572,7 @@
           <li>Free standard delivery</li>
           <li>All detergent included</li>
         </ul>
-        <a href="#hero-widget" class="btn btn--outline btn--small" style="width:100%;">Select</a>
+        <a href="#hero-widget" class="btn btn--outline btn--small pricing-select" data-bag="small" style="width:100%;">Select</a>
       </div>
 
       <div class="pricing-card pricing-card--popular animate-in delay-2">
@@ -588,7 +588,7 @@
           <li>Free standard delivery</li>
           <li>All detergent included</li>
         </ul>
-        <a href="#hero-widget" class="btn btn--primary btn--small" style="width:100%;">Select</a>
+        <a href="#hero-widget" class="btn btn--primary btn--small pricing-select" data-bag="medium" style="width:100%;">Select</a>
       </div>
 
       <div class="pricing-card animate-in delay-3">
@@ -603,7 +603,7 @@
           <li>Free standard delivery</li>
           <li>All detergent included</li>
         </ul>
-        <a href="#hero-widget" class="btn btn--outline btn--small" style="width:100%;">Select</a>
+        <a href="#hero-widget" class="btn btn--outline btn--small pricing-select" data-bag="large" style="width:100%;">Select</a>
       </div>
 
       <div class="pricing-card animate-in delay-4">
@@ -618,7 +618,7 @@
           <li>Free standard delivery</li>
           <li>All detergent included</li>
         </ul>
-        <a href="#hero-widget" class="btn btn--outline btn--small" style="width:100%;">Select</a>
+        <a href="#hero-widget" class="btn btn--outline btn--small pricing-select" data-bag="xl" style="width:100%;">Select</a>
       </div>
     </div>
 
@@ -1413,6 +1413,36 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   });
 }
+</script>
+
+<script>
+/* Pricing card → hero widget state carryover */
+(function(){
+  function applyBag(bag){
+    var sel = document.getElementById('bag-select');
+    if (!sel) return;
+    sel.value = bag;
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+    // brief highlight
+    sel.style.transition = 'box-shadow 200ms ease';
+    sel.style.boxShadow = '0 0 0 3px rgba(91,75,196,0.45)';
+    setTimeout(function(){ sel.style.boxShadow = ''; }, 1200);
+  }
+  function applyService(service){
+    var sel = document.getElementById('service-select');
+    if (!sel) return;
+    sel.value = service;
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('.pricing-select, .service-select');
+    if (!t) return;
+    var bag = t.getAttribute('data-bag');
+    var service = t.getAttribute('data-service');
+    if (bag) applyBag(bag);
+    if (service) applyService(service);
+  });
+})();
 </script>
 </body>
 </html>
