@@ -1372,8 +1372,21 @@ function dismissLaunchPopup() {
   try { sessionStorage.setItem(POPUP_DISMISS_KEY, '1'); } catch(e) {}
 }
 
-// Show popup after 2 seconds
-setTimeout(showLaunchPopup, 2000);
+// Show popup only after the user scrolls past the hero (so it never overlaps hero CTAs).
+(function(){
+  var triggered = false;
+  function maybeShow(){
+    if (triggered) return;
+    if (window.scrollY > window.innerHeight * 0.6) {
+      triggered = true;
+      showLaunchPopup();
+      window.removeEventListener('scroll', maybeShow);
+    }
+  }
+  window.addEventListener('scroll', maybeShow, { passive: true });
+  // Fallback: show after 30s even without scrolling
+  setTimeout(function(){ if (!triggered) { triggered = true; showLaunchPopup(); } }, 30000);
+})();
 </script>
 
 <!-- ════════════════════════ SCRIPTS ════════════════════════ -->
