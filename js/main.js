@@ -1162,11 +1162,11 @@ const CHAT_RESPONSES = {
   },
   services: {
     patterns: [/service/i, /offer/i, /dry clean/i, /comforter/i, /alteration/i, /bedding/i, /type/i],
-    response: "We offer:\n\n• Wash & Fold — your everyday laundry\n• Dry Cleaning — professional garment care (1.65x base price)\n• Comforters & Bedding — bulky items handled with care (1.4x base price)\n• Alterations — hems, repairs, and more\n• Commercial — bulk orders for businesses\n\nPrices adjust automatically when you select a service in the order form!"
+    response: "We currently offer:\n\n• Wash & Fold — your everyday laundry\n• Dry Cleaning — professional garment care (1.65x base price)\n• Comforters & Bedding — bulky items handled with care (1.4x base price)\n• Mixed — mix of different items in one bag (1.25x base price)\n\nAlterations and dedicated commercial accounts are coming soon — email support@offloadusa.com if you have a bulk or commercial need today."
   },
   loyalty: {
     patterns: [/loyal/i, /reward/i, /point/i, /tier/i, /bronze/i, /silver/i, /gold/i, /platinum/i, /earn/i, /discount/i, /subscribe/i, /subscription/i, /plan/i, /member/i],
-    response: "Our loyalty program rewards you on every order:\n\n• Bronze: Starting tier, 5% off first order\n• Silver (500 pts): 10% off + free delivery\n• Gold (2,000 pts): 15% off + priority matching\n• Platinum (5,000 pts): 20% off + dedicated support\n\nYou earn points on every order — the more you use Offload, the more you save."
+    response: "Our loyalty program rewards you on every order:\n\n• Bronze: Starting tier, 5% off first order\n• Silver (500 pts): 10% off + free delivery\n• Gold (2,000 pts): 15% off + priority matching\n• Platinum (5,000 pts): 20% off + priority support response\n\nYou earn points on every order — the more you use Offload, the more you save."
   },
   cancel: {
     patterns: [/cancel/i, /refund/i, /reschedule/i, /change/i, /modify/i],
