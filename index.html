@@ -550,6 +550,61 @@
   </div>
 </section>
 
+
+<!-- ═══════════════════════ SERVICE CARDS ═══════════════════════ -->
+<section class="section section--gray" id="services">
+  <div class="container">
+    <div class="section-header section-header--centered animate-in">
+      <span class="section-header__label">Our Services</span>
+      <h2>Choose how you want it done</h2>
+      <p>Every service is handled by vetted professionals and returned fresh to your door.</p>
+    </div>
+
+    <div class="pricing-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+
+      <!-- D2: Signature Wash -->
+      <div class="pricing-card animate-in delay-1" data-card="signature-wash" data-service="wash_fold" style="cursor:pointer;" role="button" tabindex="0" aria-label="Select Signature Wash service">
+        <div class="pricing-card__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+          Wash &amp; Fold
+        </div>
+        <div class="pricing-card__name">Signature Wash</div>
+        <div class="pricing-card__weight">Our flagship service</div>
+        <div class="pricing-card__price" style="font-size:1.5rem;">From $24.99</div>
+        <div class="pricing-card__per">flat rate per bag</div>
+        <ul class="pricing-card__features">
+          <li>Picked up from your door</li>
+          <li>Washed with premium detergent</li>
+          <li>Neatly folded &amp; packaged</li>
+          <li>Delivered back with care</li>
+        </ul>
+        <a class="btn btn--primary btn--small service-select" data-service="wash_fold" data-card="signature-wash" href="#hero-widget" style="width:100%;">Select Service</a>
+      </div>
+
+      <!-- D3: Same Day -->
+      <div class="pricing-card animate-in delay-2" data-card="same-day" data-speed="same_day" style="cursor:pointer;" role="button" tabindex="0" aria-label="Select Same Day delivery">
+        <div class="pricing-card__badge" style="background:var(--accent);color:#fff;">Fastest Option</div>
+        <div class="pricing-card__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Same Day
+        </div>
+        <div class="pricing-card__name">Same Day</div>
+        <div class="pricing-card__weight">Pick up by 10am &rarr; back by 8pm</div>
+        <div class="pricing-card__price" style="font-size:1.5rem;">+$12.99</div>
+        <div class="pricing-card__per">speed surcharge</div>
+        <ul class="pricing-card__features">
+          <li>12-hour turnaround</li>
+          <li>Pickup by 10am</li>
+          <li>Delivered same day by 8pm</li>
+          <li>All bag sizes eligible</li>
+        </ul>
+        <a class="btn btn--outline btn--small service-select" data-speed="same_day" data-card="same-day" href="#hero-widget" style="width:100%;">Select Speed</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════════════════ PRICING ═══════════════════════ -->
 <section class="section section--gray" id="pricing">
   <div class="container">
@@ -1433,31 +1488,54 @@ if ('serviceWorker' in navigator) {
 </script>
 
 <script>
-/* Pricing card → hero widget state carryover */
+/* Pricing card + service card → hero widget state carryover */
 (function(){
+  function highlight(el) {
+    el.style.transition = 'box-shadow 200ms ease';
+    el.style.boxShadow = '0 0 0 3px rgba(91,75,196,0.45)';
+    setTimeout(function(){ el.style.boxShadow = ''; }, 1200);
+  }
   function applyBag(bag){
     var sel = document.getElementById('bag-select');
     if (!sel) return;
     sel.value = bag;
     sel.dispatchEvent(new Event('change', { bubbles: true }));
-    // brief highlight
-    sel.style.transition = 'box-shadow 200ms ease';
-    sel.style.boxShadow = '0 0 0 3px rgba(91,75,196,0.45)';
-    setTimeout(function(){ sel.style.boxShadow = ''; }, 1200);
+    highlight(sel);
   }
   function applyService(service){
     var sel = document.getElementById('service-select');
     if (!sel) return;
     sel.value = service;
     sel.dispatchEvent(new Event('change', { bubbles: true }));
+    highlight(sel);
+  }
+  /* D3: Same Day — sets the speed dropdown to same_day */
+  function applySpeed(speed){
+    var sel = document.getElementById('speed-select');
+    if (!sel) return;
+    sel.value = speed;
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+    highlight(sel);
   }
   document.addEventListener('click', function(e){
     var t = e.target.closest('.pricing-select, .service-select');
     if (!t) return;
-    var bag = t.getAttribute('data-bag');
+    var bag     = t.getAttribute('data-bag');
     var service = t.getAttribute('data-service');
-    if (bag) applyBag(bag);
+    var speed   = t.getAttribute('data-speed');
+    if (bag)     applyBag(bag);
     if (service) applyService(service);
+    if (speed)   applySpeed(speed);   /* D3: same_day → #speed-select */
+  });
+  /* Also allow keyboard activation on card divs (role=button) */
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var card = e.target.closest('[data-card]');
+    if (!card) return;
+    var service = card.getAttribute('data-service');
+    var speed   = card.getAttribute('data-speed');
+    if (service) { applyService(service); document.getElementById('hero-widget').scrollIntoView({behavior:'smooth'}); }
+    if (speed)   { applySpeed(speed);     document.getElementById('hero-widget').scrollIntoView({behavior:'smooth'}); }
   });
 })();
 </script>
