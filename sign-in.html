@@ -241,6 +241,15 @@ async function handleSignIn() {
     email.focus();
     return;
   }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email.value.trim())) {
+    email.classList.add('error');
+    const err = document.getElementById('email-error');
+    err.textContent = 'Please enter a valid email address (e.g. you@example.com)';
+    err.style.display = 'block';
+    email.focus();
+    return;
+  }
   if (!password.value) {
     password.classList.add('error');
     const err = document.getElementById('password-error');

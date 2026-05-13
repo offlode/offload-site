@@ -480,11 +480,11 @@ async function handleOrderClick() {
       selectedPlace = { formatted: address, manual: true };
     }
     if (!service) {
-      shakeField('service-select');
+      showFieldError(document.getElementById('service-select'), 'Please select a service type');
       return;
     }
     if (!bag) {
-      shakeField('bag-select');
+      showFieldError(document.getElementById('bag-select'), 'Please select a bag size');
       return;
     }
 
