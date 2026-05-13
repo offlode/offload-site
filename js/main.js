@@ -1600,8 +1600,8 @@ const STATE_NAMES = {
         textEl.textContent = `Serving ${city || stateName}`;
         badge.style.background = 'rgba(91,75,196,0.12)';
       } else if (city) {
-        // We do not serve there yet — show expansion copy
-        textEl.textContent = `Expanding to ${stateName}`;
+        // We do not serve there yet — show approved expansion copy
+        textEl.textContent = 'Starting in New York City, with plans to expand across the U.S. over the next 6–12 months.';
         badge.style.background = 'rgba(255,165,0,0.12)';
         badge.querySelector('.hero__badge-dot').style.background = '#f59e0b';
       }

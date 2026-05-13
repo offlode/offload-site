@@ -1372,8 +1372,12 @@ function dismissLaunchPopup() {
   try { sessionStorage.setItem(POPUP_DISMISS_KEY, '1'); } catch(e) {}
 }
 
-// Show popup only after the user scrolls past the hero (so it never overlaps hero CTAs).
+// iOS popup is gated behind a config flag.
+// To enable: add <script>window.__OFFLOAD_SHOW_IOS_POPUP__ = true;</script> before this script,
+// or run window.__OFFLOAD_SHOW_IOS_POPUP__ = true in the console.
+// Default is false so the popup never appears unless explicitly enabled.
 (function(){
+  if (!window.__OFFLOAD_SHOW_IOS_POPUP__) return;
   var triggered = false;
   function maybeShow(){
     if (triggered) return;
