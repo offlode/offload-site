@@ -1,0 +1,286 @@
+<!--
+  ═══════════════════════════════════════════════════════════════════════
+  D4 — Unserved-Area Lead Capture — Reusable Snippet
+  ═══════════════════════════════════════════════════════════════════════
+
+  USAGE
+  -----
+  This file documents the modal HTML structure and the JS functions that
+  power the unserved-area lead capture flow. The actual runtime code is
+  embedded in js/main.js (for index.html) and inline in
+  pages/laundry-pickup-delivery-nyc.html.
+
+  FLOW
+  ----
+  1. User types an address/zip in the hero widget and clicks "See My Price".
+  2. JS calls POST /api/quotes/check-serviceability → { servable: boolean }.
+  3. If servable === false → showUnservedModal(prefillZip) is called.
+  4. Modal collects: name, email, phone, address, city, state, zip, optional service.
+  5. On submit → POST /api/service-area-requests with source:"website_unserved_zip".
+  6. On 2xx → close modal + show success toast.
+  7. On error → inline error banner, retry allowed.
+
+  API ENDPOINTS
+  -------------
+  Serviceability check:
+    POST https://offload-api-sandbox.onrender.com/api/quotes/check-serviceability
+    Body: { zip?, address?, lat?, lng?, serviceType? }
+    Returns: { servable: boolean, reason?: string }
+
+  Lead capture:
+    POST https://offload-api-sandbox.onrender.com/api/service-area-requests
+    Body: { name, email, phone, address, city, state, zip,
+            lat?, lng?, requestedService?, source: "website_unserved_zip" }
+    Returns: { id, status: "new" }
+
+  MODAL HTML STRUCTURE (reference)
+  ---------------------------------
+  The modal is built dynamically in JS (showUnservedModal function) to
+  avoid page-weight on users who are already served. The equivalent
+  static HTML is reproduced below for reference / templating:
+-->
+
+<!-- ══ Overlay ══ -->
+<div id="unserved-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="unserved-modal-title"
+  style="position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:99990;
+         display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+
+  <!-- ══ Modal card ══ -->
+  <div id="unserved-modal" style="background:#111827;border:1px solid rgba(91,75,196,0.25);
+       border-radius:18px;padding:32px 28px 28px;max-width:520px;width:100%;position:relative;
+       box-shadow:0 24px 64px rgba(0,0,0,0.6);">
+
+    <!-- Close button -->
+    <button id="unserved-modal-close" type="button" aria-label="Close"
+      style="position:absolute;top:16px;right:18px;background:none;border:none;
+             color:#9ca3af;font-size:1.5rem;cursor:pointer;line-height:1;padding:4px;">
+      &times;
+    </button>
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+      <div style="width:40px;height:40px;background:rgba(91,75,196,0.15);border-radius:10px;
+                  display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B4BC4" stroke-width="2" stroke-linecap="round">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/>
+        </svg>
+      </div>
+      <div>
+        <h2 id="unserved-modal-title"
+          style="color:#fff;font-size:1.15rem;font-weight:700;margin-bottom:2px;font-family:'Montserrat',sans-serif;">
+          We don&rsquo;t have laundromats available in your area yet.
+        </h2>
+        <p style="color:#9ca3af;font-size:0.83rem;margin:0;">
+          Offload is coming soon to your area. Leave your details and we&rsquo;ll let you know.
+        </p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form id="unserved-lead-form" style="display:flex;flex-direction:column;gap:12px;">
+
+      <!-- Full Name -->
+      <div>
+        <label for="ul-name"
+          style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:4px;">
+          Full Name <span style="color:#ef4444;">*</span>
+        </label>
+        <input type="text" id="ul-name" name="name" required autocomplete="name"
+          placeholder="Jane Doe"
+          style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);
+                 border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;
+                 font-family:inherit;outline:none;transition:border-color 0.2s;">
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="ul-email"
+          style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:4px;">
+          Email <span style="color:#ef4444;">*</span>
+        </label>
+        <input type="email" id="ul-email" name="email" required autocomplete="email"
+          placeholder="jane@example.com"
+          style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);
+                 border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;
+                 font-family:inherit;outline:none;transition:border-color 0.2s;">
+      </div>
+
+      <!-- Phone -->
+      <div>
+        <label for="ul-phone"
+          style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:4px;">
+          Phone <span style="color:#ef4444;">*</span>
+        </label>
+        <input type="tel" id="ul-phone" name="phone" required autocomplete="tel"
+          placeholder="(555) 123-4567"
+          style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);
+                 border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;
+                 font-family:inherit;outline:none;transition:border-color 0.2s;">
+      </div>
+
+      <!-- Address -->
+      <div>
+        <label for="ul-address"
+          style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:4px;">
+          Address <span style="color:#ef4444;">*</span>
+        </label>
+        <input type="text" id="ul-address" name="address" required autocomplete="street-address"
+          placeholder="123 Main St"
+          style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);
+                 border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;
+                 font-family:inherit;outline:none;transition:border-color 0.2s;">
+      </div>
+
+      <!-- City / State / ZIP -->
+      <div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;">
+        <div>
+          <label for="ul-city"
+            style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:4px;">
+            City <span style="color:#ef4444;">*</span>
+          </label>
+          <input type="text" id="ul-city" name="city" required autocomplete="address-level2"
+            placeholder="New York"
+            style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);
+                   border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;
+                   font-family:inherit;outline:none;transition:border-color 0.2s;">
+        </div>
+        <div>
+          <label for="ul-state"
+            style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:4px;">
+            State <span style="color:#ef4444;">*</span>
+          </label>
+          <select id="ul-state" name="state" required autocomplete="address-level1"
+            style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);
+                   border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;
+                   font-family:inherit;outline:none;min-width:80px;">
+            <option value="AL">AL</option><option value="AK">AK</option>
+            <option value="AZ">AZ</option><option value="AR">AR</option>
+            <option value="CA">CA</option><option value="CO">CO</option>
+            <option value="CT">CT</option><option value="DE">DE</option>
+            <option value="FL">FL</option><option value="GA">GA</option>
+            <option value="HI">HI</option><option value="ID">ID</option>
+            <option value="IL">IL</option><option value="IN">IN</option>
+            <option value="IA">IA</option><option value="KS">KS</option>
+            <option value="KY">KY</option><option value="LA">LA</option>
+            <option value="ME">ME</option><option value="MD">MD</option>
+            <option value="MA">MA</option><option value="MI">MI</option>
+            <option value="MN">MN</option><option value="MS">MS</option>
+            <option value="MO">MO</option><option value="MT">MT</option>
+            <option value="NE">NE</option><option value="NV">NV</option>
+            <option value="NH">NH</option><option value="NJ">NJ</option>
+            <option value="NM">NM</option><option value="NY" selected>NY</option>
+            <option value="NC">NC</option><option value="ND">ND</option>
+            <option value="OH">OH</option><option value="OK">OK</option>
+            <option value="OR">OR</option><option value="PA">PA</option>
+            <option value="RI">RI</option><option value="SC">SC</option>
+            <option value="SD">SD</option><option value="TN">TN</option>
+            <option value="TX">TX</option><option value="UT">UT</option>
+            <option value="VT">VT</option><option value="VA">VA</option>
+            <option value="WA">WA</option><option value="WV">WV</option>
+            <option value="WI">WI</option><option value="WY">WY</option>
+            <option value="DC">DC</option>
+          </select>
+        </div>
+        <div>
+          <label for="ul-zip"
+            style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:4px;">
+            ZIP <span style="color:#ef4444;">*</span>
+          </label>
+          <input type="text" id="ul-zip" name="zip" required autocomplete="postal-code"
+            placeholder="10001" maxlength="10"
+            style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);
+                   border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;
+                   font-family:inherit;outline:none;min-width:90px;transition:border-color 0.2s;">
+        </div>
+      </div>
+
+      <!-- Service interest (optional) -->
+      <div>
+        <label style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:8px;">
+          Service Interest <span style="font-weight:400;color:#9ca3af;">(optional)</span>
+        </label>
+        <div id="ul-service-radios" role="radiogroup" aria-label="Requested service type"
+          style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;
+                         background:rgba(91,75,196,0.15);border:1.5px solid #5B4BC4;
+                         border-radius:8px;cursor:pointer;font-size:0.85rem;color:#e5e7eb;">
+            <input type="radio" name="ul-service" value="wash_fold" checked style="accent-color:#5B4BC4;">
+            Wash &amp; Fold
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;
+                         background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.12);
+                         border-radius:8px;cursor:pointer;font-size:0.85rem;color:#e5e7eb;">
+            <input type="radio" name="ul-service" value="dry_cleaning" style="accent-color:#5B4BC4;">
+            Dry Cleaning
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;
+                         background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.12);
+                         border-radius:8px;cursor:pointer;font-size:0.85rem;color:#e5e7eb;">
+            <input type="radio" name="ul-service" value="comforters" style="accent-color:#5B4BC4;">
+            Comforters
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;
+                         background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.12);
+                         border-radius:8px;cursor:pointer;font-size:0.85rem;color:#e5e7eb;">
+            <input type="radio" name="ul-service" value="mixed" style="accent-color:#5B4BC4;">
+            Mixed
+          </label>
+        </div>
+      </div>
+
+      <!-- Inline error -->
+      <div id="ul-error" role="alert"
+        style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);
+               border-radius:8px;padding:10px 14px;color:#fca5a5;font-size:0.83rem;"></div>
+
+      <!-- Submit -->
+      <button type="submit" id="ul-submit"
+        style="width:100%;background:#5B4BC4;color:#fff;border:none;border-radius:10px;
+               padding:14px;font-size:0.95rem;font-weight:700;cursor:pointer;
+               font-family:inherit;transition:background 0.2s,opacity 0.2s;">
+        Notify Me When Offload Arrives
+      </button>
+
+      <p style="text-align:center;font-size:0.75rem;color:#6b7280;margin-top:4px;">
+        No spam. We'll only reach out when service launches in your area.
+      </p>
+
+    </form>
+  </div>
+</div>
+
+<!--
+  ═══════════════════════════════════════════════════════════════════════
+  RUNTIME JS (embedded in js/main.js)
+  ═══════════════════════════════════════════════════════════════════════
+
+  Functions added to js/main.js (appended after existing code):
+
+    showOffloadToast(message, type)     — success/error toast, 5s auto-dismiss
+    checkServiceability(zipOrAddress)   — async, returns boolean (fails open)
+    showUnservedModal(prefillZip)       — builds & shows the modal
+    _buildServiceRadio(value, label, checked)
+    _onServiceRadioChange(radio)
+    _unservedEscHandler(e)
+    closeUnservedModal()
+    submitUnservedLead(e)               — async form submit handler
+    _ulFieldError(fieldId, errEl, msg)
+
+  handleOrderClick is OVERRIDDEN (wrapped) to intercept at quote state:
+    - Runs checkServiceability on address if present
+    - If not servable → showUnservedModal(prefillZip), return early
+    - If servable → call original handleOrderClick
+    - If address blank → delegate to original (its own validation fires)
+
+  KEY BEHAVIOURS
+  --------------
+  * Never blocks checkout/quote if address is absent (fails gracefully to the original validation).
+  * API errors / network failures default to servable=true (fail open, no blocking).
+  * ZIP is prefilled from selectedPlace.components.zip or parsed from the typed address.
+  * Address, city, state are prefilled from selectedPlace when available.
+  * Service type is prefilled from the widget's #service-select if set.
+  * Modal closes on Escape, overlay click, or × button.
+  * Phone field auto-formats to (555) 123-4567 pattern.
+  * On success: modal closes + green toast.
+  * On API error: inline red banner, button re-enabled for retry.
+-->

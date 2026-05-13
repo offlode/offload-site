@@ -1794,3 +1794,487 @@ document.querySelectorAll('.pricing-card').forEach(card => {
 console.log('%c🧺 Offload USA', 'font-size:24px; font-weight:bold; color:#5B4BC4;');
 console.log('%cFresh clothes, zero hassle.', 'font-size:14px; color:#94a3b8;');
 console.log('%chttps://offloadusa.com', 'font-size:12px; color:#64748b;');
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  D4 — UNSERVED-AREA LEAD CAPTURE
+//  When the user hits "See My Price" and their address/zip is outside our
+//  service area, we reveal a lead-capture modal instead of advancing the
+//  order flow. On submit we POST to /api/service-area-requests.
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Toast helper (success / error) ──
+function showOffloadToast(message, type) {
+  var existing = document.getElementById('offload-toast');
+  if (existing) existing.remove();
+  var toast = document.createElement('div');
+  toast.id = 'offload-toast';
+  var bg = type === 'success' ? '#22c55e' : '#ef4444';
+  toast.style.cssText = [
+    'position:fixed', 'bottom:24px', 'left:50%', 'transform:translateX(-50%) translateY(0)',
+    'background:' + bg, 'color:#fff', 'padding:14px 24px', 'border-radius:10px',
+    'font-size:0.9rem', 'font-weight:600', 'z-index:99999',
+    'box-shadow:0 8px 32px rgba(0,0,0,0.35)', 'max-width:420px', 'text-align:center',
+    'transition:opacity 0.4s ease', 'pointer-events:none'
+  ].join(';');
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(function () {
+    toast.style.opacity = '0';
+    setTimeout(function () { if (toast.parentNode) toast.remove(); }, 400);
+  }, 5000);
+}
+
+// ── Serviceability check ──
+// Returns Promise<boolean>. Extracts zip from selectedPlace or raw address input.
+async function checkServiceability(zipOrAddress) {
+  try {
+    var zip = null;
+    // Try to get zip from selectedPlace first
+    if (typeof selectedPlace !== 'undefined' && selectedPlace && selectedPlace.components && selectedPlace.components.zip) {
+      zip = selectedPlace.components.zip;
+    }
+    var body = zip
+      ? { zip: zip, serviceType: (document.getElementById('service-select') || {}).value || 'wash_fold' }
+      : { address: zipOrAddress, serviceType: (document.getElementById('service-select') || {}).value || 'wash_fold' };
+    var res = await fetch(API_BASE + '/api/quotes/check-serviceability', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) return true; // on API error, default to servable so we don't block users
+    var data = await res.json();
+    return data.servable !== false;
+  } catch (e) {
+    return true; // network error → allow through
+  }
+}
+
+// ── Unserved-area modal ──
+function showUnservedModal(prefillZip) {
+  var existing = document.getElementById('unserved-modal-overlay');
+  if (existing) { existing.style.display = 'flex'; return; }
+
+  var overlay = document.createElement('div');
+  overlay.id = 'unserved-modal-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-labelledby', 'unserved-modal-title');
+  overlay.style.cssText = [
+    'position:fixed', 'inset:0', 'background:rgba(0,0,0,0.72)',
+    'z-index:99990', 'display:flex', 'align-items:center',
+    'justify-content:center', 'padding:20px', 'overflow-y:auto'
+  ].join(';');
+
+  var US_STATES = [
+    'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA',
+    'HI','ID','IL','IN','IA','KS','KY','LA','ME','MD',
+    'MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ',
+    'NM','NY','NC','ND','OH','OK','OR','PA','RI','SC',
+    'SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'
+  ];
+  var stateOpts = US_STATES.map(function(s){
+    return '<option value="' + s + '"' + (s === 'NY' ? ' selected' : '') + '>' + s + '</option>';
+  }).join('');
+
+  overlay.innerHTML = [
+    '<div id="unserved-modal" style="background:#111827; border:1px solid rgba(91,75,196,0.25);',
+      'border-radius:18px; padding:32px 28px 28px; max-width:520px; width:100%; position:relative;',
+      'box-shadow:0 24px 64px rgba(0,0,0,0.6);">',
+
+      '<button id="unserved-modal-close" type="button"',
+        'aria-label="Close"',
+        'style="position:absolute;top:16px;right:18px;background:none;border:none;',
+        'color:#9ca3af;font-size:1.5rem;cursor:pointer;line-height:1;padding:4px;',
+        'transition:color 0.2s;" onmouseover="this.style.color=\'#fff\'" onmouseout="this.style.color=\'#9ca3af\'">',
+        '&times;',
+      '</button>',
+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">',
+        '<div style="width:40px;height:40px;background:rgba(91,75,196,0.15);border-radius:10px;',
+          'display:flex;align-items:center;justify-content:center;flex-shrink:0;">',
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B4BC4" stroke-width="2" stroke-linecap="round">',
+            '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/>',
+          '</svg>',
+        '</div>',
+        '<div>',
+          '<h2 id="unserved-modal-title" style="color:#fff;font-size:1.15rem;font-weight:700;',
+            'margin-bottom:2px;font-family:\'Montserrat\',sans-serif;">',
+            'We don&rsquo;t have laundromats available in your area yet.',
+          '</h2>',
+          '<p style="color:#9ca3af;font-size:0.83rem;margin:0;">',
+            'Offload is coming soon to your area. Leave your details and we&rsquo;ll let you know.',
+          '</p>',
+        '</div>',
+      '</div>',
+
+      '<form id="unserved-lead-form" style="display:flex;flex-direction:column;gap:12px;">',
+
+        '<!-- Full Name -->',
+        '<div>',
+          '<label for="ul-name" style="display:block;font-size:0.78rem;font-weight:600;',
+            'color:#9ca3af;margin-bottom:4px;">Full Name <span style="color:#ef4444;">*</span></label>',
+          '<input type="text" id="ul-name" name="name" required autocomplete="name"',
+            'placeholder="Jane Doe"',
+            'style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);',
+            'border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;',
+            'font-family:inherit;outline:none;transition:border-color 0.2s;"',
+            'onfocus="this.style.borderColor=\'#5B4BC4\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.12)\'" />',
+        '</div>',
+
+        '<!-- Email -->',
+        '<div>',
+          '<label for="ul-email" style="display:block;font-size:0.78rem;font-weight:600;',
+            'color:#9ca3af;margin-bottom:4px;">Email <span style="color:#ef4444;">*</span></label>',
+          '<input type="email" id="ul-email" name="email" required autocomplete="email"',
+            'placeholder="jane@example.com"',
+            'style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);',
+            'border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;',
+            'font-family:inherit;outline:none;transition:border-color 0.2s;"',
+            'onfocus="this.style.borderColor=\'#5B4BC4\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.12)\'" />',
+        '</div>',
+
+        '<!-- Phone -->',
+        '<div>',
+          '<label for="ul-phone" style="display:block;font-size:0.78rem;font-weight:600;',
+            'color:#9ca3af;margin-bottom:4px;">Phone <span style="color:#ef4444;">*</span></label>',
+          '<input type="tel" id="ul-phone" name="phone" required autocomplete="tel"',
+            'placeholder="(555) 123-4567"',
+            'style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);',
+            'border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;',
+            'font-family:inherit;outline:none;transition:border-color 0.2s;"',
+            'onfocus="this.style.borderColor=\'#5B4BC4\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.12)\'" />',
+        '</div>',
+
+        '<!-- Address row -->',
+        '<div>',
+          '<label for="ul-address" style="display:block;font-size:0.78rem;font-weight:600;',
+            'color:#9ca3af;margin-bottom:4px;">Address <span style="color:#ef4444;">*</span></label>',
+          '<input type="text" id="ul-address" name="address" required autocomplete="street-address"',
+            'placeholder="123 Main St"',
+            'style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);',
+            'border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;',
+            'font-family:inherit;outline:none;transition:border-color 0.2s;"',
+            'onfocus="this.style.borderColor=\'#5B4BC4\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.12)\'" />',
+        '</div>',
+
+        '<!-- City / State / ZIP row -->',
+        '<div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;">',
+          '<div>',
+            '<label for="ul-city" style="display:block;font-size:0.78rem;font-weight:600;',
+              'color:#9ca3af;margin-bottom:4px;">City <span style="color:#ef4444;">*</span></label>',
+            '<input type="text" id="ul-city" name="city" required autocomplete="address-level2"',
+              'placeholder="New York"',
+              'style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);',
+              'border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;',
+              'font-family:inherit;outline:none;transition:border-color 0.2s;"',
+              'onfocus="this.style.borderColor=\'#5B4BC4\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.12)\'" />',
+          '</div>',
+          '<div>',
+            '<label for="ul-state" style="display:block;font-size:0.78rem;font-weight:600;',
+              'color:#9ca3af;margin-bottom:4px;">State <span style="color:#ef4444;">*</span></label>',
+            '<select id="ul-state" name="state" required autocomplete="address-level1"',
+              'style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);',
+              'border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;',
+              'font-family:inherit;outline:none;min-width:80px;transition:border-color 0.2s;"',
+              'onfocus="this.style.borderColor=\'#5B4BC4\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.12)\'">',
+              stateOpts,
+            '</select>',
+          '</div>',
+          '<div>',
+            '<label for="ul-zip" style="display:block;font-size:0.78rem;font-weight:600;',
+              'color:#9ca3af;margin-bottom:4px;">ZIP <span style="color:#ef4444;">*</span></label>',
+            '<input type="text" id="ul-zip" name="zip" required autocomplete="postal-code"',
+              'placeholder="10001" maxlength="10"',
+              'value="' + (prefillZip || '') + '"',
+              'style="width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);',
+              'border-radius:8px;padding:10px 14px;color:#fff;font-size:0.9rem;',
+              'font-family:inherit;outline:none;min-width:90px;transition:border-color 0.2s;"',
+              'onfocus="this.style.borderColor=\'#5B4BC4\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.12)\'" />',
+          '</div>',
+        '</div>',
+
+        '<!-- Service type (optional) -->',
+        '<div>',
+          '<label style="display:block;font-size:0.78rem;font-weight:600;',
+            'color:#9ca3af;margin-bottom:8px;">Service Interest <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>',
+          '<div id="ul-service-radios" role="radiogroup" aria-label="Requested service type"',
+            'style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">',
+            _buildServiceRadio('wash_fold', 'Wash &amp; Fold', true),
+            _buildServiceRadio('dry_cleaning', 'Dry Cleaning', false),
+            _buildServiceRadio('comforters', 'Comforters', false),
+            _buildServiceRadio('mixed', 'Mixed', false),
+          '</div>',
+        '</div>',
+
+        '<!-- Submit -->',
+        '<div id="ul-error" role="alert" style="display:none;background:rgba(239,68,68,0.12);',
+          'border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 14px;',
+          'color:#fca5a5;font-size:0.83rem;"></div>',
+
+        '<button type="submit" id="ul-submit"',
+          'style="width:100%;background:#5B4BC4;color:#fff;border:none;border-radius:10px;',
+          'padding:14px;font-size:0.95rem;font-weight:700;cursor:pointer;',
+          'font-family:inherit;transition:background 0.2s,opacity 0.2s;"',
+          'onmouseover="if(!this.disabled)this.style.background=\'#4a3ba3\'"',
+          'onmouseout="if(!this.disabled)this.style.background=\'#5B4BC4\'">',
+          'Notify Me When Offload Arrives',
+        '</button>',
+
+        '<p style="text-align:center;font-size:0.75rem;color:#6b7280;margin-top:4px;">',
+          'No spam. We\'ll only reach out when service launches in your area.',
+        '</p>',
+
+      '</form>',
+    '</div>'
+  ].join('');
+
+  document.body.appendChild(overlay);
+
+  // Pre-fill address + components from selectedPlace if available
+  if (typeof selectedPlace !== 'undefined' && selectedPlace) {
+    var addrEl = document.getElementById('ul-address');
+    var cityEl = document.getElementById('ul-city');
+    var stateEl = document.getElementById('ul-state');
+    if (addrEl && selectedPlace.formatted) {
+      // Use the raw typed address for the address field
+      var rawAddr = (document.getElementById('address-input') || {}).value || selectedPlace.formatted;
+      addrEl.value = rawAddr;
+    }
+    if (cityEl && selectedPlace.components && selectedPlace.components.city) {
+      cityEl.value = selectedPlace.components.city;
+    }
+    if (stateEl && selectedPlace.components && selectedPlace.components.state) {
+      stateEl.value = selectedPlace.components.state;
+    }
+  } else {
+    // Try to prefill address field from the order widget
+    var widgetAddr = document.getElementById('address-input');
+    if (widgetAddr && widgetAddr.value) {
+      var addrField = document.getElementById('ul-address');
+      if (addrField) addrField.value = widgetAddr.value;
+    }
+  }
+
+  // Also prefill service type from widget if set
+  var widgetService = (document.getElementById('service-select') || {}).value;
+  if (widgetService) {
+    var radio = document.querySelector('#ul-service-radios input[value="' + widgetService + '"]');
+    if (radio) {
+      // Deselect all, select this one
+      document.querySelectorAll('#ul-service-radios input[type=radio]').forEach(function(r) {
+        r.checked = false;
+        r.closest('label').style.borderColor = 'rgba(255,255,255,0.12)';
+        r.closest('label').style.background = 'rgba(255,255,255,0.04)';
+      });
+      radio.checked = true;
+      radio.closest('label').style.borderColor = '#5B4BC4';
+      radio.closest('label').style.background = 'rgba(91,75,196,0.15)';
+    }
+  }
+
+  // Close on overlay click
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeUnservedModal();
+  });
+
+  // Close button
+  document.getElementById('unserved-modal-close').addEventListener('click', closeUnservedModal);
+
+  // Close on Escape
+  document.addEventListener('keydown', _unservedEscHandler);
+
+  // Form submit
+  document.getElementById('unserved-lead-form').addEventListener('submit', submitUnservedLead);
+
+  // Phone auto-format in modal
+  document.getElementById('ul-phone').addEventListener('input', function(e) {
+    var v = e.target.value.replace(/\D/g, '');
+    if (v.length > 10) v = v.substring(0, 10);
+    if (v.length >= 7) e.target.value = '(' + v.substring(0,3) + ') ' + v.substring(3,6) + '-' + v.substring(6);
+    else if (v.length >= 4) e.target.value = '(' + v.substring(0,3) + ') ' + v.substring(3);
+    else if (v.length > 0) e.target.value = '(' + v;
+  });
+
+  // Focus first empty field
+  var firstEl = document.getElementById('ul-name');
+  if (firstEl) setTimeout(function() { firstEl.focus(); }, 50);
+}
+
+function _buildServiceRadio(value, label, checked) {
+  return [
+    '<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;',
+      'background:' + (checked ? 'rgba(91,75,196,0.15)' : 'rgba(255,255,255,0.04)') + ';',
+      'border:1.5px solid ' + (checked ? '#5B4BC4' : 'rgba(255,255,255,0.12)') + ';',
+      'border-radius:8px;cursor:pointer;font-size:0.85rem;color:#e5e7eb;',
+      'transition:background 0.15s,border-color 0.15s;">',
+      '<input type="radio" name="ul-service" value="' + value + '"' + (checked ? ' checked' : '') + '',
+        'style="accent-color:#5B4BC4;" ',
+        'onchange="_onServiceRadioChange(this)">',
+      label,
+    '</label>'
+  ].join('');
+}
+
+function _onServiceRadioChange(radio) {
+  document.querySelectorAll('#ul-service-radios label').forEach(function(lbl) {
+    lbl.style.borderColor = 'rgba(255,255,255,0.12)';
+    lbl.style.background = 'rgba(255,255,255,0.04)';
+  });
+  radio.closest('label').style.borderColor = '#5B4BC4';
+  radio.closest('label').style.background = 'rgba(91,75,196,0.15)';
+}
+
+function _unservedEscHandler(e) {
+  if (e.key === 'Escape') closeUnservedModal();
+}
+
+function closeUnservedModal() {
+  var overlay = document.getElementById('unserved-modal-overlay');
+  if (overlay) overlay.style.display = 'none';
+  document.removeEventListener('keydown', _unservedEscHandler);
+}
+
+async function submitUnservedLead(e) {
+  e.preventDefault();
+  var form = e.target;
+  var btn = document.getElementById('ul-submit');
+  var errEl = document.getElementById('ul-error');
+
+  // Clear previous error
+  errEl.style.display = 'none';
+  errEl.textContent = '';
+
+  var name = (document.getElementById('ul-name').value || '').trim();
+  var email = (document.getElementById('ul-email').value || '').trim();
+  var phone = (document.getElementById('ul-phone').value || '').trim();
+  var address = (document.getElementById('ul-address').value || '').trim();
+  var city = (document.getElementById('ul-city').value || '').trim();
+  var state = (document.getElementById('ul-state').value || '').trim();
+  var zip = (document.getElementById('ul-zip').value || '').trim();
+  var serviceRadio = form.querySelector('input[name="ul-service"]:checked');
+  var requestedService = serviceRadio ? serviceRadio.value : null;
+
+  // Basic validation
+  if (!name) { _ulFieldError('ul-name', errEl, 'Please enter your full name.'); return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    _ulFieldError('ul-email', errEl, 'Please enter a valid email address.'); return;
+  }
+  var digits = phone.replace(/\D/g, '');
+  if (!phone || digits.length < 10) {
+    _ulFieldError('ul-phone', errEl, 'Please enter a valid 10-digit US phone number.'); return;
+  }
+  if (!address) { _ulFieldError('ul-address', errEl, 'Please enter your street address.'); return; }
+  if (!city) { _ulFieldError('ul-city', errEl, 'Please enter your city.'); return; }
+  if (!state) { _ulFieldError('ul-state', errEl, 'Please select your state.'); return; }
+  if (!zip) { _ulFieldError('ul-zip', errEl, 'Please enter your ZIP code.'); return; }
+
+  // Coords from selectedPlace if available
+  var lat = (typeof selectedPlace !== 'undefined' && selectedPlace && selectedPlace.lat) ? selectedPlace.lat : undefined;
+  var lng = (typeof selectedPlace !== 'undefined' && selectedPlace && selectedPlace.lng) ? selectedPlace.lng : undefined;
+
+  var payload = {
+    name: name,
+    email: email,
+    phone: phone,
+    address: address,
+    city: city,
+    state: state,
+    zip: zip,
+    source: 'website_unserved_zip',
+  };
+  if (lat !== undefined) payload.lat = lat;
+  if (lng !== undefined) payload.lng = lng;
+  if (requestedService) payload.requestedService = requestedService;
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  btn.style.opacity = '0.7';
+
+  try {
+    var res = await fetch(API_BASE + '/api/service-area-requests', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      var errData = await res.json().catch(function() { return {}; });
+      throw new Error(errData.error || errData.message || 'Submission failed (' + res.status + ')');
+    }
+    // Success
+    closeUnservedModal();
+    showOffloadToast('Thanks \u2014 we\u2019ll reach out when Offload launches in your area.', 'success');
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Notify Me When Offload Arrives';
+    btn.style.opacity = '1';
+    errEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errEl.style.display = 'block';
+  }
+}
+
+function _ulFieldError(fieldId, errEl, message) {
+  errEl.textContent = message;
+  errEl.style.display = 'block';
+  var field = document.getElementById(fieldId);
+  if (field) {
+    field.style.borderColor = '#ef4444';
+    field.focus();
+    field.addEventListener('input', function clearErr() {
+      field.style.borderColor = 'rgba(255,255,255,0.12)';
+      errEl.style.display = 'none';
+      field.removeEventListener('input', clearErr);
+    }, { once: true });
+  }
+}
+
+// ── Override handleOrderClick to gate on serviceability ──
+// We wrap the existing handleOrderClick so that on the first
+// click (quote state), we run the serviceability check first.
+var _origHandleOrderClick = handleOrderClick;
+handleOrderClick = async function() {
+  // Only intercept at the quote step (first click)
+  if (orderState !== 'quote') {
+    return _origHandleOrderClick();
+  }
+
+  var address = (document.getElementById('address-input') || {}).value || '';
+  var addressTrimmed = address.trim();
+
+  // If no address yet, let the existing validation handle it
+  if (!addressTrimmed) {
+    return _origHandleOrderClick();
+  }
+
+  // Show loading state on button
+  var btn = document.getElementById('order-btn');
+  var origText = btn ? btn.textContent : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Checking availability...';
+  }
+
+  var servable = await checkServiceability(addressTrimmed);
+
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = origText;
+  }
+
+  if (!servable) {
+    // Extract prefill zip
+    var prefillZip = '';
+    if (typeof selectedPlace !== 'undefined' && selectedPlace && selectedPlace.components && selectedPlace.components.zip) {
+      prefillZip = selectedPlace.components.zip;
+    } else {
+      // Try to parse a 5-digit zip from the address string
+      var zipMatch = addressTrimmed.match(/\b(\d{5})(?:-\d{4})?\b/);
+      if (zipMatch) prefillZip = zipMatch[1];
+    }
+    showUnservedModal(prefillZip);
+    return; // do NOT advance the order flow
+  }
+
+  // Servable — continue as normal
+  return _origHandleOrderClick();
+};
