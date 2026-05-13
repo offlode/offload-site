@@ -1,11 +1,31 @@
 {
   "applinks": {
-    "apps": [],
     "details": [
       {
-        "appID": "A84U5PU3FD.com.offloadusa.app",
-        "paths": ["NOT /api/*", "*"]
+        "appIDs": ["<TEAM_ID>.com.offloadusa.app"],
+        "components": [
+          {
+            "/": "/reset-password/*",
+            "comment": "Password reset deep links"
+          },
+          {
+            "/": "/order/*",
+            "comment": "Order detail deep links"
+          },
+          {
+            "/": "/schedule",
+            "comment": "Schedule page deep link"
+          },
+          {
+            "exclude": true,
+            "/": "/api/*",
+            "comment": "Exclude API routes"
+          }
+        ]
       }
     ]
+  },
+  "webcredentials": {
+    "apps": ["<TEAM_ID>.com.offloadusa.app"]
   }
 }
