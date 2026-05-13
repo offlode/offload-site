@@ -5,6 +5,12 @@ const PRECACHE_URLS = [
   '/sign-in.html',
   '/css/style.css',
   '/js/main.js',
+  '/js/state.js',
+  '/js/pricing.js',
+  '/js/address.js',
+  '/js/stripe-pay.js',
+  '/js/order-flow.js',
+  '/js/chatbot.js',
   '/manifest.json'
 ];
 
