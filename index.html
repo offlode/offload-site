@@ -1113,6 +1113,33 @@
   </div>
 </section>
 
+<!-- ═══════════════════════ SERVICE AREA CHECK ═══════════════════════ -->
+<section class="section section--gray" id="service-area-check">
+  <div class="container" style="max-width:560px; text-align:center;">
+    <div class="section-header section-header--centered animate-in">
+      <h2>Check if we're in your area</h2>
+      <p>Enter your ZIP code to see if Offload serves your neighborhood.</p>
+    </div>
+    <form id="zip-check-form" onsubmit="return false;" class="animate-in delay-1" style="display:flex; gap:12px; justify-content:center; align-items:flex-start; flex-wrap:wrap; margin-top:8px;">
+      <div style="flex:1; min-width:160px; max-width:220px;">
+        <input
+          type="text"
+          id="zip-check-input"
+          class="widget__input"
+          placeholder="Enter ZIP code"
+          maxlength="10"
+          inputmode="numeric"
+          autocomplete="postal-code"
+          aria-label="ZIP code"
+          style="background:rgba(255,255,255,0.06); border:1.5px solid rgba(255,255,255,0.12); color:#fff; text-align:center; font-size:1rem; padding:12px 16px;"
+        >
+      </div>
+      <button type="submit" id="zip-check-btn" class="btn btn--primary" style="padding:12px 28px; font-size:0.95rem; white-space:nowrap;">Check</button>
+    </form>
+    <div id="zip-check-result" role="status" aria-live="polite" style="margin-top:16px; min-height:1.5em;"></div>
+  </div>
+</section>
+
 <!-- ═══════════════════════ FAQ ═══════════════════════ -->
 <section class="section section--gray" id="faq">
   <div class="container">
