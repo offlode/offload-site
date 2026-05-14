@@ -6,7 +6,7 @@
 // ── Module Imports ──
 import { updatePricePreview, initAdvancedControls, loadAddOns } from './pricing.js';
 import { initAddressAutocomplete, initGeolocation, detectLocation } from './address.js';
-import { _onServiceRadioChange } from './stripe-pay.js';
+import { _onServiceRadioChange, checkServiceability, showUnservedModal } from './stripe-pay.js';
 import { initChatbot, sendChat } from './chatbot.js';
 import {
   handleOrderClick,
@@ -245,6 +245,47 @@ if (document.readyState === 'loading') {
   loadAddOns();
 }
 
+
+// ── Service Area ZIP Check Form ──
+(function initZipCheckForm() {
+  const form = document.getElementById('zip-check-form');
+  const input = document.getElementById('zip-check-input');
+  const btn = document.getElementById('zip-check-btn');
+  const result = document.getElementById('zip-check-result');
+  if (!form || !input || !btn || !result) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const zip = input.value.trim();
+    if (!zip || zip.length < 5) {
+      result.innerHTML = '<span style="color:#fca5a5; font-size:0.9rem;">Please enter a valid ZIP code.</span>';
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Checking...';
+    result.innerHTML = '';
+
+    try {
+      const servable = await checkServiceability(zip);
+      if (servable) {
+        result.innerHTML =
+          '<div style="display:inline-flex; align-items:center; gap:8px; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); border-radius:10px; padding:12px 20px;">' +
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' +
+            '<span style="color:#22c55e; font-weight:600; font-size:0.95rem;">We serve your area! <a href="#hero-widget" style="color:#5B4BC4; text-decoration:underline; font-weight:700;">Get your price now</a></span>' +
+          '</div>';
+      } else {
+        showUnservedModal(zip);
+        result.innerHTML =
+          '<span style="color:#fca5a5; font-size:0.9rem;">We\'re not in your area yet. We\'ve opened a form so you can get notified when we arrive.</span>';
+      }
+    } catch (err) {
+      result.innerHTML = '<span style="color:#fca5a5; font-size:0.9rem;">Something went wrong. Please try again.</span>';
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Check';
+  });
+})();
 
 // ── Console branding ──
 console.log('%c🧺 Offload USA', 'font-size:24px; font-weight:bold; color:#5B4BC4;');
