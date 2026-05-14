@@ -30,7 +30,7 @@ function buildOrderUrl(params) {
   if (params.service) qs.set('service', params.service);
   if (params.bag) qs.set('bag', params.bag);
   if (params.speed) {
-    qs.set('speed', 'same_day');
+    qs.set('service', 'same_day');
   }
 
   const qsStr = qs.toString();
